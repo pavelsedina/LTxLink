@@ -226,47 +226,55 @@
     </div>
   </div>
 
-  <div class="modal-backdrop" id="phaseEvidenceModal" aria-hidden="true">
-    <div class="modal flow-state-modal-panel" role="dialog" aria-modal="true" aria-labelledby="phaseEvidenceTitle">
-      <h3 id="phaseEvidenceTitle">Přidat podklad ke kroku</h3>
-      <p id="phaseEvidenceMeta"></p>
-      <div class="field" style="margin-top:12px;">
-        <label>Typ podkladu</label>
-        <label class="exam-checkbox-row">
-          <input type="radio" name="phaseEvidenceRole" id="phaseEvidenceRoleSupporting" value="supporting" checked>
-          <span>Interní podklad (vidí jen tým centra)</span>
-        </label>
-        <label class="exam-checkbox-row">
-          <input type="radio" name="phaseEvidenceRole" id="phaseEvidenceRoleOutbound" value="outbound_message">
-          <span>Zpráva pro odesílatele (odejde pneumologovi při uzavření fáze)</span>
-        </label>
+  <div class="sidebar-panel-wrap" id="phaseEvidenceSidebar" aria-hidden="true">
+    <div class="sidebar-panel-overlay" data-close-phase-evidence></div>
+    <div class="sidebar-panel phase-evidence-sidebar" role="dialog" aria-modal="true" aria-labelledby="phaseEvidenceTitle">
+      <div class="sidebar-panel-header">
+        <div class="sidebar-panel-title-wrap">
+          <h3 id="phaseEvidenceTitle">Přidat podklad ke kroku</h3>
+          <p id="phaseEvidenceMeta"></p>
+        </div>
+        <button type="button" class="sidebar-panel-close" data-close-phase-evidence aria-label="Zavřít">×</button>
       </div>
-      <div class="field" style="margin-top:12px;">
-        <label for="phaseEvidenceNote">Poznámka k vložení</label>
-        <textarea id="phaseEvidenceNote" rows="3" placeholder="Krátce popište, co vkládáte a proč…"></textarea>
-      </div>
-      <div class="field" style="margin-top:12px;">
-        <label>Soubory</label>
-        <div class="file-upload">
-          <ul class="file-upload-list" id="phaseEvidenceAttachList" role="list"></ul>
-          <div class="file-upload-actions">
-            <button type="button" class="file-upload-add" id="phaseEvidencePickFiles" data-attach-pick="phaseEvidenceFileInput">
-              <span class="file-upload-add-icon" aria-hidden="true">+</span>
-              Přidat soubor
-            </button>
-            <span class="file-upload-hint">Podklad se připojí k právě běžící fázi</span>
-            <input
-              type="file"
-              class="file-upload-input"
-              id="phaseEvidenceFileInput"
-              data-attach-list="phaseEvidenceAttachList"
-              multiple
-              accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.webp"
-            >
+      <div class="sidebar-panel-content phase-evidence-sidebar-content">
+        <div class="field">
+          <label>Typ podkladu</label>
+          <label class="exam-checkbox-row">
+            <input type="radio" name="phaseEvidenceRole" id="phaseEvidenceRoleSupporting" value="supporting" checked>
+            <span>Interní podklad (vidí jen tým centra)</span>
+          </label>
+          <label class="exam-checkbox-row">
+            <input type="radio" name="phaseEvidenceRole" id="phaseEvidenceRoleOutbound" value="outbound_message">
+            <span>Zpráva pro odesílatele (odejde pneumologovi při uzavření fáze)</span>
+          </label>
+        </div>
+        <div class="field">
+          <label for="phaseEvidenceNote">Poznámka k vložení</label>
+          <textarea id="phaseEvidenceNote" rows="4" placeholder="Krátce popište, co vkládáte a proč…"></textarea>
+        </div>
+        <div class="field">
+          <label>Soubory</label>
+          <div class="file-upload">
+            <ul class="file-upload-list" id="phaseEvidenceAttachList" role="list"></ul>
+            <div class="file-upload-actions">
+              <button type="button" class="file-upload-add" id="phaseEvidencePickFiles" data-attach-pick="phaseEvidenceFileInput">
+                <span class="file-upload-add-icon" aria-hidden="true">+</span>
+                Přidat soubor
+              </button>
+              <span class="file-upload-hint">Podklad se připojí k právě běžící fázi</span>
+              <input
+                type="file"
+                class="file-upload-input"
+                id="phaseEvidenceFileInput"
+                data-attach-list="phaseEvidenceAttachList"
+                multiple
+                accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.webp"
+              >
+            </div>
           </div>
         </div>
       </div>
-      <div class="item-actions" style="margin-top:18px;">
+      <div class="sidebar-panel-footer">
         <button class="btn secondary" type="button" data-close-phase-evidence>Zrušit</button>
         <button class="btn" type="button" id="phaseEvidenceSubmit">Uložit vložení</button>
       </div>

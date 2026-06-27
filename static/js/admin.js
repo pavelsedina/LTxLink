@@ -18,6 +18,21 @@
       .replace(/'/g, "&#039;");
   }
 
+  function wrapAdminDrawerShell({ titleId, title, cancelAction, bodyHtml, footerHtml }) {
+    return `
+      <div class="patient-edit-header">
+        <h3 id="${titleId}">${title}</h3>
+        <button type="button" class="patient-edit-close" data-${cancelAction} aria-label="Zavřít">×</button>
+      </div>
+      <div class="patient-edit-body">
+        ${bodyHtml}
+      </div>
+      <div class="patient-edit-footer">
+        ${footerHtml}
+      </div>
+    `;
+  }
+
   function renderAdminMonoIcon(id) {
     return window.LtxApp?.renderMonoIcon?.(id, "mono-icon med-action-icon") || "";
   }
@@ -399,6 +414,7 @@
     body.innerHTML = renderMaterialForm(category, materialId);
     modal.classList.add("open");
     modal.setAttribute("aria-hidden", "false");
+    window.LtxApp?.syncPageScrollLock?.();
     body.querySelector('[data-field="title"]')?.focus();
   }
 
@@ -408,6 +424,7 @@
 
     modal.classList.remove("open");
     modal.setAttribute("aria-hidden", "true");
+    window.LtxApp?.syncPageScrollLock?.();
 
     const appState = window.LtxApp?.getDemoState();
     if (appState) {
@@ -462,6 +479,7 @@
     body.innerHTML = renderHandbookForm(handbookId);
     modal.classList.add("open");
     modal.setAttribute("aria-hidden", "false");
+    window.LtxApp?.syncPageScrollLock?.();
     body.querySelector('[data-field="title"]')?.focus();
   }
 
@@ -471,6 +489,7 @@
 
     modal.classList.remove("open");
     modal.setAttribute("aria-hidden", "true");
+    window.LtxApp?.syncPageScrollLock?.();
 
     const appState = window.LtxApp?.getDemoState();
     if (appState) appState.adminEditingHandbookId = null;
@@ -912,35 +931,41 @@
 
     return `
       <div id="adminUserForm" data-user-form-kind="system">
-        <h3 id="adminUserModalTitle">${isNew ? "Nový uživatel systému" : "Úprava uživatele systému"}</h3>
-        <p class="admin-sidebar-modal-sub">${isNew
-          ? "Účet pro zaměstnance nebo spolupracující pracoviště. ID se vygeneruje automaticky."
-          : `Upravujete účet <strong>${escapeAdminHtml(user.name)}</strong>.`}</p>
-        ${!isNew ? `
-          <div class="admin-sidebar-readonly-meta">
-            <span><strong>ID účtu:</strong> ${escapeAdminHtml(user.id)}</span>
-          </div>
-        ` : ""}
-        <div class="field-grid">
-          <div class="field"><label>Jméno</label><input data-field="name" value="${escapeAdminHtml(user.name)}"></div>
-          <div class="field">
-            <label>Role</label>
-            <select data-field="roleId">
-              ${getStaffRoleOptions().map((role) => `
-                <option value="${escapeAdminHtml(role.id)}" ${role.id === user.roleId ? "selected" : ""}>${escapeAdminHtml(role.name)}</option>
-              `).join("")}
-            </select>
-          </div>
-          <div class="field"><label>Pracoviště</label><input data-field="workplace" value="${escapeAdminHtml(user.workplace)}"></div>
-          <div class="field"><label>E-mail</label><input data-field="email" value="${escapeAdminHtml(user.email)}"></div>
-          <div class="field"><label>Telefon</label><input data-field="phone" value="${escapeAdminHtml(user.phone)}"></div>
-        </div>
-        <label class="exam-checkbox-row"><input type="checkbox" data-field="active" ${user.active !== false ? "checked" : ""}><span>Účet aktivní</span></label>
-        <label class="exam-checkbox-row"><input type="checkbox" data-field="perm-admin" ${hasAdminPermission(user) ? "checked" : ""}><span>Oprávnění ADMIN (správa systému)</span></label>
-        <div class="item-actions">
-          <button type="button" class="btn secondary" data-admin-cancel-user>Zrušit</button>
-          <button type="button" class="btn" data-admin-save-user="${escapeAdminHtml(userId)}" data-admin-user-form-kind="system">Uložit</button>
-        </div>
+        ${wrapAdminDrawerShell({
+          titleId: "adminUserModalTitle",
+          title: isNew ? "Nový uživatel systému" : "Úprava uživatele systému",
+          cancelAction: "admin-cancel-user",
+          bodyHtml: `
+            <p class="admin-sidebar-modal-sub">${isNew
+              ? "Účet pro zaměstnance nebo spolupracující pracoviště. ID se vygeneruje automaticky."
+              : `Upravujete účet <strong>${escapeAdminHtml(user.name)}</strong>.`}</p>
+            ${!isNew ? `
+              <div class="admin-sidebar-readonly-meta">
+                <span><strong>ID účtu:</strong> ${escapeAdminHtml(user.id)}</span>
+              </div>
+            ` : ""}
+            <div class="field-grid">
+              <div class="field"><label>Jméno</label><input data-field="name" value="${escapeAdminHtml(user.name)}"></div>
+              <div class="field">
+                <label>Role</label>
+                <select data-field="roleId">
+                  ${getStaffRoleOptions().map((role) => `
+                    <option value="${escapeAdminHtml(role.id)}" ${role.id === user.roleId ? "selected" : ""}>${escapeAdminHtml(role.name)}</option>
+                  `).join("")}
+                </select>
+              </div>
+              <div class="field"><label>Pracoviště</label><input data-field="workplace" value="${escapeAdminHtml(user.workplace)}"></div>
+              <div class="field"><label>E-mail</label><input data-field="email" value="${escapeAdminHtml(user.email)}"></div>
+              <div class="field"><label>Telefon</label><input data-field="phone" value="${escapeAdminHtml(user.phone)}"></div>
+            </div>
+            <label class="exam-checkbox-row"><input type="checkbox" data-field="active" ${user.active !== false ? "checked" : ""}><span>Účet aktivní</span></label>
+            <label class="exam-checkbox-row"><input type="checkbox" data-field="perm-admin" ${hasAdminPermission(user) ? "checked" : ""}><span>Oprávnění ADMIN (správa systému)</span></label>
+          `,
+          footerHtml: `
+            <button type="button" class="btn secondary" data-admin-cancel-user>Zrušit</button>
+            <button type="button" class="btn" data-admin-save-user="${escapeAdminHtml(userId)}" data-admin-user-form-kind="system">Uložit</button>
+          `
+        })}
       </div>
     `;
   }
@@ -956,37 +981,43 @@
 
     return `
       <div id="adminUserForm" data-user-form-kind="patient">
-        <h3 id="adminUserModalTitle">${isNew ? "Nový portálový účet pacienta" : "Úprava portálového účtu"}</h3>
-        <p class="admin-sidebar-modal-sub">${isNew
-          ? "Propojte klinický záznam pacienta s přihlášením do portálu. Role Pacient a vazba se nastaví automaticky."
-          : `Upravujete portál pro <strong>${escapeAdminHtml(user.name)}</strong>.`}</p>
-        ${!isNew ? `
-          <div class="admin-sidebar-readonly-meta">
-            <span><strong>ID účtu:</strong> ${escapeAdminHtml(user.id)}</span>
-            <span><strong>Klinický záznam:</strong> ${escapeAdminHtml(formatPatientRecordLabel(user.patientId))} <em>(nelze měnit)</em></span>
-          </div>
-        ` : ""}
-        <div class="field-grid">
-          ${isNew ? `
-            <div class="field field-span-all">
-              <label>Pacient</label>
-              <select data-field="patientId" required>
-                <option value="">Vyberte pacienta</option>
-                ${availablePatients.map((patient) => `
-                  <option value="${escapeAdminHtml(patient.id)}">${escapeAdminHtml(patient.name)} (${escapeAdminHtml(patient.id)})</option>
-                `).join("")}
-              </select>
+        ${wrapAdminDrawerShell({
+          titleId: "adminUserModalTitle",
+          title: isNew ? "Nový portálový účet pacienta" : "Úprava portálového účtu",
+          cancelAction: "admin-cancel-user",
+          bodyHtml: `
+            <p class="admin-sidebar-modal-sub">${isNew
+              ? "Propojte klinický záznam pacienta s přihlášením do portálu. Role Pacient a vazba se nastaví automaticky."
+              : `Upravujete portál pro <strong>${escapeAdminHtml(user.name)}</strong>.`}</p>
+            ${!isNew ? `
+              <div class="admin-sidebar-readonly-meta">
+                <span><strong>ID účtu:</strong> ${escapeAdminHtml(user.id)}</span>
+                <span><strong>Klinický záznam:</strong> ${escapeAdminHtml(formatPatientRecordLabel(user.patientId))} <em>(nelze měnit)</em></span>
+              </div>
+            ` : ""}
+            <div class="field-grid">
+              ${isNew ? `
+                <div class="field field-span-all">
+                  <label>Pacient</label>
+                  <select data-field="patientId" required>
+                    <option value="">Vyberte pacienta</option>
+                    ${availablePatients.map((patient) => `
+                      <option value="${escapeAdminHtml(patient.id)}">${escapeAdminHtml(patient.name)} (${escapeAdminHtml(patient.id)})</option>
+                    `).join("")}
+                  </select>
+                </div>
+              ` : ""}
+              <div class="field"><label>Jméno v portálu</label><input data-field="name" value="${escapeAdminHtml(user.name)}"></div>
+              <div class="field"><label>E-mail</label><input data-field="email" type="email" value="${escapeAdminHtml(user.email)}"></div>
+              <div class="field"><label>Telefon</label><input data-field="phone" value="${escapeAdminHtml(user.phone)}"></div>
             </div>
-          ` : ""}
-          <div class="field"><label>Jméno v portálu</label><input data-field="name" value="${escapeAdminHtml(user.name)}"></div>
-          <div class="field"><label>E-mail</label><input data-field="email" type="email" value="${escapeAdminHtml(user.email)}"></div>
-          <div class="field"><label>Telefon</label><input data-field="phone" value="${escapeAdminHtml(user.phone)}"></div>
-        </div>
-        <label class="exam-checkbox-row"><input type="checkbox" data-field="active" ${user.active !== false ? "checked" : ""}><span>Účet aktivní (pacient se může přihlásit)</span></label>
-        <div class="item-actions">
-          <button type="button" class="btn secondary" data-admin-cancel-user>Zrušit</button>
-          <button type="button" class="btn" data-admin-save-user="${escapeAdminHtml(userId)}" data-admin-user-form-kind="patient">Uložit</button>
-        </div>
+            <label class="exam-checkbox-row"><input type="checkbox" data-field="active" ${user.active !== false ? "checked" : ""}><span>Účet aktivní (pacient se může přihlásit)</span></label>
+          `,
+          footerHtml: `
+            <button type="button" class="btn secondary" data-admin-cancel-user>Zrušit</button>
+            <button type="button" class="btn" data-admin-save-user="${escapeAdminHtml(userId)}" data-admin-user-form-kind="patient">Uložit</button>
+          `
+        })}
       </div>
     `;
   }
@@ -1129,41 +1160,47 @@
 
     return `
       <div id="adminMaterialForm" data-material-category="${escapeAdminHtml(category)}">
-        <h3 id="adminMaterialModalTitle">${isNew ? "Nový materiál" : "Úprava materiálu"}</h3>
-        <p class="admin-sidebar-modal-sub">${isNew
-          ? `Přidáváte materiál do kategorie ${escapeAdminHtml(categoryLabel)}.`
-          : `Upravujete materiál <strong>${escapeAdminHtml(item.title)}</strong>.`}</p>
-        ${!isNew ? `
-          <div class="admin-sidebar-readonly-meta">
-            <span><strong>ID materiálu:</strong> ${escapeAdminHtml(item.id)}</span>
-            <span><strong>Kategorie:</strong> ${escapeAdminHtml(categoryLabel)}</span>
-          </div>
-        ` : ""}
-        <div class="field-grid">
-          <div class="field"><label>Název</label><input data-field="title" value="${escapeAdminHtml(item.title)}"></div>
-          <div class="field"><label>Podkategorie</label><input data-field="category" value="${escapeAdminHtml(item.category)}"></div>
-          <div class="field"><label>Délka</label><input data-field="duration" value="${escapeAdminHtml(item.duration)}"></div>
-          <div class="field"><label>Autor</label><input data-field="author" value="${escapeAdminHtml(item.author)}"></div>
-          <div class="field">
-            <label>Cílová skupina</label>
-            <select data-field="audience">
-              <option value="ALL" ${item.audience === "ALL" ? "selected" : ""}>Všichni pacienti</option>
-              <option value="WL" ${item.audience === "WL" ? "selected" : ""}>Čekací listina (WL)</option>
-              <option value="PO_TX" ${item.audience === "PO_TX" ? "selected" : ""}>Po transplantaci</option>
-            </select>
-          </div>
-        </div>
-        <div class="field admin-material-desc-field"><label>Popis</label><textarea data-field="description" rows="4">${escapeAdminHtml(item.description)}</textarea></div>
-        <div class="admin-material-attachments-wrap">
-          ${renderMaterialAttachmentsField(item.attachments || [])}
-        </div>
-        <div class="admin-material-active-wrap">
-          <label class="exam-checkbox-row"><input type="checkbox" data-field="active" ${item.active !== false ? "checked" : ""}><span>Materiál aktivní (viditelný)</span></label>
-        </div>
-        <div class="item-actions">
-          <button type="button" class="btn secondary" data-admin-cancel-material>Zrušit</button>
-          <button type="button" class="btn" data-admin-save-material="${escapeAdminHtml(materialId)}" data-admin-material-category="${escapeAdminHtml(category)}">Uložit</button>
-        </div>
+        ${wrapAdminDrawerShell({
+          titleId: "adminMaterialModalTitle",
+          title: isNew ? "Nový materiál" : "Úprava materiálu",
+          cancelAction: "admin-cancel-material",
+          bodyHtml: `
+            <p class="admin-sidebar-modal-sub">${isNew
+              ? `Přidáváte materiál do kategorie ${escapeAdminHtml(categoryLabel)}.`
+              : `Upravujete materiál <strong>${escapeAdminHtml(item.title)}</strong>.`}</p>
+            ${!isNew ? `
+              <div class="admin-sidebar-readonly-meta">
+                <span><strong>ID materiálu:</strong> ${escapeAdminHtml(item.id)}</span>
+                <span><strong>Kategorie:</strong> ${escapeAdminHtml(categoryLabel)}</span>
+              </div>
+            ` : ""}
+            <div class="field-grid">
+              <div class="field"><label>Název</label><input data-field="title" value="${escapeAdminHtml(item.title)}"></div>
+              <div class="field"><label>Podkategorie</label><input data-field="category" value="${escapeAdminHtml(item.category)}"></div>
+              <div class="field"><label>Délka</label><input data-field="duration" value="${escapeAdminHtml(item.duration)}"></div>
+              <div class="field"><label>Autor</label><input data-field="author" value="${escapeAdminHtml(item.author)}"></div>
+              <div class="field">
+                <label>Cílová skupina</label>
+                <select data-field="audience">
+                  <option value="ALL" ${item.audience === "ALL" ? "selected" : ""}>Všichni pacienti</option>
+                  <option value="WL" ${item.audience === "WL" ? "selected" : ""}>Čekací listina (WL)</option>
+                  <option value="PO_TX" ${item.audience === "PO_TX" ? "selected" : ""}>Po transplantaci</option>
+                </select>
+              </div>
+            </div>
+            <div class="field admin-material-desc-field"><label>Popis</label><textarea data-field="description" rows="4">${escapeAdminHtml(item.description)}</textarea></div>
+            <div class="admin-material-attachments-wrap">
+              ${renderMaterialAttachmentsField(item.attachments || [])}
+            </div>
+            <div class="admin-material-active-wrap">
+              <label class="exam-checkbox-row"><input type="checkbox" data-field="active" ${item.active !== false ? "checked" : ""}><span>Materiál aktivní (viditelný)</span></label>
+            </div>
+          `,
+          footerHtml: `
+            <button type="button" class="btn secondary" data-admin-cancel-material>Zrušit</button>
+            <button type="button" class="btn" data-admin-save-material="${escapeAdminHtml(materialId)}" data-admin-material-category="${escapeAdminHtml(category)}">Uložit</button>
+          `
+        })}
       </div>
     `;
   }
@@ -1251,22 +1288,28 @@
     const isChecklist = handbook.mode === "checklist";
     return `
       <div id="adminHandbookForm">
-        <h3 id="adminHandbookModalTitle">Úprava příručky</h3>
-        <p class="admin-sidebar-modal-sub">Upravujete příručku <strong>${escapeAdminHtml(handbook.title || handbookId)}</strong>. Změna se projeví u všech rolí s přístupem.</p>
-        ${isChecklist ? `<p class="admin-sidebar-modal-sub">Checklist položky zůstávají beze změny. Upravujete název, popis a úvodní text.</p>` : ""}
-        <div class="admin-sidebar-readonly-meta">
-          <span><strong>ID příručky:</strong> <code>${escapeAdminHtml(handbookId)}</code></span>
-          <span><strong>Typ:</strong> ${isChecklist ? "Checklist protokol" : "Průvodce"}</span>
-        </div>
-        <div class="field-grid">
-          <div class="field field-span-all"><label>Název</label><input data-field="title" value="${escapeAdminHtml(handbook.title || "")}"></div>
-          <div class="field field-span-all"><label>Krátký popis</label><input data-field="subtitle" value="${escapeAdminHtml(handbook.subtitle || "")}"></div>
-        </div>
-        <div class="field"><label>Textový obsah (odstavce oddělte prázdným řádkem)</label><textarea data-field="body" rows="12">${escapeAdminHtml(handbookBodyText(handbook))}</textarea></div>
-        <div class="item-actions">
-          <button type="button" class="btn secondary" data-admin-cancel-handbook>Zrušit</button>
-          <button type="button" class="btn" data-admin-save-handbook="${escapeAdminHtml(handbookId)}">Uložit</button>
-        </div>
+        ${wrapAdminDrawerShell({
+          titleId: "adminHandbookModalTitle",
+          title: "Úprava příručky",
+          cancelAction: "admin-cancel-handbook",
+          bodyHtml: `
+            <p class="admin-sidebar-modal-sub">Upravujete příručku <strong>${escapeAdminHtml(handbook.title || handbookId)}</strong>. Změna se projeví u všech rolí s přístupem.</p>
+            ${isChecklist ? `<p class="admin-sidebar-modal-sub">Checklist položky zůstávají beze změny. Upravujete název, popis a úvodní text.</p>` : ""}
+            <div class="admin-sidebar-readonly-meta">
+              <span><strong>ID příručky:</strong> <code>${escapeAdminHtml(handbookId)}</code></span>
+              <span><strong>Typ:</strong> ${isChecklist ? "Checklist protokol" : "Průvodce"}</span>
+            </div>
+            <div class="field-grid">
+              <div class="field field-span-all"><label>Název</label><input data-field="title" value="${escapeAdminHtml(handbook.title || "")}"></div>
+              <div class="field field-span-all"><label>Krátký popis</label><input data-field="subtitle" value="${escapeAdminHtml(handbook.subtitle || "")}"></div>
+            </div>
+            <div class="field"><label>Textový obsah (odstavce oddělte prázdným řádkem)</label><textarea data-field="body" rows="12">${escapeAdminHtml(handbookBodyText(handbook))}</textarea></div>
+          `,
+          footerHtml: `
+            <button type="button" class="btn secondary" data-admin-cancel-handbook>Zrušit</button>
+            <button type="button" class="btn" data-admin-save-handbook="${escapeAdminHtml(handbookId)}">Uložit</button>
+          `
+        })}
       </div>
     `;
   }
@@ -1369,31 +1412,33 @@
     ];
 
     return `
-      <div class="admin-sidebar-modal">
-        <div class="admin-sidebar-modal-head">
-          <h3 id="adminMaterialModalTitle">${isNew ? "Nový FAQ dotaz" : "Upravit FAQ dotaz"}</h3>
-        </div>
-        <div id="adminFaqForm" class="admin-sidebar-modal-body">
-          <input type="hidden" id="faqId" value="${faq.id}">
-          <div class="field" style="margin-bottom: 24px;">
-            <label for="faqQuestion" style="text-transform: uppercase; font-size: 11px; font-weight: 700; color: var(--muted); letter-spacing: 0.05em; margin-bottom: 8px; display: block;">Otázka</label>
-            <input type="text" id="faqQuestion" value="${escapeAdminHtml(faq.question)}" required style="width: 100%; height: 44px; padding: 0 12px; border: 1px solid var(--line); border-radius: 8px;">
-          </div>
-          <div class="field" style="margin-bottom: 24px;">
-            <label for="faqAnswer" style="text-transform: uppercase; font-size: 11px; font-weight: 700; color: var(--muted); letter-spacing: 0.05em; margin-bottom: 8px; display: block;">Odpověď</label>
-            <textarea id="faqAnswer" rows="5" required style="width: 100%; padding: 12px; border: 1px solid var(--line); border-radius: 8px; line-height: 1.5;">${escapeAdminHtml(faq.answer)}</textarea>
-          </div>
-          <div class="field" style="margin-bottom: 32px;">
-            <label for="faqState" style="text-transform: uppercase; font-size: 11px; font-weight: 700; color: var(--muted); letter-spacing: 0.05em; margin-bottom: 8px; display: block;">Zobrazit ve fázi</label>
-            <select id="faqState" required style="width: 100%; height: 44px; padding: 0 12px; border: 1px solid var(--line); border-radius: 8px; background: #fff;">
-              ${states.map((s) => `<option value="${s.id}" ${faq.state === s.id ? "selected" : ""}>${s.label}</option>`).join("")}
-            </select>
-          </div>
-          <div class="admin-sidebar-modal-foot" style="padding-top: 24px; border-top: 1px solid var(--line); display: flex; gap: 12px;">
-            <button type="button" class="btn secondary" data-close-modal style="flex: 1;">Zrušit</button>
-            <button type="button" class="btn" data-admin-save-faq style="flex: 2;">Uložit FAQ</button>
-          </div>
-        </div>
+      <div id="adminFaqForm">
+        ${wrapAdminDrawerShell({
+          titleId: "adminMaterialModalTitle",
+          title: isNew ? "Nový FAQ dotaz" : "Upravit FAQ dotaz",
+          cancelAction: "admin-cancel-material",
+          bodyHtml: `
+            <input type="hidden" id="faqId" value="${faq.id}">
+            <div class="field">
+              <label for="faqQuestion">Otázka</label>
+              <input type="text" id="faqQuestion" value="${escapeAdminHtml(faq.question)}" required>
+            </div>
+            <div class="field">
+              <label for="faqAnswer">Odpověď</label>
+              <textarea id="faqAnswer" rows="6" required>${escapeAdminHtml(faq.answer)}</textarea>
+            </div>
+            <div class="field">
+              <label for="faqState">Zobrazit ve fázi</label>
+              <select id="faqState" required>
+                ${states.map((s) => `<option value="${s.id}" ${faq.state === s.id ? "selected" : ""}>${s.label}</option>`).join("")}
+              </select>
+            </div>
+          `,
+          footerHtml: `
+            <button type="button" class="btn secondary" data-admin-cancel-material>Zrušit</button>
+            <button type="button" class="btn" data-admin-save-faq>Uložit</button>
+          `
+        })}
       </div>
     `;
   }
@@ -1605,12 +1650,15 @@
 
   function openAdminFaqModal(faqId) {
     wireAdminMaterialModalOnce();
-    const modal = document.getElementById("adminMaterialModal"); // Reuse material modal container for FAQ
+    const modal = document.getElementById("adminMaterialModal");
     const body = document.getElementById("adminMaterialModalBody");
     if (!modal || !body) return;
 
     body.innerHTML = renderFaqForm(faqId);
     modal.classList.add("open");
+    modal.setAttribute("aria-hidden", "false");
+    window.LtxApp?.syncPageScrollLock?.();
+    body.querySelector("#faqQuestion")?.focus();
   }
 
   function attachAdminEvents() {

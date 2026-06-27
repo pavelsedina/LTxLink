@@ -832,7 +832,31 @@
     }
 
     .personal-notes-modal {
-      width: min(560px, calc(100vw - 32px));
+      width: min(560px, calc(100vw - 24px));
+    }
+
+    #personalNotesModal {
+      background: transparent;
+      padding: 0;
+    }
+
+    #personalNotesModal.open {
+      display: block !important;
+    }
+
+    #personalNotesModal .personal-notes-modal {
+      position: fixed;
+      margin: 0;
+      z-index: 11;
+      max-height: min(calc(100vh - 24px), 640px);
+      display: flex;
+      flex-direction: column;
+    }
+
+    #personalNotesModal textarea {
+      flex: 1 1 auto;
+      min-height: 180px;
+      overscroll-behavior: contain;
     }
 
     .personal-notes-modal-head {
@@ -4029,6 +4053,18 @@
       cursor: not-allowed;
     }
 
+    .btn-with-icon {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-with-icon .mono-icon {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+    }
+
     .tabs {
       display: flex;
       gap: 8px;
@@ -4930,9 +4966,25 @@
       align-items: start;
     }
 
-    .amb-cover-letter {
+    .amb-form-grid .field textarea.amb-cover-letter {
       min-height: 444px;
       resize: vertical;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+      padding: 14px;
+      box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.02);
+      line-height: 1.55;
+    }
+
+    .amb-form-grid .field textarea.amb-cover-letter:hover {
+      border-color: var(--primary-light);
+    }
+
+    .amb-form-grid .field textarea.amb-cover-letter:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px var(--primary-light);
+      background: #fff;
     }
 
     .amb-referral-footer {
@@ -5303,7 +5355,8 @@
     #adminMaterialModal.open,
     #adminHandbookModal.open,
     #patientEditModal.open,
-    #organOfferModal.open {
+    #organOfferModal.open,
+    #dailyRecordsAiModal.open {
       display: flex !important;
       justify-content: flex-end !important;
       align-items: stretch !important;
@@ -5314,7 +5367,8 @@
     #patientEditModal .modal,
     #adminUserModal .modal,
     #adminMaterialModal .modal,
-    #adminHandbookModal .modal {
+    #adminHandbookModal .modal,
+    #dailyRecordsAiModal .ai-insights-panel {
       width: min(800px, 100%) !important;
       max-width: min(800px, 100%) !important;
       height: 100vh !important;
@@ -5331,12 +5385,25 @@
     #patientEditModalBody,
     #adminUserModalBody,
     #adminMaterialModalBody,
-    #adminHandbookModalBody {
+    #adminHandbookModalBody,
+    #dailyRecordsAiContent {
       display: flex !important;
       flex-direction: column !important;
       height: 100% !important;
       width: 100% !important;
       overflow: hidden !important;
+    }
+
+    #adminUserModalBody > #adminUserForm,
+    #adminMaterialModalBody > #adminMaterialForm,
+    #adminMaterialModalBody > #adminFaqForm,
+    #adminHandbookModalBody > #adminHandbookForm {
+      display: flex;
+      flex-direction: column;
+      flex: 1 1 auto;
+      height: 100%;
+      min-height: 0;
+      overflow: hidden;
     }
 
     /* Modal header/body/footer for drawers */
@@ -5833,6 +5900,7 @@
     .organ-offer-header-actions {
       display: flex;
       align-items: center;
+      gap: 8px;
     }
 
     .organ-offer-detail-sub {
@@ -6887,59 +6955,54 @@
       height: 15px;
     }
 
-    #dailyRecordsAiModal.ai-insights-backdrop {
-      display: none;
-      opacity: 0;
-      background: rgba(13, 24, 42, 0);
-      transition: opacity 0.32s ease, background 0.32s ease;
-    }
-
-    #dailyRecordsAiModal.ai-insights-backdrop.open,
-    #dailyRecordsAiModal.ai-insights-backdrop.is-closing {
-      display: grid;
-    }
-
-    #dailyRecordsAiModal.ai-insights-backdrop.open.is-visible {
+    #dailyRecordsAiModal.open {
       opacity: 1;
-      background: rgba(13, 24, 42, 0.58);
-    }
-
-    #dailyRecordsAiModal.ai-insights-backdrop.is-closing {
-      opacity: 0;
-      background: rgba(13, 24, 42, 0);
+      background: rgba(13, 37, 56, 0.45);
     }
 
     #dailyRecordsAiModal .ai-insights-panel {
-      width: min(640px, 100%);
-      max-width: min(640px, 100%);
-      max-height: min(88vh, 860px);
-      overflow: auto;
-      padding: 0;
-      border: 1px solid color-mix(in srgb, #7b61c7 22%, var(--line));
-      border-radius: 24px;
+      border: none;
+      border-left: 1px solid color-mix(in srgb, #7b61c7 22%, var(--line));
       background: #fff;
-      box-shadow:
-        0 24px 80px rgba(31, 41, 72, 0.28),
-        0 0 0 1px rgba(255, 255, 255, 0.6) inset;
-      transform: translateY(24px) scale(0.97);
-      opacity: 0;
-      transition: transform 0.36s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.32s ease;
+      box-shadow: var(--shadow);
     }
 
-    #dailyRecordsAiModal.open.is-visible .ai-insights-panel {
-      transform: translateY(0) scale(1);
-      opacity: 1;
+    .ai-insights-drawer {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      min-height: 0;
+      overflow: hidden;
     }
 
-    #dailyRecordsAiModal.is-closing .ai-insights-panel {
-      transform: translateY(18px) scale(0.98);
-      opacity: 0;
+    .ai-insights-drawer .ai-insights-hero,
+    .ai-insights-drawer .patient-edit-footer {
+      flex-shrink: 0;
+    }
+
+    .ai-insights-body {
+      padding: 0;
+    }
+
+    .ai-insights-body .ai-insights-grid {
+      padding: 18px 32px 8px;
+    }
+
+    .ai-insights-body .ai-insights-empty {
+      padding: 32px;
+    }
+
+    .patient-edit-footer.ai-insights-footer {
+      background: #f8fafc;
+      font-size: 11px;
+      color: var(--muted);
+      justify-content: flex-start;
     }
 
     .ai-insights-hero {
       position: relative;
       overflow: hidden;
-      padding: 22px 22px 18px;
+      padding: 24px 32px 20px;
       background: linear-gradient(135deg, #1b2a4a 0%, #2f4b8a 42%, #6b4bb8 100%);
       color: #fff;
     }
@@ -7816,14 +7879,25 @@
       opacity: 0.85;
     }
 
-    .admin-sidebar-modal-panel .field-grid,
-    .admin-user-modal-panel .field-grid {
-      margin-bottom: 14px;
+    .patient-edit-body .admin-sidebar-modal-sub {
+      margin-top: 0;
     }
 
-    .admin-sidebar-modal-panel .item-actions,
-    .admin-user-modal-panel .item-actions {
-      margin-top: 18px;
+    .patient-edit-body .admin-sidebar-modal-sub + .admin-sidebar-modal-sub {
+      margin-top: -10px;
+    }
+
+    .patient-edit-body .field-grid {
+      margin-bottom: 0;
+    }
+
+    .patient-edit-body .exam-checkbox-row {
+      margin-top: 12px;
+    }
+
+    .admin-sidebar-modal-panel .field-grid,
+    .admin-user-modal-panel .field-grid {
+      margin-bottom: 0;
     }
 
     .admin-code-grid {
@@ -8483,6 +8557,27 @@
       display: flex;
       flex-direction: column;
       gap: 24px;
+    }
+
+    .phase-evidence-sidebar {
+      width: 480px;
+    }
+
+    .phase-evidence-sidebar-content {
+      gap: 18px;
+    }
+
+    .phase-evidence-sidebar-content .field {
+      margin: 0;
+    }
+
+    .sidebar-panel-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      padding: 16px 28px 24px;
+      border-top: 1px solid #edf2f7;
+      background: #fcfdfe;
     }
 
     .trend-chart-box {

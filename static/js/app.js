@@ -46,9 +46,13 @@
     }
 
     function syncAllDrawerBodyOverflow() {
-      document.querySelectorAll(".patient-edit-body").forEach((section) => {
-        syncDrawerBodyOverflow(section);
-      });
+      const sync = () => {
+        document.querySelectorAll(".patient-edit-body").forEach((section) => {
+          syncDrawerBodyOverflow(section);
+        });
+      };
+      sync();
+      requestAnimationFrame(sync);
     }
 
     function syncPageScrollLock() {
@@ -97,6 +101,7 @@
       const selectors = [
         ".patient-edit-body.is-scrollable",
         "#demoRoleModal [data-modal-scroll]",
+        "#personalNotesModal textarea",
         "[data-modal-scroll]"
       ];
 
@@ -106,6 +111,28 @@
       }
 
       return null;
+    }
+
+    function positionAnchoredModal(modalId, panelSelector, anchor) {
+      const modal = document.getElementById(modalId);
+      const panel = modal?.querySelector(panelSelector);
+      if (!modal || !panel || !modal.classList.contains("open") || !anchor) return;
+
+      const pad = 12;
+      const gap = anchor.gap ?? 8;
+      let left = anchor.x + (anchor.offsetX ?? 0);
+      let top = anchor.y + gap + (anchor.offsetY ?? 0);
+
+      panel.style.left = `${left}px`;
+      panel.style.top = `${top}px`;
+
+      requestAnimationFrame(() => {
+        const rect = panel.getBoundingClientRect();
+        left = Math.min(Math.max(pad, left), window.innerWidth - rect.width - pad);
+        top = Math.min(Math.max(pad, top), window.innerHeight - rect.height - pad);
+        panel.style.left = `${left}px`;
+        panel.style.top = `${top}px`;
+      });
     }
 
     function getDemoRoleAnchorFallback() {
@@ -119,25 +146,31 @@
     }
 
     function positionDemoRoleModal() {
-      const modal = document.getElementById("demoRoleModal");
-      const panel = modal?.querySelector(".demo-role-modal");
       const anchor = demoState.demoRoleAnchor || getDemoRoleAnchorFallback();
-      if (!modal || !panel || !modal.classList.contains("open")) return;
+      positionAnchoredModal("demoRoleModal", ".demo-role-modal", {
+        x: anchor.x,
+        y: anchor.y,
+        offsetX: 6,
+        offsetY: 6
+      });
+    }
 
-      const pad = 12;
-      const offset = 6;
-      let left = anchor.x + offset;
-      let top = anchor.y + offset;
+    function getPersonalNotesAnchor() {
+      const btn = document.getElementById("openPersonalNotesBtn");
+      if (!btn) {
+        return { x: 24, y: 72 };
+      }
 
-      panel.style.left = `${left}px`;
-      panel.style.top = `${top}px`;
+      const rect = btn.getBoundingClientRect();
+      return { x: rect.left, y: rect.bottom };
+    }
 
-      requestAnimationFrame(() => {
-        const rect = panel.getBoundingClientRect();
-        left = Math.min(Math.max(pad, left), window.innerWidth - rect.width - pad);
-        top = Math.min(Math.max(pad, top), window.innerHeight - rect.height - pad);
-        panel.style.left = `${left}px`;
-        panel.style.top = `${top}px`;
+    function positionPersonalNotesModal() {
+      const anchor = getPersonalNotesAnchor();
+      positionAnchoredModal("personalNotesModal", ".personal-notes-modal", {
+        x: anchor.x,
+        y: anchor.y,
+        gap: 8
       });
     }
 
@@ -869,11 +902,16 @@
       }
 
       document.getElementById("personalNotesModal")?.classList.add("open");
-      window.setTimeout(() => input?.focus(), 0);
+      syncPageScrollLock();
+      requestAnimationFrame(() => {
+        positionPersonalNotesModal();
+        input?.focus();
+      });
     }
 
     function closePersonalNotesModal() {
       document.getElementById("personalNotesModal")?.classList.remove("open");
+      syncPageScrollLock();
     }
 
     function savePersonalNotes() {
@@ -2441,6 +2479,10 @@
       return demoUsers.filter((user) => user.roleId !== "patient" && user.roleId !== "ambulatory");
     }
 
+    function getAmbulatoryMentionUsers() {
+      return demoUsers.filter((user) => user.roleId === "ambulatory");
+    }
+
     function getInternalChatMessages(patient) {
       return patient?.internalChat || [];
     }
@@ -2768,7 +2810,7 @@
           </div>
 
           <div class="internal-notes-composer">
-            <input type="text" id="internalNoteInput" placeholder="Přidat rychlou poznámku… (např. ECMO, urgentní, Frailty score: 3)" autocomplete="off">
+            <input type="text" id="internalNoteInput" placeholder="Přidat rychlou poznámku… (např. ECMO, urgentní, Frailty score, ...)" autocomplete="off">
             <button type="button" class="btn btn-primary btn-compact" id="addInternalNoteBtn">Přidat</button>
           </div>
         </div>
@@ -3849,10 +3891,25 @@
     function renderDailyRecordsAiModalContent(patient, analysis) {
       if (analysis.empty) {
         return `
-          <div class="ai-insights-empty">
-            <div class="ai-insights-empty-icon">${renderMonoIcon("sparkle", "mono-icon")}</div>
-            <h3>Zatím bez dat pro analýzu</h3>
-            <p>Až pacient odešle první domácí záznam, AI zde zobrazí trend FEV1, riziko a doporučené kroky týmu.</p>
+          <div class="ai-insights-drawer">
+            <header class="ai-insights-hero ai-insights-hero--compact">
+              <div class="ai-insights-hero-glow" aria-hidden="true"></div>
+              <div class="ai-insights-hero-top">
+                <div class="ai-insights-badge">
+                  ${renderMonoIcon("sparkle", "mono-icon ai-insights-badge-icon")}
+                  <span>LTxLink AI Insights</span>
+                </div>
+                <button type="button" class="ai-insights-close" data-close-daily-ai aria-label="Zavřít">×</button>
+              </div>
+              <h3 id="dailyRecordsAiTitle">Inteligentní analýza domácích záznamů</h3>
+            </header>
+            <div class="patient-edit-body ai-insights-body">
+              <div class="ai-insights-empty">
+                <div class="ai-insights-empty-icon">${renderMonoIcon("sparkle", "mono-icon")}</div>
+                <h3>Zatím bez dat pro analýzu</h3>
+                <p>Až pacient odešle první domácí záznam, AI zde zobrazí trend FEV1, riziko a doporučené kroky týmu.</p>
+              </div>
+            </div>
           </div>
         `;
       }
@@ -3862,67 +3919,71 @@
         : "-";
 
       return `
-        <header class="ai-insights-hero ai-reveal" style="--ai-delay:0ms">
-          <div class="ai-insights-hero-glow" aria-hidden="true"></div>
-          <div class="ai-insights-hero-top">
-            <div class="ai-insights-badge">
-              ${renderMonoIcon("sparkle", "mono-icon ai-insights-badge-icon")}
-              <span>LTxLink AI Insights</span>
-            </div>
-            <button type="button" class="ai-insights-close" data-close-daily-ai aria-label="Zavřít">×</button>
-          </div>
-          <h3 id="dailyRecordsAiTitle">Inteligentní analýza domácích záznamů</h3>
-          <p class="ai-insights-sub" style="color: #ffffff; text-shadow: 0 1px 3px rgba(0,0,0,0.5); font-weight: 700;">
-            ${escapeHtml(patient.name)} · ${escapeHtml(analysis.windowLabel)} · poslední záznam ${escapeHtml(analysis.latestLabel)}
-          </p>
-        </header>
-
-        <div class="ai-insights-grid">
-          <section class="ai-insights-score ai-reveal ai-insights-score--${analysis.riskLevel}" style="--ai-delay:80ms">
-            <div class="ai-insights-score-ring" style="--ai-score:${analysis.riskScore}">
-              <strong>${analysis.riskScore}</strong>
-              <span>skóre rizika</span>
-            </div>
-            <div>
-              <p class="ai-insights-score-label">${escapeHtml(analysis.riskLabel)}</p>
-              <p class="ai-insights-score-copy">${escapeHtml(analysis.summary)}</p>
-            </div>
-          </section>
-
-          ${analysis.fev1Series.length >= 2 ? `
-            <section class="ai-insights-chart ai-reveal" style="--ai-delay:160ms">
-              <div class="ai-insights-chart-head">
-                <strong>Trend FEV1</strong>
-                <span class="ai-insights-delta ai-insights-delta--${analysis.fev1DeltaPct != null && analysis.fev1DeltaPct < 0 ? "down" : "up"}">${deltaLabel}</span>
+        <div class="ai-insights-drawer">
+          <header class="ai-insights-hero ai-reveal" style="--ai-delay:0ms">
+            <div class="ai-insights-hero-glow" aria-hidden="true"></div>
+            <div class="ai-insights-hero-top">
+              <div class="ai-insights-badge">
+                ${renderMonoIcon("sparkle", "mono-icon ai-insights-badge-icon")}
+                <span>LTxLink AI Insights</span>
               </div>
-              ${renderAiSparkline(analysis.fev1Series)}
-            </section>
-          ` : ""}
-
-          <section class="ai-insights-list ai-reveal" style="--ai-delay:240ms">
-            <h4>Klíčové signály</h4>
-            <div class="ai-insight-cards">
-              ${analysis.insights.map((item, index) => `
-                <article class="ai-insight-card ai-insight-card--${item.tone}" style="--ai-delay:${320 + index * 70}ms">
-                  <strong>${escapeHtml(item.title)}</strong>
-                  <p>${escapeHtml(item.text)}</p>
-                </article>
-              `).join("")}
+              <button type="button" class="ai-insights-close" data-close-daily-ai aria-label="Zavřít">×</button>
             </div>
-          </section>
+            <h3 id="dailyRecordsAiTitle">Inteligentní analýza domácích záznamů</h3>
+            <p class="ai-insights-sub" style="color: #ffffff; text-shadow: 0 1px 3px rgba(0,0,0,0.5); font-weight: 700;">
+              ${escapeHtml(patient.name)} · ${escapeHtml(analysis.windowLabel)} · poslední záznam ${escapeHtml(analysis.latestLabel)}
+            </p>
+          </header>
 
-          <section class="ai-insights-actions ai-reveal" style="--ai-delay:520ms">
-            <h4>Doporučené kroky týmu</h4>
-            <ol class="ai-action-list">
-              ${analysis.actions.map((action) => `<li>${escapeHtml(action)}</li>`).join("")}
-            </ol>
-          </section>
+          <div class="patient-edit-body ai-insights-body">
+            <div class="ai-insights-grid">
+              <section class="ai-insights-score ai-reveal ai-insights-score--${analysis.riskLevel}" style="--ai-delay:80ms">
+                <div class="ai-insights-score-ring" style="--ai-score:${analysis.riskScore}">
+                  <strong>${analysis.riskScore}</strong>
+                  <span>skóre rizika</span>
+                </div>
+                <div>
+                  <p class="ai-insights-score-label">${escapeHtml(analysis.riskLabel)}</p>
+                  <p class="ai-insights-score-copy">${escapeHtml(analysis.summary)}</p>
+                </div>
+              </section>
+
+              ${analysis.fev1Series.length >= 2 ? `
+                <section class="ai-insights-chart ai-reveal" style="--ai-delay:160ms">
+                  <div class="ai-insights-chart-head">
+                    <strong>Trend FEV1</strong>
+                    <span class="ai-insights-delta ai-insights-delta--${analysis.fev1DeltaPct != null && analysis.fev1DeltaPct < 0 ? "down" : "up"}">${deltaLabel}</span>
+                  </div>
+                  ${renderAiSparkline(analysis.fev1Series)}
+                </section>
+              ` : ""}
+
+              <section class="ai-insights-list ai-reveal" style="--ai-delay:240ms">
+                <h4>Klíčové signály</h4>
+                <div class="ai-insight-cards">
+                  ${analysis.insights.map((item, index) => `
+                    <article class="ai-insight-card ai-insight-card--${item.tone}" style="--ai-delay:${320 + index * 70}ms">
+                      <strong>${escapeHtml(item.title)}</strong>
+                      <p>${escapeHtml(item.text)}</p>
+                    </article>
+                  `).join("")}
+                </div>
+              </section>
+
+              <section class="ai-insights-actions ai-reveal" style="--ai-delay:520ms">
+                <h4>Doporučené kroky týmu</h4>
+                <ol class="ai-action-list">
+                  ${analysis.actions.map((action) => `<li>${escapeHtml(action)}</li>`).join("")}
+                </ol>
+              </section>
+            </div>
+          </div>
+
+          <footer class="patient-edit-footer ai-insights-footer ai-reveal" style="--ai-delay:600ms">
+            <span class="ai-insights-pulse" aria-hidden="true"></span>
+            Analýza vygenerována ${escapeHtml(analysis.generatedAt)} · podpůrný klinický nástroj, nenahrazuje rozhodnutí lékaře
+          </footer>
         </div>
-
-        <footer class="ai-insights-footer ai-reveal" style="--ai-delay:600ms">
-          <span class="ai-insights-pulse" aria-hidden="true"></span>
-          Analýza vygenerována ${escapeHtml(analysis.generatedAt)} · podpůrný klinický nástroj, nenahrazuje rozhodnutí lékaře
-        </footer>
       `;
     }
 
@@ -3936,24 +3997,17 @@
       if (!modal || !content) return;
 
       content.innerHTML = renderDailyRecordsAiModalContent(patient, analysis);
-      modal.classList.remove("is-closing");
       modal.classList.add("open");
-      window.requestAnimationFrame(() => {
-        window.requestAnimationFrame(() => {
-          modal.classList.add("is-visible");
-        });
-      });
+      modal.setAttribute("aria-hidden", "false");
+      syncPageScrollLock();
     }
 
     function closeDailyRecordsAiModal() {
       const modal = document.getElementById("dailyRecordsAiModal");
       if (!modal || !modal.classList.contains("open")) return;
-      modal.classList.remove("is-visible");
-      modal.classList.add("is-closing");
       modal.classList.remove("open");
-      window.setTimeout(() => {
-        modal.classList.remove("is-closing");
-      }, 320);
+      modal.setAttribute("aria-hidden", "true");
+      syncPageScrollLock();
     }
 
     function submitPatientDailyRecord(patientId) {
@@ -4433,7 +4487,7 @@
         </div>
         ${canChat ? `
           <div class="referral-chat-compose">
-            <textarea id="referralChatInput" rows="2" placeholder="Doplňte informace k žádosti… použijte @ pro označení kolegy"></textarea>
+            <textarea id="referralChatInput" rows="2" placeholder="Doplňte informace k žádosti… použijte @ pro označení ambulantního pneumologa"></textarea>
             <button class="btn btn-compact" type="button" data-send-referral-chat="${patient.id}">Odeslat</button>
           </div>
         ` : ""}
@@ -4723,10 +4777,10 @@
       });
     }
 
-    function wirePhaseEvidenceModalOnce() {
-      const modal = document.getElementById("phaseEvidenceModal");
-      if (!modal || modal.dataset.phaseEvidenceWired === "1") return;
-      modal.dataset.phaseEvidenceWired = "1";
+    function wirePhaseEvidenceSidebarOnce() {
+      const sidebar = document.getElementById("phaseEvidenceSidebar");
+      if (!sidebar || sidebar.dataset.phaseEvidenceWired === "1") return;
+      sidebar.dataset.phaseEvidenceWired = "1";
       document.getElementById("phaseEvidenceSubmit")?.addEventListener("click", submitPhaseEvidence);
     }
 
@@ -4913,11 +4967,14 @@
         outboundRadio.parentElement.style.display = canCreateOutboundPhaseMessage() ? "" : "none";
       }
 
-      document.getElementById("phaseEvidenceModal").classList.add("open");
+      document.getElementById("phaseEvidenceSidebar")?.classList.add("open");
+      document.getElementById("phaseEvidenceSidebar")?.setAttribute("aria-hidden", "false");
     }
 
     function closePhaseEvidenceModal() {
-      document.getElementById("phaseEvidenceModal")?.classList.remove("open");
+      const sidebar = document.getElementById("phaseEvidenceSidebar");
+      sidebar?.classList.remove("open");
+      sidebar?.setAttribute("aria-hidden", "true");
       demoState.phaseEvidencePatientId = null;
       demoState.phaseEvidenceBucket = null;
     }
@@ -5136,7 +5193,7 @@
             type="search"
             class="patient-list-search"
             data-patient-list-search
-            placeholder="Hledat jméno, diagnózu nebo pneumologii…"
+            placeholder="Hledat jméno, diagnózu, ..."
             value="${escapeHtml(searchQuery)}"
             aria-label="Hledat v přehledu pacientů"
           >
@@ -6783,11 +6840,6 @@
               ? `<div class="organ-offers-list">${archivedOffers.map(renderOrganOfferCard).join("")}</div>`
               : `<p class="organ-offers-empty">Zatím žádný archiv.</p>`}
           </section>
-
-          <aside class="organ-offers-info">
-            <span class="organ-offers-info-icon" aria-hidden="true">${renderMonoIcon("info")}</span>
-            <p>Logistika nabídky (transport, koordinace s KST) je v MVP zjednodušena. V produkčním systému by se napojila na národní registr KST.</p>
-          </aside>
         </div>
       `;
     }
@@ -6956,9 +7008,9 @@
               </div>
             </div>
             <div class="organ-offer-header-actions">
-              <button type="button" class="btn secondary" data-edit-organ-offer="${offer.id}" style="margin-right: 8px;">
+              <button type="button" class="btn secondary btn-with-icon" data-edit-organ-offer="${offer.id}">
                 ${renderMonoIcon("edit", "mono-icon")}
-                Upravit dárce
+                Upravit
               </button>
               <button type="button" class="btn btn-primary organ-offer-chat-btn-highlight" data-toggle-organ-offer-chat="${offer.id}">
                 ${renderMonoIcon("communication", "mono-icon")}
@@ -9887,11 +9939,8 @@
       });
     }
 
-    function getInternalStaffUsers() {
-      return demoUsers.filter((u) => u.roleId !== "patient" && u.roleId !== "ambulatory");
-    }
-
-    function wireInternalChatMentions(textareaId) {
+    function wireInternalChatMentions(textareaId, options = {}) {
+      const getMentionUsers = options.getMentionUsers || getInternalStaffUsers;
       const textarea = document.getElementById(textareaId);
       if (!textarea) return;
 
@@ -9903,7 +9952,7 @@
         document.body.appendChild(suggestionBox);
       }
 
-      const staff = getInternalStaffUsers();
+      const staff = getMentionUsers();
 
       textarea.addEventListener("input", () => {
         const text = textarea.value;
@@ -9913,7 +9962,12 @@
 
         if (match) {
           const query = match[1].toLowerCase();
-          const filtered = staff.filter((u) => u.name.toLowerCase().includes(query) || u.roleId.toLowerCase().includes(query));
+          const filtered = staff.filter((user) => {
+            const roleName = roleById(user.roleId)?.name || "";
+            return user.name.toLowerCase().includes(query)
+              || user.roleId.toLowerCase().includes(query)
+              || roleName.toLowerCase().includes(query);
+          });
 
           if (filtered.length) {
             const rect = textarea.getBoundingClientRect();
@@ -10130,7 +10184,7 @@
       }
 
       wireInternalChatMentions("internalChatInput");
-      wireInternalChatMentions("referralChatInput");
+      wireInternalChatMentions("referralChatInput", { getMentionUsers: getAmbulatoryMentionUsers });
 
       document.querySelectorAll("[data-open-coordinator-flow-state]").forEach((element) => {
         const open = () => openCoordinatorFlowStateModal(element.dataset.openCoordinatorFlowState);
@@ -10425,14 +10479,10 @@
     wireCoreNavigationOnce();
     wireUserSettingsOnce();
     wireCoordinatorExamModalOnce();
-    wirePhaseEvidenceModalOnce();
+    wirePhaseEvidenceSidebarOnce();
 
     document.getElementById("coordinatorFlowStateModal").addEventListener("click", (event) => {
       if (event.target.id === "coordinatorFlowStateModal") closeCoordinatorFlowStateModal();
-    });
-
-    document.getElementById("phaseEvidenceModal")?.addEventListener("click", (event) => {
-      if (event.target.id === "phaseEvidenceModal") closePhaseEvidenceModal();
     });
 
     document.getElementById("overrideModal").addEventListener("click", (event) => {
