@@ -1,0 +1,44 @@
+00:00:00,560 --> 00:00:23,630 [Speaker 0]
+No pak je tady, teď se dostáváme do těch komplikovanějších rolí, jo, který teď si úplně nemůžem jako přesně definovat, protože tam je ten systém tak složitej, že vlastně nevím, jestli by to bylo opět reálný. Můžem to nechat jako namodelovaný jako nějakou, nějakej nápad nebo něco, co by bylo fajn, ale s čím se nedá pracovat, protože ten systém je hodně jakoby propojenej. A, 
+
+00:00:25,480 --> 00:00:32,860 [Speaker 0]
+tak je to vlastně tak, že ten transplantační koordinátor řeší teda ty nabídky těch orgánů. 
+
+00:00:34,180 --> 00:00:37,900 [Speaker 0]
+To funguje tak, že ty nabídky, 
+
+00:00:39,840 --> 00:00:47,800 [Speaker 0]
+vždycky zavolá nějaká ta nemocnice tomu koordinátorovi kon-kon-konkrétnímu, že mají nějakýho prostě potencionálního dárce. Ten zjistí všechny informace, 
+
+00:00:49,360 --> 00:01:01,540 [Speaker 0]
+jestli je, není jakoby vhodnej. Udělaj se nějaký zase jako prostě vyšetření, který se k tomu musej udělat a tak dále. A v určitý fázi začnou komunikovat s chirurgama našima transplantačníma. 
+
+00:01:02,660 --> 00:02:19,400 [Speaker 0]
+Pak vlastně v momentě, kdy zase se to někam posune ta, ta nabídka v tý fázi, tak teprv se přidává a všechno to funguje pak ve whatsappových skupinách a postupně se do tý whatsappový skupiny přidává další, další, další, další množství lidí, který prostě s tím maj nějakejm způsobem něco dočinění. A těch lidí není málo. A ke každýmu pacientovi pak běží samostatná whatsappová konverzace, do který se píšou informace o dárci. Vybírá se příjemce, píšou se tam vlastně i dokumentace o tom příjemci, aby člověk, kterej tam pak bude, aby to zas nemusel dohledávat, protože většinou jsme jakoby, že jo, doma na příslužbě. Takže ty informace plynou do prostě jedný whatsappový konverzace včetně stavu toho odběru, jak fungujou ty plíce, jestli se akceptujou, časovýho plánu a podobně. No a ten koordinátor to všechno prostě píše, telefonuje. Je to jako dost složitej proces, jo. A takže jako kdyby se nějakým způsobem podařilo tenhleten, tuhletu věc dát do toho systému tak, aby to bylo co nejjednodušší. A zase všem to jakoby se ukazovalo těm, kterým se to ukazovat má jako nějaká aktuální nabídka orgánů a prostě to běželo takhle jako v chráněným systému a bylo to propojený zase s nějakou třeba dokumentací, nebo by se to jenom přeneslo do týhle platformy. Za mě super, 
+
+00:02:20,660 --> 00:02:21,580 [Speaker 0]
+ale prostě, 
+
+00:02:23,480 --> 00:02:49,540 [Speaker 0]
+ale prostě teď si to moc neumím představit. Takže koordinátor řeší hlavně todle. A potom vlastně čekací listina. Nevím, jestli ji musí nutně mít on k dispozici. Další problém je, že čekací listinu má vlastně i nějakej jejich sy-systém. My jsme Zlatokop, tak do těch se oni přihlašují a podle toho vlastně vybírají ty kandidáty na čekací listině. A to dělá chirurg, to nedělá koordinátor, jo. Takže, 
+
+00:02:50,620 --> 00:03:07,840 [Speaker 0]
+a k tomu má ale ještě přístup transplantační pneumolog. Ten zase hodnotí, jak je ten pacient imunologicky komplikovanej a jestli se prostě, jestli to je kompatibilní ty orgány a tak dále. Takže myslím si, že transplantační koordinátor čekací listinu až tak jako úplně nepotřebuje. Ty nabídky tam jsou v pohodě. 
+
+00:03:09,080 --> 00:03:13,860 [Speaker 0]
+Plánovaný výkony, tohle, nic z toho vlastně není úplně plánovaný. Respektive kdyby tam bylo třeba, 
+
+00:03:16,120 --> 00:03:34,040 [Speaker 0]
+to by se muselo nějak vymyslet, ten systém, jako že právě běží nabídka pro tohohle pacienta časově takhle, ono se to jako dost často i mění každou hodinu a tak. Takže je otázka, jestli to tam jako vlastně spíš nezkomplikujeme a jestli ten transplantační koordinátor v týdle, v tomhle momentu má jako 
+
+00:03:36,040 --> 00:03:46,160 [Speaker 0]
+význam tam dávat. Já si myslím, že tohle je nejmíň definovaná role pro ten náš systém, protože to je prostě nejvíc komplikovaná věc. Ale on není ten, který vybírá pacienty 
+
+00:03:48,180 --> 00:04:09,080 [Speaker 0]
+a tak. Takže, takže vlastně myslím si, že ty to tam máš namodelovaný právě jako, jako někoho, kdo ty pacienty vlastně vybírá z toho waiting listu, hodnotí jejich urgenci a podobně, tak to koordinátor nedělá, ten prostě koordinuje ty dárce a celou tu konverzaci, komunikaci se všema pracovištima, aby to prostě proběhlo logisticky, jezdí pro ty orgány a tak dále. 
+
+00:04:10,280 --> 00:04:25,360 [Speaker 0]
+Úkoly tam nějaký prostě super, ale prostě tam si myslím, že by to chtělo jako hodně změnit, zjednodušit. Teď ti ale konkrétně nejsem schopná říct jak. Ale transplantačního koordinátora bych tam nechala. Dala bych tam nějakou třeba nabídky orgánů, stav těch nabídek, 
+
+00:04:27,300 --> 00:04:38,220 [Speaker 0]
+nějaké informace třeba o dárci, časovej plán, navrhovanej příjemce, třeba od chirurga a nějaká prostě nějaký vlákno konverzace s dalšíma lidma. No takže to je koordinátor.

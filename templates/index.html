@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="cs">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LTxLink</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+</head>
+<body>
+  <div class="login-screen" id="loginScreen">
+    <div class="login-screen-bg" aria-hidden="true"></div>
+    <form class="login-card" id="loginForm" autocomplete="on">
+      <img
+        class="login-logo"
+        src="{{ url_for('static', filename='img/ltxlink-logo.png') }}"
+        alt="LTxLink"
+        width="220"
+        height="auto"
+      >
+      <p class="login-tagline">Propojení cesty k transplantaci plic</p>
+      <div class="login-field">
+        <label for="loginEmail">E-mail</label>
+        <input type="email" id="loginEmail" name="email" placeholder="vas@email.cz" autocomplete="username">
+      </div>
+      <div class="login-field">
+        <label for="loginPassword">Heslo</label>
+        <input type="password" id="loginPassword" name="password" placeholder="••••••••" autocomplete="current-password">
+      </div>
+      <button class="login-submit" type="submit">Přihlásit se</button>
+    </form>
+  </div>
+
+  <div class="app-shell" id="appShell" hidden>
+    <aside class="app-sidebar" id="appSidebar" aria-label="Hlavní navigace"></aside>
+    <div class="app-main-wrap">
+    <main class="main">
+      <div class="topbar">
+        <div class="topbar-left">
+          <div class="brand brand--header">
+            <img
+              class="brand-logo"
+              src="{{ url_for('static', filename='img/ltxlink-logo.png') }}"
+              alt="LTxLink"
+              width="148"
+              height="auto"
+            >
+          </div>
+          <div class="topbar-headings page-identity">
+            <img
+              class="page-identity-photo"
+              id="viewUserPhoto"
+              src="{{ url_for('static', filename='img/avatars/u-coord.jpg') }}"
+              alt=""
+              title="Dvojklik pro demo výběr role"
+            >
+            <div class="page-identity-body">
+              <h2 id="viewTitle"></h2>
+              <div class="page-identity-details">
+                <span class="page-identity-detail page-identity-detail-role" id="viewRole"></span>
+                <span class="page-identity-detail" id="viewWorkplace"></span>
+                <span class="page-identity-detail" id="viewPhone"></span>
+                <span class="page-identity-detail" id="viewEmail"></span>
+                <span class="page-identity-notes-wrap" id="personalNotesWrap" hidden>
+                  <button
+                    type="button"
+                    class="page-identity-notes-btn"
+                    id="openPersonalNotesBtn"
+                    title="eNotes - osobní poznámky"
+                    aria-label="Otevřít eNotes"
+                  >
+                    <svg class="page-identity-notes-btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <path d="M8 3h8l3 3v15H8z"></path>
+                      <path d="M16 3v4h4"></path>
+                      <path d="M9 11h6M9 15h4"></path>
+                    </svg>
+                    eNotes
+                  </button>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="metric-row" id="metrics"></div>
+      <section id="content"></section>
+    </main>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="overrideModal" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="overrideTitle">
+      <h3 id="overrideTitle">Měkká brána: chybějící podpis</h3>
+      <p>Systém upozorní na chybějící administrativní podklad, ale oprávněná role může krok provést přes override. Důvod se zapíše do auditu.</p>
+      <div class="field">
+        <label for="overrideReason">Odůvodnění override</label>
+        <textarea id="overrideReason">Indikační tým rozhodl o zařazení, podpis bude doplněn při nejbližší kontrole pacienta.</textarea>
+      </div>
+      <div class="item-actions" style="margin-top: 16px;">
+        <button class="btn secondary" type="button" data-close-modal>Zrušit</button>
+        <button class="btn" type="button" id="confirmOverride">Provést override</button>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="modal-backdrop" id="ambReferralSentModal" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="ambReferralSentTitle">
+      <h3 id="ambReferralSentTitle">Odeslání bylo vytvořeno</h3>
+      <p id="ambReferralSentSummary">Pacient byl odeslán do transplantního centra FN Motol.</p>
+      <p style="margin-top: 12px; color: var(--muted); font-size: 13px;">Co se bude dít dál:</p>
+      <ol class="referral-sent-steps">
+        <li>
+          <strong>Odesílací záznam</strong>
+          <span>Systém vytvoří záznam a přiloží dokumenty k žádosti.</span>
+        </li>
+        <li>
+          <strong>Fronta centra</strong>
+          <span>Koordinátor přijme odeslání a naplánuje vyšetření v FN Motol.</span>
+        </li>
+        <li>
+          <strong>Sledování stavu</strong>
+          <span>Budete sledovat průběh pacienta, výrok týmu a sdílená data z centra.</span>
+        </li>
+      </ol>
+      <div class="item-actions" style="margin-top: 18px;">
+        <button class="btn" type="button" data-close-amb-referral-sent>Rozumím</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="coordinatorExamModal" aria-hidden="true">
+    <div class="modal exam-modal-panel" role="dialog" aria-modal="true" aria-labelledby="examModalTitle">
+      <h3 id="examModalTitle">Dokončit vyšetření</h3>
+      <p id="examModalMeta"></p>
+      <p id="coordExamCompleteHint" class="exam-complete-hint"></p>
+      <input type="hidden" id="coordExamCompleteId" value="">
+      <div class="field" style="margin-top:12px;">
+        <label for="coordExamCompleteNote">Závěr / poznámka k vyšetření</label>
+        <textarea id="coordExamCompleteNote" rows="4" placeholder="Shrnutí pro pacienta a tým…"></textarea>
+      </div>
+      <div class="field" style="margin-top:12px;">
+        <label>Příloha (volitelně)</label>
+        <div class="file-upload">
+          <ul class="file-upload-list" id="coordExamCompleteAttachList" role="list"></ul>
+          <div class="file-upload-actions">
+            <button type="button" class="file-upload-add" id="coordExamCompletePickFiles" data-attach-pick="coordExamCompleteFileInput">
+              <span class="file-upload-add-icon" aria-hidden="true">+</span>
+              Přidat soubor
+            </button>
+            <span class="file-upload-hint">PDF, Word, JPEG nebo PNG</span>
+            <input
+              type="file"
+              class="file-upload-input"
+              id="coordExamCompleteFileInput"
+              data-attach-list="coordExamCompleteAttachList"
+              multiple
+              accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.webp"
+            >
+          </div>
+        </div>
+      </div>
+      <div class="item-actions exam-modal-actions">
+        <button class="btn secondary" type="button" data-close-coordinator-exams>Zrušit</button>
+        <button class="btn" type="button" id="coordExamComplete">Uložit výstup</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop exam-complete-done-backdrop" id="examCompleteDoneModal" aria-hidden="true">
+    <div class="modal exam-complete-done-panel" role="dialog" aria-modal="true" aria-labelledby="examCompleteDoneTitle">
+      <h3 id="examCompleteDoneTitle">Vyšetření dokončeno</h3>
+      <p id="examCompleteDoneSummary"></p>
+      <div class="item-actions" style="margin-top: 18px;">
+        <button class="btn" type="button" data-close-exam-complete-done>Rozumím</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="patientEditModal" aria-hidden="true">
+    <div class="modal flow-state-modal-panel patient-edit-modal-panel" role="dialog" aria-modal="true" aria-labelledby="patientEditModalTitle">
+      <div id="patientEditModalBody"></div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="adminUserModal" aria-hidden="true">
+    <div class="modal flow-state-modal-panel admin-sidebar-modal-panel" role="dialog" aria-modal="true" aria-labelledby="adminUserModalTitle">
+      <div id="adminUserModalBody"></div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="adminMaterialModal" aria-hidden="true">
+    <div class="modal flow-state-modal-panel admin-sidebar-modal-panel" role="dialog" aria-modal="true" aria-labelledby="adminMaterialModalTitle">
+      <div id="adminMaterialModalBody"></div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="adminHandbookModal" aria-hidden="true">
+    <div class="modal flow-state-modal-panel admin-sidebar-modal-panel" role="dialog" aria-modal="true" aria-labelledby="adminHandbookModalTitle">
+      <div id="adminHandbookModalBody"></div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="coordinatorFlowStateModal" aria-hidden="true">
+    <div class="modal flow-state-modal-panel" role="dialog" aria-modal="true" aria-labelledby="coordinatorFlowStateTitle">
+      <h3 id="coordinatorFlowStateTitle">Uzavřít fázi</h3>
+      <p id="coordinatorFlowStateMeta">Potvrzení uzavření fáze a odeslání výstupu pneumologovi.</p>
+      <div class="field" style="margin-top:14px;">
+        <label for="coordFlowNextState">Další stav cesty</label>
+        <select id="coordFlowNextState"></select>
+      </div>
+      <div id="coordFlowPortalActivation" class="flow-portal-activation-wrap" hidden></div>
+      <div id="coordFlowClosureSummary" class="flow-closure-summary-wrap"></div>
+      <div class="field" id="coordFlowTxDateField" style="margin-top:12px;display:none;">
+        <label for="coordFlowTxDate">Datum transplantace</label>
+        <input id="coordFlowTxDate">
+      </div>
+      <div class="field" style="margin-top:12px;">
+        <label for="coordFlowNote">Výrok týmu / poznámka k uzavření</label>
+        <textarea id="coordFlowNote"></textarea>
+      </div>
+      <div class="item-actions" style="margin-top:18px;">
+        <button class="btn secondary" type="button" data-close-coordinator-flow-state>Zrušit</button>
+        <button class="btn" type="button" id="coordFlowApplyState">Potvrdit uzavření a odeslat</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="phaseEvidenceModal" aria-hidden="true">
+    <div class="modal flow-state-modal-panel" role="dialog" aria-modal="true" aria-labelledby="phaseEvidenceTitle">
+      <h3 id="phaseEvidenceTitle">Přidat podklad ke kroku</h3>
+      <p id="phaseEvidenceMeta"></p>
+      <div class="field" style="margin-top:12px;">
+        <label>Typ podkladu</label>
+        <label class="exam-checkbox-row">
+          <input type="radio" name="phaseEvidenceRole" id="phaseEvidenceRoleSupporting" value="supporting" checked>
+          <span>Interní podklad (vidí jen tým centra)</span>
+        </label>
+        <label class="exam-checkbox-row">
+          <input type="radio" name="phaseEvidenceRole" id="phaseEvidenceRoleOutbound" value="outbound_message">
+          <span>Zpráva pro odesílatele (odejde pneumologovi při uzavření fáze)</span>
+        </label>
+      </div>
+      <div class="field" style="margin-top:12px;">
+        <label for="phaseEvidenceNote">Poznámka k vložení</label>
+        <textarea id="phaseEvidenceNote" rows="3" placeholder="Krátce popište, co vkládáte a proč…"></textarea>
+      </div>
+      <div class="field" style="margin-top:12px;">
+        <label>Soubory</label>
+        <div class="file-upload">
+          <ul class="file-upload-list" id="phaseEvidenceAttachList" role="list"></ul>
+          <div class="file-upload-actions">
+            <button type="button" class="file-upload-add" id="phaseEvidencePickFiles" data-attach-pick="phaseEvidenceFileInput">
+              <span class="file-upload-add-icon" aria-hidden="true">+</span>
+              Přidat soubor
+            </button>
+            <span class="file-upload-hint">Podklad se připojí k právě běžící fázi</span>
+            <input
+              type="file"
+              class="file-upload-input"
+              id="phaseEvidenceFileInput"
+              data-attach-list="phaseEvidenceAttachList"
+              multiple
+              accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.webp"
+            >
+          </div>
+        </div>
+      </div>
+      <div class="item-actions" style="margin-top:18px;">
+        <button class="btn secondary" type="button" data-close-phase-evidence>Zrušit</button>
+        <button class="btn" type="button" id="phaseEvidenceSubmit">Uložit vložení</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="organOfferModal" aria-hidden="true">
+    <div class="modal flow-state-modal-panel organ-offer-modal-panel" role="dialog" aria-modal="true" aria-labelledby="organOfferModalTitle">
+      <div id="organOfferModalBody"></div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="dailyRecordsAiModal" aria-hidden="true">
+    <div class="modal ai-insights-panel" role="dialog" aria-modal="true" aria-labelledby="dailyRecordsAiTitle">
+      <div id="dailyRecordsAiContent"></div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="demoRoleModal" aria-hidden="true">
+    <div class="modal demo-role-modal" role="dialog" aria-modal="true" aria-labelledby="demoRoleTitle">
+      <div class="demo-role-modal-head">
+        <h3 id="demoRoleTitle">Demo výběr role</h3>
+      </div>
+      <div class="user-menu-list" id="userMenuList" data-modal-scroll></div>
+      <div class="item-actions demo-role-modal-actions">
+        <button class="btn secondary" type="button" data-close-demo-role>Zavřít</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="personalNotesModal" aria-hidden="true">
+    <div class="modal personal-notes-modal" role="dialog" aria-modal="true" aria-labelledby="personalNotesTitle">
+      <div class="personal-notes-modal-head">
+        <h3 id="personalNotesTitle">eNotes</h3>
+        <p id="personalNotesSub">Jen pro vás - rychlý blok důležitých postřehů k práci v LTxLink.</p>
+      </div>
+      <div class="field">
+        <label for="personalNotesInput" class="sr-only">Text poznámek</label>
+        <textarea
+          id="personalNotesInput"
+          rows="11"
+          placeholder="Co si chcete zapamatovat k pacientům, úkolům nebo rozhodnutím…"
+        ></textarea>
+      </div>
+      <div class="item-actions personal-notes-modal-actions">
+        <button class="btn secondary" type="button" data-close-personal-notes>Zavřít</button>
+        <button class="btn" type="button" id="savePersonalNotes">Uložit</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status"></div>
+  <div class="sidebar-panel-wrap" id="trendsSidebar" aria-hidden="true">
+    <div class="sidebar-panel-overlay" data-close-trends></div>
+    <div class="sidebar-panel" id="trendsSidebarContainer"></div>
+  </div>
+
+  <div id="referralChatSidebarContainer"></div>
+  <div id="organOfferChatSidebarContainer"></div>
+
+  <script src="{{ url_for('static', filename='js/protocol-handbooks.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
