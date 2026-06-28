@@ -2732,9 +2732,14 @@
         surgeon: "Transplantační chirurg",
         intensivist: "Intenzivist",
         psychologist: "Psycholog",
-        rehab: "Rehabilitace"
+        rehab: "Rehabilitace",
+        automation: "Automatické upozornění"
       };
       return labels[roleId] || "Člen týmu";
+    }
+
+    function isInternalChatSystemMessage(message) {
+      return message?.kind === "system" || message?.authorId === "ltxlink-bot";
     }
 
     function getInternalChatAuthorRole(message) {
@@ -2744,13 +2749,16 @@
     }
 
     function renderInternalChatMessage(message) {
-      const isOwn = message.authorId === demoState.userId;
+      const isSystem = isInternalChatSystemMessage(message);
+      const isOwn = !isSystem && message.authorId === demoState.userId;
       const authorUser = demoUsers.find((item) => item.id === message.authorId);
-      const avatarUrl = authorUser ? getUserAvatarUrl(authorUser) : "/static/img/avatars/default.jpg";
+      const avatarMarkup = isSystem
+        ? `<div class="internal-chat-message-avatar internal-chat-message-avatar--bot" aria-hidden="true">${renderMonoIcon("sparkle", "mono-icon")}</div>`
+        : `<img class="internal-chat-message-avatar" src="${authorUser ? getUserAvatarUrl(authorUser) : "/static/img/avatars/default.jpg"}" alt="">`;
 
       return `
-        <article class="internal-chat-message ${isOwn ? "own" : ""}">
-          <img class="internal-chat-message-avatar" src="${avatarUrl}" alt="">
+        <article class="internal-chat-message${isOwn ? " own" : ""}${isSystem ? " system" : ""}">
+          ${avatarMarkup}
           <div class="internal-chat-message-content">
             <div class="internal-chat-message-meta">
               <span class="internal-chat-message-author">${escapeHtml(message.author)}</span>

@@ -498,6 +498,19 @@
             "size": "210 kB",
             "date": "20. 6. 2026"
           }
+        },
+        {
+          "id": "p2-ic-3",
+          "authorId": "ltxlink-bot",
+          "author": "Robot LTxLink",
+          "authorRole": "automation",
+          "kind": "system",
+          "createdAt": "26. 6. 2026 09:15",
+          "body": "Automatická detekce zhoršení parametrů domácího sledování:\n• FEV1 kleslo z 1,25 l na 1,12 l (−10,4 % za 4 dny)\n• SpO₂ klesla z 97 % na 94 %\n• Pacient nahlásil dušnost a kašel\n\n@Bc. Petra Mertová @MUDr. Jana Vavrová - doporučena kontrola transplantního týmu.",
+          "taggedUserIds": [
+            "u-coord",
+            "u-tx"
+          ]
         }
       ],
       "exams": [

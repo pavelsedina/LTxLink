@@ -4731,6 +4731,34 @@
       color: #dbeafe;
     }
 
+    .internal-chat-message.system .internal-chat-message-author {
+      color: #0d4774;
+    }
+
+    .internal-chat-message-avatar--bot {
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, #0d4774 0%, #2ab8a8 100%);
+      color: #fff;
+      border: none;
+    }
+
+    .internal-chat-message-avatar--bot .mono-icon {
+      width: 18px;
+      height: 18px;
+    }
+
+    .internal-chat-message.system .internal-chat-message-bubble {
+      max-width: min(100%, 680px);
+      background: linear-gradient(180deg, #f0f9ff 0%, #ecfdf5 100%);
+      border: 1px solid color-mix(in srgb, #2ab8a8 35%, var(--line));
+      box-shadow: 0 4px 14px rgba(18, 99, 163, 0.08);
+    }
+
+    .internal-chat-message.system .internal-chat-message-bubble p {
+      color: #1e3a5f;
+    }
+
     .internal-chat-empty {
       margin: 0;
       padding: 12px 0;
