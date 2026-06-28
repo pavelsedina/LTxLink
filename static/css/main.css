@@ -5369,6 +5369,8 @@
 
     .modal-backdrop.open {
       display: flex !important;
+      justify-content: center;
+      align-items: center;
       overscroll-behavior: contain;
     }
 
