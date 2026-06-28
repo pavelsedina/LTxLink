@@ -2733,13 +2733,18 @@
         intensivist: "Intenzivist",
         psychologist: "Psycholog",
         rehab: "Rehabilitace",
-        automation: "Automatické upozornění"
+        automation: "Automatické upozornění",
+        patient: "Pacient"
       };
       return labels[roleId] || "Člen týmu";
     }
 
     function isInternalChatSystemMessage(message) {
       return message?.kind === "system" || message?.authorId === "ltxlink-bot";
+    }
+
+    function isInternalChatPatientNote(message) {
+      return message?.kind === "patient_note" || message?.source === "daily_record";
     }
 
     function getInternalChatAuthorRole(message) {
@@ -2750,14 +2755,15 @@
 
     function renderInternalChatMessage(message) {
       const isSystem = isInternalChatSystemMessage(message);
-      const isOwn = !isSystem && message.authorId === demoState.userId;
+      const isPatientNote = isInternalChatPatientNote(message);
+      const isOwn = !isSystem && !isPatientNote && message.authorId === demoState.userId;
       const authorUser = demoUsers.find((item) => item.id === message.authorId);
       const avatarMarkup = isSystem
         ? `<div class="internal-chat-message-avatar internal-chat-message-avatar--bot" aria-hidden="true">${renderMonoIcon("sparkle", "mono-icon")}</div>`
         : `<img class="internal-chat-message-avatar" src="${authorUser ? getUserAvatarUrl(authorUser) : "/static/img/avatars/default.jpg"}" alt="">`;
 
       return `
-        <article class="internal-chat-message${isOwn ? " own" : ""}${isSystem ? " system" : ""}">
+        <article class="internal-chat-message${isOwn ? " own" : ""}${isSystem ? " system" : ""}${isPatientNote ? " patient-note" : ""}">
           ${avatarMarkup}
           <div class="internal-chat-message-content">
             <div class="internal-chat-message-meta">
@@ -3505,6 +3511,17 @@
               </div>
             </fieldset>
 
+            <fieldset class="daily-record-fieldset">
+              <div class="field daily-record-note-field">
+                <label for="dailyRecordNote">Doplňující informace k dnešním hodnotám</label>
+                <textarea
+                  id="dailyRecordNote"
+                  rows="3"
+                  placeholder="Např. zhoršení dušnosti, otázka na medikaci nebo žádost o kontakt…"
+                ></textarea>
+              </div>
+            </fieldset>
+
             <div class="daily-record-footer">
               <aside class="daily-record-info">
                 <span class="daily-record-info-icon" aria-hidden="true">${renderMonoIcon("info")}</span>
@@ -4018,6 +4035,35 @@
       syncPageScrollLock();
     }
 
+    function getPatientPortalUserForPatient(patient) {
+      return window.LtxAdmin?.getPatientPortalUser?.(patient)
+        || demoUsers.find((user) => user.patientId === patient?.id && user.roleId === "patient");
+    }
+
+    function pushDailyRecordNoteToInternalChat(patient, { note, now, measurementId }) {
+      const trimmed = String(note || "").trim();
+      if (!trimmed || !patient) return;
+
+      const portalUser = getPatientPortalUserForPatient(patient);
+      if (!patient.internalChat) patient.internalChat = [];
+
+      patient.internalChat.push({
+        id: `${patient.id}-ic-daily-note-${measurementId || Date.now()}`,
+        authorId: portalUser?.id || `patient-${patient.id}`,
+        author: patient.name,
+        authorRole: "patient",
+        kind: "patient_note",
+        createdAt: now,
+        body: `Poznámka k domácímu záznamu:\n${trimmed}`,
+        measurementId: measurementId || null,
+        source: "daily_record"
+      });
+
+      demoState.audit.unshift(
+        `${now} - Pacient ${patient.name} přidal poznámku k domácímu záznamu (interní chat týmu).`
+      );
+    }
+
     function submitPatientDailyRecord(patientId) {
       const patient = patients.find((item) => item.id === patientId);
       if (!patient || !canPatientSubmitDailyRecord(patient)) return;
@@ -4041,18 +4087,20 @@
         : null;
       const mood = document.querySelector('input[name="dailyRecordMood"]:checked')?.value || null;
       const symptoms = Array.from(document.querySelectorAll("[data-daily-symptom]:checked")).map((item) => item.value);
+      const note = document.getElementById("dailyRecordNote")?.value.trim() || "";
 
-      if (fev1 == null && fvc == null && weight == null && bpSystolic == null && temp == null && spo2 == null && !symptoms.length) {
-        showToast("Vyplňte alespoň jeden parametr nebo označte příznak.");
+      if (fev1 == null && fvc == null && weight == null && bpSystolic == null && temp == null && spo2 == null && !symptoms.length && !note) {
+        showToast("Vyplňte alespoň jeden parametr, označte příznak nebo doplňte poznámku.");
         return;
       }
 
       const now = formatDemoTimestamp();
       const dateShort = now.split(/\s+/).slice(0, 2).join(" ");
       if (!patient.measurements) patient.measurements = [];
+      const measurementId = `${patient.id}-rec-${Date.now()}`;
 
       patient.measurements.push({
-        id: `${patient.id}-rec-${Date.now()}`,
+        id: measurementId,
         recordedAt: now,
         date: dateShort,
         source: "patient",
@@ -4066,8 +4114,13 @@
         mood,
         medicationTaken,
         symptoms,
+        note: note || null,
         phase: patient.state
       });
+
+      if (note) {
+        pushDailyRecordNoteToInternalChat(patient, { note, now, measurementId });
+      }
 
       touchPatientUpdated(patient, now);
 
@@ -4095,9 +4148,9 @@
         });
       }
 
-      demoState.audit.unshift(`${now} - Pacient ${patient.name} odeslal domácí záznam parametrů.`);
+      demoState.audit.unshift(`${now} - Pacient ${patient.name} odeslal domácí záznam parametrů.${note ? " Včetně poznámky pro tým." : ""}`);
       render();
-      showToast("Dnešní záznam byl odeslán týmu.");
+      showToast(note ? "Dnešní záznam včetně poznámky pro tým byl odeslán." : "Dnešní záznam byl odeslán týmu.");
     }
 
     function canShowPatientMedications(patient) {

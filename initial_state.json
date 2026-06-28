@@ -511,6 +511,17 @@
             "u-coord",
             "u-tx"
           ]
+        },
+        {
+          "id": "p2-ic-4",
+          "authorId": "u-patient-wl",
+          "author": "Milan Král",
+          "authorRole": "patient",
+          "kind": "patient_note",
+          "createdAt": "24. 6. 2026 19:05",
+          "body": "Poznámka k domácímu záznamu:\nOd včerejška cítím větší dušnost i v klidu. Inhalace pomáhají jen částečně, prosím o radu, zda nemám přijet dříve na kontrolu.",
+          "measurementId": "p2-rec-1",
+          "source": "daily_record"
         }
       ],
       "exams": [
@@ -630,6 +641,7 @@
           "spo2": 94,
           "mood": "2",
           "symptoms": ["dusnost"],
+          "note": "Od včerejška cítím větší dušnost i v klidu. Inhalace pomáhají jen částečně, prosím o radu, zda nemám přijet dříve na kontrolu.",
           "phase": "WL"
         }
       ],
