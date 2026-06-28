@@ -28,7 +28,7 @@ def index():
 
 def app_config() -> dict:
     return {
-        "googleMapsApiKey": os.environ.get("GOOGLE_MAPS_API_KEY", "").strip() or "AIzaSyCXh4ixEP3TiTQipNI5KzAZn10-B2lrN44",
+        "googleMapsApiKey": os.environ.get("GOOGLE_MAPS_API_KEY", "").strip() or "DEMO_API_KEY",
         "googleMapsMapId": os.environ.get("GOOGLE_MAPS_MAP_ID", "").strip() or "DEMO_MAP_ID"
     }
 
