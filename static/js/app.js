@@ -3489,7 +3489,7 @@
                   </div>
                 </label>
                 <label class="mood-option">
-                  <input type="radio" name="dailyRecordMood" value="3" checked>
+                  <input type="radio" name="dailyRecordMood" value="3">
                   <div class="mood-option-box">
                     <span class="mood-emoji">😐</span>
                     <span class="mood-label">jde to</span>
@@ -4635,7 +4635,7 @@
         </div>
         ${canChat ? `
           <div class="referral-chat-compose">
-            <textarea id="referralChatInput" rows="2" placeholder="Doplňte informace k žádosti… použijte @ pro označení ambulantního pneumologa"></textarea>
+            <textarea id="referralChatInput" rows="3" placeholder="Doplňte informace k žádosti… použijte @ pro označení ambulantního pneumologa"></textarea>
             <button class="btn btn-compact" type="button" data-send-referral-chat="${patient.id}">Odeslat</button>
           </div>
         ` : ""}
@@ -6994,12 +6994,13 @@
     }
 
     function getOrganOfferChatParticipants(offer) {
-      const staff = getInternalStaffUsers();
-      const authors = new Set((offer.thread || []).map((m) => m.authorId));
-      const baseIds = ["u-coord", "u-tx"];
-      const participantIds = new Set([...baseIds, ...authors]);
-      return [...participantIds]
-        .map((id) => demoUsers.find((u) => u.id === id))
+      const ids = new Set();
+      (offer.thread || []).forEach((message) => {
+        if (message.authorId) ids.add(message.authorId);
+        (message.taggedUserIds || []).forEach((userId) => ids.add(userId));
+      });
+      return [...ids]
+        .map((id) => demoUsers.find((user) => user.id === id))
         .filter(Boolean);
     }
 
@@ -7043,6 +7044,7 @@
         : `${participants.length} účastníci`;
 
       return `
+        ${participants.length ? `
         <div class="internal-chat-participants" style="padding: 12px 24px; border-bottom: 1px solid var(--line);">
           <span class="internal-chat-participants-label">
             ${renderMonoIcon("participants", "mono-icon internal-chat-participants-icon")}
@@ -7058,6 +7060,7 @@
             `).join("")}
           </div>
         </div>
+        ` : ""}
         <div class="internal-chat-feed" id="organOfferChatFeedSidebar" style="padding: 20px 24px;">
           ${(offer.thread || []).length ? renderOrganOfferChatFeedItems(offer) : `
             <p class="referral-chat-empty">Zatím bez zpráv k nabídce.</p>
@@ -7113,6 +7116,7 @@
 
       const now = formatDemoTimestamp();
       if (!offer.thread) offer.thread = [];
+      const taggedUserIds = extractTaggedUserIdsFromMessage(message);
 
       offer.thread.push({
         id: `msg-${Date.now()}`,
@@ -7120,7 +7124,8 @@
         author: user.name,
         authorRole: user.roleId,
         body: message,
-        createdAt: now
+        createdAt: now,
+        taggedUserIds
       });
 
       demoState.audit.unshift(`${now} - ${user.name} poslal zprávu k nabídce ${offer.code}.`);
@@ -10633,6 +10638,8 @@
     });
 
     document.getElementById("viewUserPhoto")?.addEventListener("dblclick", (event) => {
+      event.preventDefault();
+      event.currentTarget.blur();
       openDemoRoleModal(event.clientX, event.clientY);
       renderShell();
       requestAnimationFrame(() => positionDemoRoleModal());

@@ -765,10 +765,22 @@
       border: 3px solid color-mix(in srgb, var(--primary) 18%, var(--line));
       box-shadow: 0 10px 28px rgba(21, 39, 62, 0.12);
       cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      outline: none;
+      user-select: none;
+      -webkit-user-select: none;
     }
 
     .page-identity-photo:hover {
       border-color: color-mix(in srgb, var(--primary) 32%, var(--line));
+    }
+
+    .page-identity-photo:focus,
+    .page-identity-photo:focus-visible,
+    .page-identity-photo:active {
+      outline: none;
+      border-color: color-mix(in srgb, var(--primary) 18%, var(--line));
+      box-shadow: 0 10px 28px rgba(21, 39, 62, 0.12);
     }
 
     .page-identity-notes-wrap {
@@ -4312,11 +4324,12 @@
       align-items: flex-end;
       border-top: 1px solid var(--border);
       padding-top: 10px;
+      flex-shrink: 0;
     }
 
     .referral-chat-compose textarea {
       flex: 1;
-      min-height: 44px;
+      min-height: 72px;
       resize: vertical;
     }
 
@@ -8991,6 +9004,7 @@
       color: var(--muted);
       background: var(--bg);
       border-bottom: 1px solid var(--line);
+      flex-shrink: 0;
     }
 
     .referral-chat-sidebar-body .referral-chat-feed,
@@ -9005,6 +9019,11 @@
       padding: 20px 24px;
       background: #fff;
       border-top: 1px solid var(--line);
+      flex-shrink: 0;
+    }
+
+    .organ-offer-chat-sidebar-body .internal-chat-composer {
+      flex-shrink: 0;
     }
 
     @keyframes slideInRight {
@@ -9907,5 +9926,93 @@
     @media (max-width: 480px) {
       .mood-selection {
         grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    /*
+     * Mobil: safe-area pro popupy / drawery + chat compose
+     */
+    @media (max-width: 900px) {
+      .modal-backdrop.open {
+        padding:
+          max(12px, env(safe-area-inset-top, 0px))
+          max(12px, env(safe-area-inset-right, 0px))
+          max(12px, env(safe-area-inset-bottom, 0px))
+          max(12px, env(safe-area-inset-left, 0px));
+      }
+
+      #coordinatorExamModal.open,
+      #coordinatorFlowStateModal.open,
+      #flowDocumentEditModal.open,
+      #adminUserModal.open,
+      #adminMaterialModal.open,
+      #adminHandbookModal.open,
+      #patientEditModal.open,
+      #organOfferModal.open,
+      #dailyRecordsAiModal.open {
+        padding-bottom: env(safe-area-inset-bottom, 0px) !important;
+      }
+
+      #organOfferModal .modal,
+      #patientEditModal .modal,
+      #adminUserModal .modal,
+      #adminMaterialModal .modal,
+      #adminHandbookModal .modal,
+      #dailyRecordsAiModal .ai-insights-panel {
+        height: 100dvh !important;
+        max-height: 100dvh !important;
+      }
+
+      .patient-edit-footer,
+      .flow-state-form-actions,
+      .exam-modal-actions,
+      .demo-role-modal-actions,
+      .personal-notes-modal-actions,
+      .sidebar-panel-footer,
+      .ai-insights-drawer .patient-edit-footer,
+      .patient-edit-footer.ai-insights-footer {
+        padding-bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+      }
+
+      #demoRoleModal .demo-role-modal,
+      .personal-notes-modal {
+        max-height: min(
+          calc(100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px) - 24px),
+          640px
+        );
+      }
+
+      .referral-chat-sidebar,
+      .organ-offer-chat-sidebar {
+        width: 100%;
+        max-width: 100%;
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+      }
+
+      .referral-chat-sidebar-body .referral-chat-compose,
+      .organ-offer-chat-sidebar-body .internal-chat-composer {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+        padding: 16px 16px calc(16px + env(safe-area-inset-bottom, 0px));
+      }
+
+      .referral-chat-compose textarea,
+      .organ-offer-chat-sidebar-body .internal-chat-composer textarea {
+        min-height: 96px;
+        width: 100%;
+      }
+
+      .referral-chat-compose .btn,
+      .organ-offer-chat-sidebar-body .internal-chat-composer .btn {
+        align-self: flex-end;
+      }
+
+      .internal-chat-composer {
+        margin-bottom: calc(24px + env(safe-area-inset-bottom, 0px));
+      }
+
+      .modal-backdrop.open > .modal .item-actions {
+        padding-bottom: env(safe-area-inset-bottom, 0px);
       }
     }
