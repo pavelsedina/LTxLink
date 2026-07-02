@@ -864,7 +864,7 @@
               ${staffUsers.length
                 ? staffUsers.map((user) => `
                   <tr class="${user.active === false ? "is-inactive" : ""}">
-                    <td><strong>${escapeAdminHtml(user.name)}</strong><br><span class="admin-table-meta">${escapeAdminHtml(user.email)}</span></td>
+                    <td><div class="admin-table-primary-cell"><strong>${escapeAdminHtml(user.name)}</strong><span class="admin-table-meta">${escapeAdminHtml(user.email)}</span></div></td>
                     <td>${escapeAdminHtml(roleName(user.roleId))}</td>
                     <td>${escapeAdminHtml(user.workplace)}</td>
                     <td>${hasAdminPermission(user) ? '<span class="pill ok">ADMIN</span>' : "-"}</td>
@@ -908,7 +908,7 @@
               ${portalUsers.length
                 ? portalUsers.map((user) => `
                   <tr class="${user.active === false ? "is-inactive" : ""}">
-                    <td><strong>${escapeAdminHtml(user.name)}</strong><br><span class="admin-table-meta">${escapeAdminHtml(user.workplace)}</span></td>
+                    <td><div class="admin-table-primary-cell"><strong>${escapeAdminHtml(user.name)}</strong><span class="admin-table-meta">${escapeAdminHtml(user.workplace)}</span></div></td>
                     <td>${escapeAdminHtml(formatPatientRecordLabel(user.patientId))}</td>
                     <td>${escapeAdminHtml(user.email)}</td>
                     <td>${user.active === false ? '<span class="pill warn">Deaktivován</span>' : '<span class="pill ok">Aktivní</span>'}</td>
@@ -1135,7 +1135,7 @@
               ${items.length
                 ? items.map((item) => `
                   <tr class="${item.active === false ? "is-inactive" : ""}">
-                    <td><strong>${escapeAdminHtml(item.title)}</strong><br><span class="admin-table-meta">${escapeAdminHtml(item.category)}</span></td>
+                    <td><div class="admin-table-primary-cell"><strong>${escapeAdminHtml(item.title)}</strong><span class="admin-table-meta">${escapeAdminHtml(item.category)}</span></div></td>
                     <td>${escapeAdminHtml(item.author)}</td>
                     <td>${escapeAdminHtml(item.duration)}</td>
                     <td>${(item.attachments || []).length || "-"}</td>

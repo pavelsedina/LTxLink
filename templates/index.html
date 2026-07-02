@@ -31,28 +31,36 @@
   </div>
 
   <div class="app-shell" id="appShell" hidden>
+    <div class="mobile-nav-backdrop" id="mobileNavBackdrop" data-close-mobile-nav aria-hidden="true"></div>
     <aside class="app-sidebar" id="appSidebar" aria-label="Hlavní navigace"></aside>
     <div class="app-main-wrap">
     <main class="main">
       <div class="topbar">
         <div class="topbar-left">
-          <div class="brand brand--header">
-            <img
-              class="brand-logo"
-              src="{{ url_for('static', filename='img/ltxlink-logo.png') }}"
-              alt="LTxLink"
-              width="148"
-              height="auto"
-            >
-          </div>
+          <div class="topbar-mobile-row">
           <div class="topbar-headings page-identity">
-            <img
-              class="page-identity-photo"
-              id="viewUserPhoto"
-              src="{{ url_for('static', filename='img/avatars/u-coord.jpg') }}"
-              alt=""
-              title="Dvojklik pro demo výběr role"
-            >
+            <div class="page-identity-aside">
+              <img
+                class="page-identity-photo"
+                id="viewUserPhoto"
+                src="{{ url_for('static', filename='img/avatars/u-coord.jpg') }}"
+                alt=""
+                title="Dvojklik pro demo výběr role"
+              >
+              <button
+                type="button"
+                class="mobile-nav-toggle"
+                id="mobileNavToggle"
+                data-toggle-mobile-nav
+                aria-label="Otevřít menu"
+                aria-expanded="false"
+                aria-controls="appSidebar"
+              >
+                <svg class="mobile-nav-toggle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                  <path d="M4 7h16M4 12h16M4 17h16"></path>
+                </svg>
+              </button>
+            </div>
             <div class="page-identity-body">
               <h2 id="viewTitle"></h2>
               <div class="page-identity-details">
@@ -78,6 +86,7 @@
                 </span>
               </div>
             </div>
+          </div>
           </div>
         </div>
       </div>

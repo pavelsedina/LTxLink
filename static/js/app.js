@@ -2879,13 +2879,36 @@
       `;
     }
 
+    function scrollElementWithinContainer(container, element, { block = "center" } = {}) {
+      if (!container || !element) return;
+      const containerRect = container.getBoundingClientRect();
+      const elementRect = element.getBoundingClientRect();
+      const relativeTop = elementRect.top - containerRect.top + container.scrollTop;
+
+      if (block === "start") {
+        container.scrollTop = relativeTop;
+        return;
+      }
+      if (block === "end") {
+        container.scrollTop = relativeTop - container.clientHeight + element.offsetHeight;
+        return;
+      }
+      container.scrollTop = relativeTop - container.clientHeight / 2 + element.offsetHeight / 2;
+    }
+
+    function scrollAppContentToTop() {
+      window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    }
+
     function scrollChatFeedToUnreadOrBottom(feedId) {
       const feed = document.getElementById(feedId);
       if (!feed) return;
       const scroll = () => {
         const divider = feed.querySelector(".chat-read-divider");
         if (divider) {
-          divider.scrollIntoView({ block: "center" });
+          scrollElementWithinContainer(feed, divider, { block: "center" });
           return;
         }
         feed.scrollTop = feed.scrollHeight;
@@ -3547,6 +3570,101 @@
       return `<span class="mood-pill" style="--mood-color: ${mood.color}" title="${mood.label}">${mood.icon} ${mood.label}</span>`;
     }
 
+    function renderDailyRecordMedicationCell(row, { asPill = true } = {}) {
+      if (row.medicationTaken === false) {
+        return asPill ? '<span class="pill warn">ne</span>' : "ne";
+      }
+      if (row.medicationTaken) {
+        return asPill ? '<span class="pill ok">ano</span>' : "ano";
+      }
+      return "-";
+    }
+
+    function getDailyRecordKey(row, index) {
+      return String(row.id || `${row.recordedAt || row.date || "record"}-${index}`);
+    }
+
+    function isDailyRecordExpanded(key) {
+      return Boolean(demoState.expandedDailyRecords?.[key]);
+    }
+
+    function buildDailyRecordPreview(row) {
+      const parts = [];
+      if (row.fev1 != null) parts.push(`FEV1 ${Number(row.fev1).toFixed(2)} l`);
+      if (row.weight != null) parts.push(`${row.weight} kg`);
+      if (row.spo2 != null) parts.push(`SpO2 ${row.spo2} %`);
+      if (row.symptoms?.length) parts.push(`${row.symptoms.length} přízn.`);
+      return parts.slice(0, 3).join(" · ") || "Domácí záznam";
+    }
+
+    function renderDailyRecordField(label, valueHtml) {
+      return `
+        <div class="daily-record-field">
+          <span class="daily-record-field-label">${escapeHtml(label)}</span>
+          <span class="daily-record-field-value">${valueHtml}</span>
+        </div>
+      `;
+    }
+
+    function renderDailyRecordEntryBody(row, { showMeds = false, medicationAsPill = true } = {}) {
+      const fields = [
+        renderDailyRecordField("FEV1", row.fev1 != null ? `${Number(row.fev1).toFixed(2)} l` : "-"),
+        renderDailyRecordField("FVC", row.fvc != null ? `${Number(row.fvc).toFixed(2)} l` : "-"),
+        renderDailyRecordField("Hmotnost", row.weight != null ? `${row.weight} kg` : "-"),
+        renderDailyRecordField("TK", measurementBpLabel(row)),
+        renderDailyRecordField("Teplota", row.temp != null ? `${Number(row.temp).toFixed(1)} °C` : "-"),
+        renderDailyRecordField("SpO2", row.spo2 != null ? `${row.spo2} %` : "-"),
+        renderDailyRecordField("Nálada", renderPatientDailyMood(row.mood))
+      ];
+
+      if (showMeds) {
+        fields.push(renderDailyRecordField("Medikace", renderDailyRecordMedicationCell(row, { asPill: medicationAsPill })));
+      }
+
+      fields.push(renderDailyRecordField(
+        "Příznaky",
+        `<div class="daily-record-symptom-cell">${renderMeasurementSymptomPills(row.symptoms)}</div>`
+      ));
+
+      if (row.note) {
+        fields.push(renderDailyRecordField("Poznámka", escapeHtml(row.note)));
+      }
+
+      return `<div class="daily-record-fields">${fields.join("")}</div>`;
+    }
+
+    function renderDailyRecordsList(patient, records, { medicationAsPill = true } = {}) {
+      const showMeds = patient.state === "PO_TX";
+
+      return `
+        <div class="daily-records-list">
+          ${records.map((row, index) => {
+            const key = getDailyRecordKey(row, index);
+            const expanded = isDailyRecordExpanded(key);
+            return `
+              <article class="daily-record-entry${expanded ? " is-open" : ""}">
+                <button
+                  type="button"
+                  class="daily-record-entry-toggle"
+                  data-daily-record-toggle="${escapeHtml(key)}"
+                  aria-expanded="${expanded ? "true" : "false"}"
+                >
+                  <span class="daily-record-entry-chevron${expanded ? " is-open" : ""}" aria-hidden="true"></span>
+                  <span class="daily-record-entry-main">
+                    <strong class="daily-record-entry-date">${escapeHtml(row.recordedAt || row.date || "-")}</strong>
+                    <span class="daily-record-entry-preview">${escapeHtml(buildDailyRecordPreview(row))}</span>
+                  </span>
+                </button>
+                <div class="daily-record-entry-body${expanded ? "" : " is-collapsed"}">
+                  ${renderDailyRecordEntryBody(row, { showMeds, medicationAsPill })}
+                </div>
+              </article>
+            `;
+          }).join("")}
+        </div>
+      `;
+    }
+
     function renderTeamDailyRecordsCard(patient) {
       if (!canPatientSubmitDailyRecord(patient)) return "";
 
@@ -3587,38 +3705,7 @@
             </div>
           </div>
           ${records.length ? `
-            <table class="summary-table daily-records-table">
-              <thead>
-                <tr>
-                  <th>Datum</th>
-                  <th>FEV1</th>
-                  <th>FVC</th>
-                  <th>Hmotnost</th>
-                  <th>TK</th>
-                  <th>Teplota</th>
-                  <th>SpO2</th>
-                  <th>Nálada</th>
-                  ${patient.state === "PO_TX" ? "<th>Medikace</th>" : ""}
-                  <th>Příznaky</th>
-                </tr>
-              </thead>
-              <tbody>
-                ${pageRecords.map((row) => `
-                  <tr>
-                    <td>${row.recordedAt || row.date}</td>
-                    <td>${row.fev1 != null ? `${Number(row.fev1).toFixed(2)} l` : "-"}</td>
-                    <td>${row.fvc != null ? `${Number(row.fvc).toFixed(2)} l` : "-"}</td>
-                    <td>${row.weight != null ? `${row.weight} kg` : "-"}</td>
-                    <td>${measurementBpLabel(row)}</td>
-                    <td>${row.temp != null ? `${Number(row.temp).toFixed(1)} °C` : "-"}</td>
-                    <td>${row.spo2 != null ? `${row.spo2} %` : "-"}</td>
-                    <td>${renderPatientDailyMood(row.mood)}</td>
-                    ${patient.state === "PO_TX" ? `<td>${row.medicationTaken === false ? '<span class="pill warn">ne</span>' : row.medicationTaken ? '<span class="pill ok">ano</span>' : "-"}</td>` : ""}
-                    <td><div class="daily-record-symptom-cell">${renderMeasurementSymptomPills(row.symptoms)}</div></td>
-                  </tr>
-                `).join("")}
-              </tbody>
-            </table>
+            ${renderDailyRecordsList(patient, pageRecords)}
             ${renderDailyRecordsPagination(patient.id, records)}
           ` : '<div class="medication-empty">Zatím nebyl odeslán žádný domácí záznam.</div>'}
         </div>
@@ -5938,7 +6025,6 @@
     function renderAmbulatoryDashboard(patient) {
       const ownPatients = patientsForAmbulatory();
       const listPatients = preparePatientList(ownPatients);
-      const unreadInternalCount = ownPatients.filter((item) => getInternalChatUnreadCount(item) > 0).length;
       const unreadReferralCount = ownPatients.filter((item) => needsReferralChatReply(item)).length;
 
       if (demoState.patientDetailOpen) {
@@ -5950,7 +6036,6 @@
           <div class="card-header">
             <div>
               <h3>Moji pacienti</h3>
-              ${unreadInternalCount ? `<p class="referral-list-hint">${unreadInternalCount === 1 ? "1 pacient s nepřečtenou interní komunikací" : `${unreadInternalCount} pacienti s nepřečtenou interní komunikací`}</p>` : ""}
               ${unreadReferralCount ? `<p class="referral-list-hint">${unreadReferralCount === 1 ? "1 nová zpráva v chatu k žádosti" : `${unreadReferralCount} nové zprávy v chatu k žádosti`}</p>` : ""}
             </div>
             <button class="btn" type="button" data-amb-new-referral>Nové odeslání</button>
@@ -6724,7 +6809,6 @@
     function renderClinicalPatientsDashboard(patient, options = {}) {
       const { canEditState = false } = options;
       const listPatients = preparePatientList(patients);
-      const unreadInternalCount = patients.filter((item) => getInternalChatUnreadCount(item) > 0).length;
 
       if (demoState.patientDetailOpen) {
         return renderStaffPatientDetailPage(patient, {
@@ -6739,7 +6823,6 @@
           <div class="card-header">
             <div>
               <h3>Všichni pacienti</h3>
-              ${unreadInternalCount ? `<p class="referral-list-hint">${unreadInternalCount === 1 ? "1 pacient s nepřečtenou interní komunikací" : `${unreadInternalCount} pacientů s nepřečtenou interní komunikací`}</p>` : ""}
             </div>
           </div>
           ${renderPatientListToolbar()}
@@ -8470,40 +8553,7 @@
         <section class="card patient-portal-section">
           <h2 class="patient-portal-page-title">Historie záznamů</h2>
           <p class="patient-portal-page-sub">Přehled dříve odeslaných domácích měření a příznaků.</p>
-          ${records.length ? `
-            <table class="summary-table daily-records-table">
-              <thead>
-                <tr>
-                  <th>Datum</th>
-                  <th>FEV1</th>
-                  <th>FVC</th>
-                  <th>Hmotnost</th>
-                  <th>TK</th>
-                  <th>Teplota</th>
-                  <th>SpO2</th>
-                  <th>Nálada</th>
-                  ${patient.state === "PO_TX" ? "<th>Medikace</th>" : ""}
-                  <th>Příznaky</th>
-                </tr>
-              </thead>
-              <tbody>
-                ${records.map((row) => `
-                  <tr>
-                    <td>${row.recordedAt || row.date}</td>
-                    <td>${row.fev1 != null ? `${Number(row.fev1).toFixed(2)} l` : "-"}</td>
-                    <td>${row.fvc != null ? `${Number(row.fvc).toFixed(2)} l` : "-"}</td>
-                    <td>${row.weight != null ? `${row.weight} kg` : "-"}</td>
-                    <td>${measurementBpLabel(row)}</td>
-                    <td>${row.temp != null ? `${Number(row.temp).toFixed(1)} °C` : "-"}</td>
-                    <td>${row.spo2 != null ? `${row.spo2} %` : "-"}</td>
-                    <td>${renderPatientDailyMood(row.mood)}</td>
-                    ${patient.state === "PO_TX" ? `<td>${row.medicationTaken === false ? "ne" : row.medicationTaken ? "ano" : "-"}</td>` : ""}
-                    <td><div class="daily-record-symptom-cell">${renderMeasurementSymptomPills(row.symptoms)}</div></td>
-                  </tr>
-                `).join("")}
-              </tbody>
-            </table>
-          ` : '<div class="empty">Zatím nejsou žádné odeslané záznamy.</div>'}
+          ${records.length ? renderDailyRecordsList(patient, records, { medicationAsPill: false }) : '<div class="empty">Zatím nejsou žádné odeslané záznamy.</div>'}
         </section>
       `;
     }
@@ -9890,7 +9940,31 @@
       }
     }
 
+    const MOBILE_NAV_BREAKPOINT = 900;
+
+    function isMobileNavViewport() {
+      return window.matchMedia(`(max-width: ${MOBILE_NAV_BREAKPOINT}px)`).matches;
+    }
+
+    function setMobileNavOpen(open) {
+      const shouldOpen = Boolean(open) && isMobileNavViewport();
+      demoState.mobileNavOpen = shouldOpen;
+      const shell = document.getElementById("appShell");
+      const toggle = document.getElementById("mobileNavToggle");
+      if (shell) shell.classList.toggle("mobile-nav-open", shouldOpen);
+      document.body.classList.toggle("mobile-nav-open", shouldOpen);
+      if (toggle) {
+        toggle.setAttribute("aria-expanded", shouldOpen ? "true" : "false");
+        toggle.setAttribute("aria-label", shouldOpen ? "Zavřít menu" : "Otevřít menu");
+      }
+    }
+
+    function syncMobileNavState() {
+      if (!isMobileNavViewport()) setMobileNavOpen(false);
+    }
+
     function handleSidebarNavSelection(navId, navType) {
+      setMobileNavOpen(false);
       if (navType === "patient") {
         demoState.patientPortalSection = navId;
       } else {
@@ -9921,6 +9995,30 @@
       render();
     }
 
+    function wireMobileTableLabels(root = document) {
+      root.querySelectorAll("table.summary-table").forEach((table) => {
+        const headerCells = [...table.querySelectorAll("thead th")];
+        if (headerCells.length) {
+          const headers = headerCells.map((th) => th.textContent.replace(/\s+/g, " ").trim());
+          table.querySelectorAll("tbody tr").forEach((row) => {
+            [...row.querySelectorAll(":scope > td")].forEach((td, index) => {
+              if (td.hasAttribute("colspan") || td.dataset.label) return;
+              if (headers[index]) td.dataset.label = headers[index];
+            });
+          });
+          return;
+        }
+
+        table.querySelectorAll("tr").forEach((row) => {
+          const th = row.querySelector(":scope > th");
+          const td = row.querySelector(":scope > td");
+          if (th && td && !td.dataset.label) {
+            td.dataset.label = th.textContent.replace(/\s+/g, " ").trim();
+          }
+        });
+      });
+    }
+
     function wireCoreNavigationOnce() {
       if (wireCoreNavigationOnce.done) return;
       wireCoreNavigationOnce.done = true;
@@ -9947,6 +10045,7 @@
           }
           demoState.patientId = patientId;
           demoState.patientDetailOpen = true;
+          demoState.pendingScrollToTop = true;
           demoState.dailyRecordsPage = 0;
           acknowledgePatientChats(patientId);
           demoState.patientTab = "overview";
@@ -9967,11 +10066,34 @@
           return;
         }
 
+        const mobileNavToggle = event.target.closest("[data-toggle-mobile-nav]");
+        if (mobileNavToggle) {
+          event.preventDefault();
+          setMobileNavOpen(!demoState.mobileNavOpen);
+          return;
+        }
+
+        const mobileNavClose = event.target.closest("[data-close-mobile-nav]");
+        if (mobileNavClose) {
+          event.preventDefault();
+          setMobileNavOpen(false);
+          return;
+        }
+
         const logoutBtn = event.target.closest("[data-sidebar-logout]");
         if (logoutBtn) {
           event.preventDefault();
+          setMobileNavOpen(false);
           showLoginScreen();
           return;
+        }
+      });
+
+      window.addEventListener("resize", syncMobileNavState, { passive: true });
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && demoState.mobileNavOpen) {
+          setMobileNavOpen(false);
         }
       });
 
@@ -10285,6 +10407,16 @@
         });
       });
 
+      document.querySelectorAll("[data-daily-record-toggle]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const recordKey = button.dataset.dailyRecordToggle;
+          if (!recordKey) return;
+          if (!demoState.expandedDailyRecords) demoState.expandedDailyRecords = {};
+          demoState.expandedDailyRecords[recordKey] = !isDailyRecordExpanded(recordKey);
+          render();
+        });
+      });
+
       document.querySelectorAll("[data-contrib-files-toggle]").forEach((button) => {
         button.addEventListener("click", (event) => {
           event.stopPropagation();
@@ -10586,12 +10718,23 @@
 
       // Scroll lock pro pozadí
       syncPageScrollLock();
+      setMobileNavOpen(Boolean(demoState.mobileNavOpen));
 
       attachEvents();
+      wireMobileTableLabels();
       initReferringGoogleMapAfterRender();
       scrollReferralChatToBottom();
       scrollOrganOfferChatToBottom();
       scrollInternalChatToBottom();
+
+      if (demoState.pendingScrollToTop) {
+        demoState.pendingScrollToTop = false;
+        requestAnimationFrame(() => {
+          scrollAppContentToTop();
+          requestAnimationFrame(scrollAppContentToTop);
+        });
+      }
+
       scheduleStateSync();
     }
 
@@ -10608,6 +10751,7 @@
       render,
       showToast,
       syncPageScrollLock,
+      wireMobileTableLabels,
       applyCodeLists,
       renderMonoIcon
     };
