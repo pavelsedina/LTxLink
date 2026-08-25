@@ -1048,13 +1048,13 @@
     }
 
     let demoUsers = [
-      { id: "u-coord", name: "Bc. Petra Mertová", roleId: "coordinator", workplace: "FN Motol, koordinace LTx", email: "petra.mertova@motol.cz", phone: "+420 224 433 120", defaultPatientId: "p1", active: true, permissions: ["ADMIN"] },
+      { id: "u-coord", name: "Bc. Petra Mertová", roleId: "coordinator", workplace: "FNMH - Fakultní nemocnice Motol a Homolka, koordinace LTx", email: "petra.mertova@motol.cz", phone: "+420 224 433 120", defaultPatientId: "p1", active: true, permissions: ["ADMIN"] },
       { id: "u-amb", name: "MUDr. Pavel Urban", roleId: "ambulatory", workplace: "Pneumologie Hradec Králové", email: "pavel.urban@fnhk.cz", phone: "+420 495 832 410", defaultPatientId: "p1", active: true, permissions: [] },
-      { id: "u-tx", name: "MUDr. Jan Havlín, Ph.D.", roleId: "txPulmo", workplace: "FN Motol, transplantční pneumologie", email: "jan.havlin@fnmotol.cz", phone: "+420 224 438 029", defaultPatientId: "p5", active: true, permissions: [] },
-      { id: "u-surg", name: "Prof. MUDr. Robert Lischke, Ph.D.", roleId: "surgeon", workplace: "FN Motol, hrudní chirurgie", email: "robert.lischke@fnmotol.cz", phone: "+420 224 433 318", defaultPatientId: "p8", active: true, permissions: [] },
-      { id: "u-icu", name: "MUDr. Gabriela Holubová", roleId: "intensivist", workplace: "FN Motol, KARIM/JIP", email: "gabriela.holubova@fnmotol.cz", phone: "+420 224 435 440", defaultPatientId: "p8", active: true, permissions: [] },
-      { id: "u-psych", name: "Mgr. Adam Havel", roleId: "psychologist", workplace: "Psychologická péče LTx", email: "adam.havel@motol.cz", phone: "+420 224 433 445", defaultPatientId: "p2", active: true, permissions: [] },
-      { id: "u-rehab", name: "Mgr. Lucie Marková", roleId: "rehab", workplace: "Rehabilitace FN Motol", email: "lucie.markova@motol.cz", phone: "+420 224 433 512", defaultPatientId: "p2", active: true, permissions: [] },
+      { id: "u-tx", name: "MUDr. Jan Havlín, Ph.D.", roleId: "txPulmo", workplace: "III. chirurgická klinika 1. LF UK a FNMH", email: "jan.havlin@fnmotol.cz", phone: "+420 224 438 029", defaultPatientId: "p5", active: true, permissions: [] },
+      { id: "u-surg", name: "Prof. MUDr. Robert Lischke, Ph.D.", roleId: "surgeon", workplace: "III. chirurgická klinika 1. LF UK a FNMH", email: "robert.lischke@fnmotol.cz", phone: "+420 224 438 000", defaultPatientId: "p8", active: true, permissions: [] },
+      { id: "u-icu", name: "MUDr. Gabriela Holubová", roleId: "intensivist", workplace: "KARIM 2. LF UK a FNMH", email: "gabriela.holubova@fnmotol.cz", phone: "+420 224 435 440", defaultPatientId: "p8", active: true, permissions: [] },
+      { id: "u-psych", name: "Mgr. Adam Havel", roleId: "psychologist", workplace: "Psychologická péče LTx, FNMH - Fakultní nemocnice Motol a Homolka", email: "adam.havel@motol.cz", phone: "+420 224 433 445", defaultPatientId: "p2", active: true, permissions: [] },
+      { id: "u-rehab", name: "Mgr. Lucie Marková", roleId: "rehab", workplace: "Rehabilitace, FNMH - Fakultní nemocnice Motol a Homolka", email: "lucie.markova@motol.cz", phone: "+420 224 433 512", defaultPatientId: "p2", active: true, permissions: [] },
       { id: "u-patient-wl", name: "Milan Král", roleId: "patient", workplace: "Pacient na čekací listině", email: "milan.kral@email.cz", phone: "+420 602 118 904", patientId: "p2", active: true, permissions: [] },
       { id: "u-patient-eval", name: "Eva Nováková", roleId: "patient", workplace: "Pacient v posuzování", email: "eva.novakova@email.cz", phone: "+420 601 234 567", patientId: "p1", active: false, permissions: [] },
       { id: "u-patient-fu", name: "Peter Hudák", roleId: "patient", workplace: "Pacient po transplantaci", email: "peter.hudak@email.cz", phone: "+420 603 987 210", patientId: "p4", active: true, permissions: [] }
