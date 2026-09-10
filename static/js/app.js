@@ -7224,6 +7224,8 @@
                   ${wlPatients.length ? wlPatients.map((candidate) => {
                     const pBG = candidate.bloodGroup || (candidate.demographics?.bloodType + candidate.demographics?.rh) || "";
                     const isBGCompatible = checkBloodGroupCompatibility(donor.bloodGroup, pBG);
+                    const pHeight = candidate.demographics?.heightCm || candidate.heightCm;
+                    const candidateMeta = [pBG, pHeight ? `${pHeight} cm` : "", candidate.age ? `${candidate.age} let` : ""].filter(Boolean).join(" · ");
                     return `
                       <button type="button" class="organ-candidate-card ${selectedCandidateId === candidate.id ? "is-selected" : ""}" data-organ-candidate-id="${candidate.id}">
                         <div style="display:flex; justify-content: space-between; align-items: flex-start;">
@@ -7231,7 +7233,7 @@
                           ${isBGCompatible ? '<span style="color:#1f7a45; font-size:11px; font-weight:bold;">✓ ABO kompatibilní</span>' : ''}
                         </div>
                         <p>${candidate.diagnosisShort || candidate.diagnosis}</p>
-                        <p class="organ-candidate-meta">${pBG} · ${candidate.demographics?.heightCm || candidate.heightCm} cm</p>
+                        <p class="organ-candidate-meta">${candidateMeta}</p>
                       </button>
                     `;
                   }).join("") : '<p class="organ-offers-empty">Žádní kandidáti na WL.</p>'}
