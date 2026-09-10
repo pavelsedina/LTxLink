@@ -13,6 +13,22 @@ from __future__ import annotations
 import re
 from datetime import date, datetime, timedelta
 
+try:  # Render bezi v UTC - demo ale musi ukazovat cesky cas.
+    from zoneinfo import ZoneInfo
+
+    DEMO_TZ = ZoneInfo("Europe/Prague")
+except Exception:  # pragma: no cover - chybejici tzdata
+    DEMO_TZ = None
+
+
+def demo_now() -> datetime:
+    """Aktualni cas v case prezentace, ne v case serveru."""
+    return datetime.now(DEMO_TZ).replace(tzinfo=None) if DEMO_TZ else datetime.now()
+
+
+def demo_today() -> date:
+    return demo_now().date()
+
 # Klice, jejichz hodnoty se NEPOSOUVAJI (skutecna historicka fakta).
 FROZEN_KEYS = {
     "birthDate",
@@ -92,7 +108,7 @@ def _stamp(moment: datetime) -> str:
 
 def refresh_organ_offers(state: dict, now: datetime | None = None) -> None:
     """Aktivni nabidka organu ma vzdy zit "ted" - jinak vyprsi pred prezentaci."""
-    now = now or datetime.now()
+    now = now or demo_now()
     for offer in state.get("organOffers") or []:
         if offer.get("status") != "new" or offer.get("archiveStatus") != "active":
             continue
@@ -122,7 +138,7 @@ def apply_demo_dates(state: dict, today: date | None = None) -> dict:
     if anchor is None:
         return state
 
-    today = today or date.today()
+    today = today or demo_today()
     delta_days = (today - anchor).days
     shifted = shift_structure(state, delta_days, anchor.year)
     shifted["demoAnchorDate"] = _format_date(today, True)

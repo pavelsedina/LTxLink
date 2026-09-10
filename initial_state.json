@@ -67,7 +67,7 @@
         "message": "Pacient neodeslal domácí měření 5 dní.",
         "owner": "Koordinátor",
         "status": "nový",
-        "created": "pondělí 09:05"
+        "created": "předevčírem 09:05"
       }
     ],
     "audit": [
@@ -1507,7 +1507,7 @@
       "postTxPhase": "hospitalizace",
       "txDate": "22. 6. 2026",
       "waitDays": 95,
-      "bloodGroup": "O+",
+      "bloodGroup": "0+",
       "priority": "pooperační péče",
       "summary": "2 dny po bilaterální transplantaci, stabilizace na JIP před návratem do ambulantního sledování.",
       "criticalCare": {
@@ -1608,7 +1608,7 @@
         "weightKg": 79,
         "frailtyScore": "4",
         "gender": "muž",
-        "bloodType": "O",
+        "bloodType": "0",
         "rh": "+"
       },
       "frail": false,

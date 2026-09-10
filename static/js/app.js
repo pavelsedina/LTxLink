@@ -5110,6 +5110,7 @@
               showFlowStateAction: showCoordinatorFlowTools && patient.state !== "UKONCENO" && patient.state !== "PO_TX"
             })}
           </div>
+          ${ambulatoryScope ? "" : renderPendingTransplantNote(patient)}
           ${ambulatoryScope ? renderAmbulatoryScopeNote(patient) : `
             ${renderExamPlanSection(patient)}
             ${canPatientSubmitDailyRecord(patient) ? renderTeamDailyRecordsCard(patient) : ""}
@@ -5519,7 +5520,10 @@
           </td>
           <td>${item.diagnosisShort}</td>
           ${showPneumology ? `<td>${referrerPneumology(item)}</td>` : ""}
-          <td><span class="pill ${statePillClass(item.state)}">${phaseLabel(item.state)}</span></td>
+          <td>
+            <span class="pill ${statePillClass(item.state)}">${phaseLabel(item.state)}</span>
+            ${renderPendingTransplantPill(item)}
+          </td>
           <td>${getPatientUpdatedAt(item) || "-"}</td>
           <td class="patient-comm-cell">${renderPatientCommIndicator(item)}</td>
         </tr>
@@ -6401,7 +6405,15 @@
     }
 
     function collectAmbPatientDemographics() {
+      // Formulář odeslání nenese všechna pole demografie (např. Frailty skóre).
+      // Při ÚPRAVĚ proto vyjdeme z toho, co u pacienta už je, ať se to
+      // nepřepíše prázdnem. U NOVÉHO odeslání nesmíme převzít nic - jinak by
+      // nový pacient zdědil údaje toho, kdo byl zrovna vybraný v seznamu.
+      const editedPatient = demoState.ambNewReferral ? null : selectedPatient();
+      const existing = editedPatient ? getPatientDemographics(editedPatient) : {};
+
       return {
+        ...existing,
         firstName: document.getElementById("ambFirstName")?.value.trim() || "",
         lastName: document.getElementById("ambLastName")?.value.trim() || "",
         birthNumber: document.getElementById("ambBirthNumber")?.value.trim() || "",
@@ -6962,10 +6974,35 @@
       return Number.isFinite(value) && value > 0 ? value : null;
     }
 
+    // Skóre je zdroj pravdy - uložený příznak "frail" slouží jen tam, kde
+    // skóre chybí, aby se po ruční editaci pacienta odznak nerozešel s daty.
     function isFrailPatient(patient) {
-      if (typeof patient?.frail === "boolean") return patient.frail;
       const score = patientFrailtyScore(patient);
-      return score != null && score >= 5;
+      if (score != null) return score >= 5;
+      return patient?.frail === true;
+    }
+
+    // Po přijetí nabídky orgánu je pacient stále na čekací listině, ale tým
+    // s ním už počítá k výkonu - musí to být vidět v seznamu i v detailu.
+    function renderPendingTransplantPill(patient) {
+      const pending = patient?.pendingTransplant;
+      if (!pending) return "";
+      return `<span class="pill critical pending-tx-pill" title="Nabídka ${escapeHtml(pending.offerCode)} přijata ${escapeHtml(pending.acceptedAt || "")}">výkon plánován</span>`;
+    }
+
+    function renderPendingTransplantNote(patient) {
+      const pending = patient?.pendingTransplant;
+      if (!pending) return "";
+      return `
+        <div class="card soft pending-tx-note">
+          <h3>Přijatá nabídka orgánu ${escapeHtml(pending.offerCode)}</h3>
+          <p>
+            Přijal ${escapeHtml(pending.acceptedBy || "transplantační chirurg")} ${escapeHtml(pending.acceptedAt || "")}.
+            ${pending.collectionPlan ? `Plán odběru ${escapeHtml(pending.collectionPlan)}.` : ""}
+            Pacient zůstává na čekací listině do provedení výkonu.
+          </p>
+        </div>
+      `;
     }
 
     function renderFrailtyBadge(patient) {
@@ -7203,11 +7240,22 @@
       `;
     }
 
+    // Pro shodu orgánu rozhoduje ABO, Rh faktor ne. Z označení skupiny proto
+    // odřízneme "+" i "-" (dřív se odřezávalo jen "+", takže dárce 0- vycházel
+    // jako neslučitelný se všemi) a sjednotíme zápis O/0.
+    function normalizeAboGroup(value) {
+      return String(value || "")
+        .replace(/[\s+\-]/g, "")
+        .toUpperCase()
+        .replace(/O/g, "0");
+    }
+
     function checkBloodGroupCompatibility(donorBG, patientBG) {
       if (!donorBG || !patientBG) return false;
-      const d = donorBG.replace(/[\s\+]/g, "").toUpperCase();
-      const p = patientBG.replace(/[\s\+]/g, "").toUpperCase();
-      if (d === "0" || d === "O") return true;
+      const d = normalizeAboGroup(donorBG);
+      const p = normalizeAboGroup(patientBG);
+      if (!d || !p) return false;
+      if (d === "0") return true;
       if (p === "AB") return true;
       return d === p;
     }
@@ -7744,8 +7792,41 @@
       offer.archiveStatus = "archived";
       offer.handledAt = now;
       offer.handledFor = candidate.name;
+      offer.handledBy = activeUser().name;
 
-      demoState.audit.unshift(`${now} - Nabídka ${offer.code} přijata pro pacienta ${candidate.name}.`);
+      // Přijetí nabídky musí být vidět i u pacienta, ne jen v archivu nabídek.
+      candidate.pendingTransplant = {
+        offerCode: offer.code,
+        acceptedAt: now,
+        acceptedBy: activeUser().name,
+        collectionPlan: offer.donor?.collectionPlan || ""
+      };
+      touchPatientUpdated(candidate, now);
+
+      if (!candidate.internalChat) candidate.internalChat = [];
+      candidate.internalChat.push({
+        id: `${candidate.id}-ic-offer-${Date.now()}`,
+        authorId: activeUser().id,
+        author: activeUser().name,
+        authorRole: activeUser().roleId,
+        kind: "system",
+        createdAt: now,
+        body: `Nabídka orgánu ${offer.code} přijata pro tohoto pacienta. Plán odběru ${offer.donor?.collectionPlan || "podle logistiky nabídky"}.`,
+        taggedUserIds: []
+      });
+
+      demoState.alerts.unshift({
+        id: `a-offer-${Date.now()}`,
+        patientId: candidate.id,
+        level: "kritická",
+        type: "Přijatá nabídka orgánu",
+        message: `Nabídka ${offer.code} přijata. Svolat tým a připravit pacienta k výkonu.`,
+        owner: "Transplantační koordinátor",
+        status: "nový",
+        created: "právě teď"
+      });
+
+      demoState.audit.unshift(`${now} - Nabídka ${offer.code} přijata pro pacienta ${candidate.name} (${activeUser().name}).`);
       demoState.organOfferId = null;
       demoState.organOfferSelectedCandidateId = null;
 
@@ -9725,7 +9806,7 @@
               <div class="card-header">
                 <div>
                   <h3>Fronta práce koordinátora</h3>
-                  <p>Koordinátor ridi tok, ale klinická rozhodnutí zůstávají u týmu.</p>
+                  <p>Koordinátor řídí tok, ale klinická rozhodnutí zůstávají u týmu.</p>
                 </div>
                 <span class="pill warn">${tasks.filter((task) => task.status !== "hotovo").length} úkoly</span>
               </div>
