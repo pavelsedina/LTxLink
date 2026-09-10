@@ -45,7 +45,7 @@
         "level": "kritická",
         "type": "Pokles FEV1",
         "message": "FEV1 kleslo o 17 % oproti baseline za posledních 10 dní.",
-        "owner": "MUDr. Jana Vavrová",
+        "owner": "MUDr. Jan Havlín, Ph.D.",
         "status": "nový",
         "created": "dnes 07:40"
       },
@@ -72,14 +72,14 @@
     ],
     "audit": [
       "23. 6. 2026 08:11 - Koordinátor přijal nové odeslání pacienta Nováková.",
-      "22. 6. 2026 15:42 - Tým záznamenal výrok: zařadit na čekací listinu.",
+      "22. 6. 2026 15:42 - Tým zaznamenal výrok: zařadit na čekací listinu.",
       "21. 6. 2026 10:18 - Pacient Král odeslal hlášení zhoršení stavu."
     ],
     "patientNotifications": [
       {
         "id": "pn-p1-hosp",
         "patientId": "p1",
-        "message": "Nový termín: Přijímací hospitalizace - vyšetření, 1. 7. 2026 příjem, FN Motol, Plicní klinika.",
+        "message": "Nový termín: Přijímací hospitalizace - vyšetření, 1. 7. 2026 příjem, FNMH, Plicní klinika.",
         "type": "exam_planned",
         "createdAt": "21. 6. 2026 08:15",
         "read": false
@@ -87,12 +87,13 @@
       {
         "id": "pn-p2-cardio",
         "patientId": "p2",
-        "message": "Nový termín: Opakované kardiologické vyšetření, 10. 7. 2026 13:20, Kardiologie FN Motol.",
+        "message": "Nový termín: Opakované kardiologické vyšetření, 10. 7. 2026 13:20, Kardiologie FNMH.",
         "type": "exam_planned",
         "createdAt": "5. 6. 2026 11:30",
         "read": false
       }
-    ]
+    ],
+    "monitoringPatientId": null
   },
   "patients": [
     {
@@ -101,7 +102,7 @@
       "age": 56,
       "city": "Hradec Králové",
       "country": "CZ",
-      "diagnosis": "Idiopatická plicní fibroza",
+      "diagnosis": "Idiopatická plicní fibróza",
       "diagnosisShort": "IPF",
       "referrerId": "u-amb",
       "referrer": "MUDr. Pavel Urban, Pneumologie Hradec Králové",
@@ -123,12 +124,12 @@
         "address": "Sokolská 12, Hradec Králové",
         "bloodType": "A",
         "rh": "+",
-        "heightCm": "170",
-        "weightKg": "70",
+        "heightCm": 170,
+        "weightKg": 70,
         "frailtyScore": "2",
         "diagnosisCode": "J84.1",
         "diagnosisDate": "12.09.2023",
-        "currentTreatment": "Pirfenidon 801 mg 3× denně, dlouhodobé kortikoidy v nízkých dávkách, inhalční bronchodilatace. FEV1 42 % pred., DLCO 31 % pred., 6MWT 280 m, SpO2 91 % při chůzi."
+        "currentTreatment": "Pirfenidon 801 mg 3× denně, dlouhodobé kortikoidy v nízkých dávkách, inhalační bronchodilatace. FEV1 42 % pred., DLCO 31 % pred., 6MWT 280 m, SpO2 91 % při chůzi."
       },
       "priority": "standardní",
       "summary": "V posuzování v centru - odeslání přijato, plánuje se příjmové vyšetření.",
@@ -162,8 +163,8 @@
       "referral": {
         "sentDate": "20. 6. 2026",
         "status": "Odesláno do centra",
-        "currentTreatment": "Pirfenidon 801 mg 3× denně, dlouhodobé kortikoidy v nízkých dávkách, inhalční bronchodilatace. FEV1 42 % pred., DLCO 31 % pred., 6MWT 280 m, SpO2 91 % při chůzi.",
-        "coverLetter": "Vážení kolegové,\n\nzasílám paní Evu Novákovou, 56 let, s idiopatickou plicní fibrozou a progredující dušnosti. Za posledních 6 měsíců významné zhoršení tolerance zátěže, opakované infekce dolní cesty dechové.\n\nSoučasná terapie: pirfenidon, dlouhodobé kortikoidy v nízkých dávkách, inhalční bronchodilatace.\n\nZasílá podklady: spirometrie, HRCT, laboratořní výsledky a propouštěcí zpráva z poslední hospitalizace.\n\nZadám posouzení indikace transplantace plic ve FN Motol.\n\nS pozdravem\nMUDr. Pavel Urban\nPneumologie, Hradec Králové",
+        "currentTreatment": "Pirfenidon 801 mg 3× denně, dlouhodobé kortikoidy v nízkých dávkách, inhalační bronchodilatace. FEV1 42 % pred., DLCO 31 % pred., 6MWT 280 m, SpO2 91 % při chůzi.",
+        "coverLetter": "Vážení kolegové,\n\nzasílám paní Evu Novákovou, 56 let, s idiopatickou plicní fibrózou a progredující dušnosti. Za posledních 6 měsíců významné zhoršení tolerance zátěže, opakované infekce dolní cesty dechové.\n\nSoučasná terapie: pirfenidon, dlouhodobé kortikoidy v nízkých dávkách, inhalační bronchodilatace.\n\nZasílá podklady: spirometrie, HRCT, laboratořní výsledky a propouštěcí zpráva z poslední hospitalizace.\n\nZadám posouzení indikace transplantace plic ve FNMH.\n\nS pozdravem\nMUDr. Pavel Urban\nPneumologie, Hradec Králové",
         "attachments": [
           {
             "id": "p1-d1-pruvodni",
@@ -262,7 +263,7 @@
           {
             "id": "p1-sub-2",
             "authorId": "u-tx",
-            "author": "MUDr. Karel Veselý",
+            "author": "MUDr. Gabriela Holubová",
             "createdAt": "26. 6. 2026 14:20",
             "note": "Zpráva o průběhu posuzování pro odesílajícího lékaře.",
             "docRole": "outbound_message",
@@ -287,7 +288,7 @@
           "author": "Bc. Petra Mertová",
           "authorRole": "coordinator",
           "createdAt": "22. 6. 2026 09:40",
-          "body": "Příjmové vyšetření potvrzeno. @MUDr. Jana Vavrová prosím o koordinaci s pneumologií před 1. 7.",
+          "body": "Příjmové vyšetření potvrzeno. @MUDr. Jan Havlín prosím o koordinaci s pneumologií před 1. 7.",
           "taggedUserIds": [
             "u-tx"
           ]
@@ -295,7 +296,7 @@
         {
           "id": "p1-ic-2",
           "authorId": "u-icu",
-          "author": "MUDr. Karel Veselý",
+          "author": "MUDr. Gabriela Holubová",
           "authorRole": "intensivist",
           "createdAt": "26. 6. 2026 10:10",
           "body": "Kapacita JIP je v pořádku, můžeme přijmout. @Bc. Petra Mertová prosím o potvrzení termínu s odesílatelem.",
@@ -313,7 +314,7 @@
         },
         {
           "id": "p1-n2",
-          "author": "MUDr. Karel Veselý",
+          "author": "MUDr. Gabriela Holubová",
           "createdAt": "26. 6. 2026 14:15",
           "body": "Single lung transplantace není vyloučena, ale preferujeme bilaterální."
         }
@@ -322,7 +323,7 @@
         {
           "id": "p1-exam-hosp",
           "title": "Přijímací hospitalizace - vyšetření",
-          "place": "FN Motol, Plicní klinika",
+          "place": "FNMH, Plicní klinika",
           "date": "1. 7. 2026 příjem",
           "status": "planned",
           "context": "evaluation",
@@ -352,7 +353,10 @@
         }
       ],
       "educationProgress": 18,
-      "medicationAdherence": 0
+      "medicationAdherence": 0,
+      "frail": false,
+      "referrerSiteId": "hradec",
+      "updatedAt": "26. 6. 2026 14:20"
     },
     {
       "id": "p2",
@@ -360,7 +364,7 @@
       "age": 48,
       "city": "Brno",
       "country": "CZ",
-      "diagnosis": "Cystická fibroza",
+      "diagnosis": "Cystická fibróza",
       "diagnosisShort": "CF",
       "referrer": "MUDr. Lenka Brabcová, FN Brno",
       "state": "WL",
@@ -371,7 +375,7 @@
       "referral": {
         "sentDate": "8. 12. 2025",
         "status": "Odesláno do centra",
-        "reason": "Cystická fibroza s progredující respirační insuficienci, indikace k transplantaci plic.",
+        "reason": "Cystická fibróza s progredující respirační insuficienci, indikace k transplantaci plic.",
         "keyParams": "FEV1 dle spirometrie, opakované hospitalizace",
         "attachments": [
           {
@@ -486,7 +490,7 @@
           "author": "Mgr. Lucie Marková",
           "authorRole": "rehab",
           "createdAt": "20. 6. 2026 14:05",
-          "body": "Přikládám plán prérehabilitace. @MUDr. Jana Vavrová prosím o krátké posouzení kapacity.",
+          "body": "Přikládám plán prérehabilitace. @MUDr. Jan Havlín prosím o krátké posouzení kapacity.",
           "taggedUserIds": [
             "u-tx"
           ],
@@ -506,7 +510,7 @@
           "authorRole": "automation",
           "kind": "system",
           "createdAt": "26. 6. 2026 09:15",
-          "body": "Automatická detekce zhoršení parametrů domácího sledování:\n• FEV1 kleslo z 1,25 l na 1,12 l (−10,4 % za 4 dny)\n• SpO₂ klesla z 97 % na 94 %\n• Pacient nahlásil dušnost a kašel\n\n@Bc. Petra Mertová @MUDr. Jana Vavrová - doporučena kontrola transplantního týmu.",
+          "body": "Automatická detekce zhoršení parametrů domácího sledování:\n• FEV1 kleslo z 1,25 l na 1,12 l (−10,4 % za 4 dny)\n• SpO₂ klesla z 97 % na 94 %\n• Pacient nahlásil dušnost a kašel\n\n@Bc. Petra Mertová @MUDr. Jan Havlín - doporučena kontrola transplantačního týmu.",
           "taggedUserIds": [
             "u-coord",
             "u-tx"
@@ -528,8 +532,8 @@
         {
           "id": "p2-exam-1",
           "title": "Kontrolní krevní odběry",
-          "place": "FN Motol, ambulantní trakt",
-          "date": "26. 6. 2026 08:30",
+          "place": "FNMH, ambulantní trakt",
+          "date": "29. 6. 2026 08:30",
           "status": "planned",
           "context": "wl_followup",
           "sharePatient": true,
@@ -540,8 +544,8 @@
         {
           "id": "p2-exam-2",
           "title": "Fyzioterapie a edukace",
-          "place": "Rehabilitace FN Motol",
-          "date": "26. 6. 2026 11:00",
+          "place": "Rehabilitace FNMH",
+          "date": "29. 6. 2026 11:00",
           "status": "planned",
           "context": "wl_followup",
           "sharePatient": true,
@@ -552,7 +556,7 @@
         {
           "id": "p2-exam-3",
           "title": "Opakované kardiologické vyšetření",
-          "place": "Kardiologie FN Motol",
+          "place": "Kardiologie FNMH",
           "date": "10. 7. 2026 13:20",
           "status": "planned",
           "context": "wl_followup",
@@ -601,14 +605,16 @@
           "date": "22. 6.",
           "source": "patient",
           "fev1": 1.18,
-          "fvc": 1.90,
+          "fvc": 1.9,
           "weight": 48.8,
           "bpSystolic": 120,
           "bpDiastolic": 78,
           "temp": 36.8,
           "spo2": 95,
           "mood": "3",
-          "symptoms": ["unava"],
+          "symptoms": [
+            "unava"
+          ],
           "phase": "WL"
         },
         {
@@ -624,7 +630,9 @@
           "temp": 37.1,
           "spo2": 94,
           "mood": "2",
-          "symptoms": ["kasel"],
+          "symptoms": [
+            "kasel"
+          ],
           "phase": "WL"
         },
         {
@@ -640,7 +648,9 @@
           "temp": 36.7,
           "spo2": 94,
           "mood": "2",
-          "symptoms": ["dusnost"],
+          "symptoms": [
+            "dusnost"
+          ],
           "note": "Od včerejška cítím větší dušnost i v klidu. Inhalace pomáhají jen částečně, prosím o radu, zda nemám přijet dříve na kontrolu.",
           "phase": "WL"
         }
@@ -666,7 +676,32 @@
         }
       ],
       "educationProgress": 72,
-      "medicationAdherence": 96
+      "medicationAdherence": 96,
+      "demographics": {
+        "heightCm": 178,
+        "weightKg": 62,
+        "frailtyScore": "4",
+        "gender": "muž",
+        "bloodType": "0",
+        "rh": "-"
+      },
+      "frail": false,
+      "referrerSiteId": "brno",
+      "psychPrep": {
+        "seminar1": {
+          "done": true,
+          "date": "14. 4. 2026",
+          "companion": "s doprovodem"
+        },
+        "seminar2": {
+          "done": true,
+          "date": "19. 5. 2026",
+          "companion": "s doprovodem"
+        },
+        "engagement": "aktivní",
+        "note": "Partnerka na obou seminářích, pacient se ptá věcně. Bez potřeby individuální konzultace."
+      },
+      "updatedAt": "26. 6. 2026 10:00"
     },
     {
       "id": "p3",
@@ -674,9 +709,9 @@
       "age": 63,
       "city": "Olomouc",
       "country": "CZ",
-      "diagnosis": "CHOPN s emfyzemem",
+      "diagnosis": "CHOPN s emfyzémem",
       "diagnosisShort": "CHOPN",
-      "referrer": "MUDr. Tomáš Hrubý, OLÚ Paseka",
+      "referrer": "MUDr. Tomáš Hrubý, FN Olomouc",
       "state": "POSUZOVANI",
       "waitDays": 0,
       "bloodGroup": "B+",
@@ -685,7 +720,7 @@
       "referral": {
         "sentDate": "10. 2. 2026",
         "status": "Odesláno do centra",
-        "reason": "CHOPN s emfyzemem, progredující restrikce, evaluace v centru dokončena.",
+        "reason": "CHOPN s emfyzémem, progredující restrikce, evaluace v centru dokončena.",
         "keyParams": "FEV1 dle spirometrie, 6MWT, echokardiografie",
         "attachments": [
           {
@@ -751,14 +786,25 @@
       "exams": [
         {
           "title": "Doplnění podpisu informovaného souhlasu",
-          "place": "FN Motol",
-          "date": "24. 6. 2026 10:15",
+          "place": "FNMH",
+          "date": "30. 6. 2026 10:15",
           "shareAmbulatory": false
         }
       ],
       "measurements": [],
       "educationProgress": 34,
-      "medicationAdherence": 91
+      "medicationAdherence": 91,
+      "demographics": {
+        "heightCm": 162,
+        "weightKg": 58,
+        "frailtyScore": "5",
+        "gender": "žena",
+        "bloodType": "B",
+        "rh": "+"
+      },
+      "frail": true,
+      "referrerSiteId": "olomouc",
+      "updatedAt": "28. 2. 2026 10:00"
     },
     {
       "id": "p4",
@@ -768,12 +814,12 @@
       "country": "SK",
       "diagnosis": "Plicní arteriální hypertenze",
       "diagnosisShort": "PAH",
-      "referrerId": "u-amb",
-      "referrer": "MUDr. Pavel Urban, Pneumologie Hradec Králové",
+      "referrerId": null,
+      "referrer": "MUDr. Eva Molnárová, Pneumológia Košice",
       "state": "PO_TX",
       "postTxPhase": "ambulantni",
       "txDate": "18. 9. 2025",
-      "waitDays": 190,
+      "waitDays": 17,
       "bloodGroup": "AB+",
       "priority": "po TX stabilní",
       "summary": "9 měsíců po bilaterální transplantaci, dlouhodobé sledování se sdílením dat s ambulantním pneumologem.",
@@ -915,11 +961,11 @@
         ]
       },
       "teamDecision": {
-        "outcome": "Zařazen na čekací listinu a transplantovaný",
-        "date": "15. 9. 2025",
-        "note": "Pacient splňoval indikační kritéria, bilaterální transplantace plic proběhla bez zásadních komplikací. Návrat do ambulantní péče po stabilizaci."
+        "outcome": "Zařazen na čekací listinu",
+        "date": "28. 8. 2025",
+        "note": "Pacient splňoval indikační kritéria, na čekací listinu zařazen 1. 9. 2025. Bilaterální transplantace plic proběhla 18. 9. 2025 bez zásadních komplikací, po stabilizaci návrat do ambulantní péče."
       },
-      "carePlan": "Ambulantní pneumolog vede běžný režim mimo centrum: inhalční terapie, profylaxe infekcí, sledování adherence. Kontroly v FN Motol každé 3 měsíce, sdílená spirometrie a domácí měření.",
+      "carePlan": "Ambulantní pneumolog vede běžný režim mimo centrum: inhalační terapie, profylaxe infekcí, sledování adherence. Kontroly v FNMH každé 3 měsíce, sdílená spirometrie a domácí měření.",
       "medications": [
         {
           "id": "p4-med-1",
@@ -971,7 +1017,7 @@
       "exams": [
         {
           "title": "Follow-up kontrola",
-          "place": "FN Motol, transplantční ambulance",
+          "place": "FNMH, transplantační ambulance",
           "date": "8. 7. 2026 09:45",
           "shareAmbulatory": false
         },
@@ -989,7 +1035,8 @@
           "spo2": 97,
           "temp": 36.6,
           "weight": 78.2,
-          "bp": "126/78"
+          "bp": "126/78",
+          "mood": "4"
         },
         {
           "date": "5. 6.",
@@ -997,7 +1044,8 @@
           "spo2": 97,
           "temp": 36.7,
           "weight": 78,
-          "bp": "124/76"
+          "bp": "124/76",
+          "mood": "4"
         },
         {
           "date": "9. 6.",
@@ -1005,7 +1053,8 @@
           "spo2": 96,
           "temp": 36.8,
           "weight": 77.8,
-          "bp": "125/80"
+          "bp": "125/80",
+          "mood": "3"
         },
         {
           "date": "13. 6.",
@@ -1013,7 +1062,8 @@
           "spo2": 96,
           "temp": 36.8,
           "weight": 77.7,
-          "bp": "128/82"
+          "bp": "128/82",
+          "mood": "3"
         },
         {
           "date": "17. 6.",
@@ -1021,7 +1071,8 @@
           "spo2": 95,
           "temp": 36.9,
           "weight": 77.4,
-          "bp": "126/79"
+          "bp": "126/79",
+          "mood": "2"
         },
         {
           "date": "21. 6.",
@@ -1029,22 +1080,34 @@
           "spo2": 95,
           "temp": 37,
           "weight": 77.1,
-          "bp": "129/81"
+          "bp": "129/81",
+          "mood": "2"
         }
       ],
       "baseline": 2.44,
       "educationProgress": 88,
-      "medicationAdherence": 94
+      "medicationAdherence": 94,
+      "demographics": {
+        "heightCm": 176,
+        "weightKg": 77,
+        "frailtyScore": "3",
+        "gender": "muž",
+        "bloodType": "AB",
+        "rh": "+"
+      },
+      "frail": false,
+      "referrerSiteId": "kosice",
+      "updatedAt": "21. 6. 2026 18:30"
     },
     {
       "id": "p5",
       "name": "Jana Dvořáková",
       "age": 44,
-      "city": "Plzen",
+      "city": "Plzeň",
       "country": "CZ",
       "diagnosis": "Lymfangioleiomyomatóza",
       "diagnosisShort": "LAM",
-      "referrer": "MUDr. Radim Jelínek, Plzen",
+      "referrer": "MUDr. Radim Jelínek, FN Plzeň",
       "state": "PO_TX",
       "postTxPhase": "ambulantni",
       "txDate": "22. 2. 2026",
@@ -1092,8 +1155,8 @@
       "exams": [
         {
           "title": "Neplánovaná kontrola po podnětu",
-          "place": "FN Motol, Plicní klinika",
-          "date": "24. 6. 2026 08:00",
+          "place": "FNMH, Plicní klinika",
+          "date": "1. 7. 2026 08:00",
           "shareAmbulatory": false
         }
       ],
@@ -1104,7 +1167,8 @@
           "spo2": 97,
           "temp": 36.6,
           "weight": 61,
-          "bp": "118/74"
+          "bp": "118/74",
+          "mood": "3"
         },
         {
           "date": "6. 6.",
@@ -1112,7 +1176,8 @@
           "spo2": 96,
           "temp": 36.7,
           "weight": 61.2,
-          "bp": "119/76"
+          "bp": "119/76",
+          "mood": "4"
         },
         {
           "date": "10. 6.",
@@ -1120,7 +1185,8 @@
           "spo2": 95,
           "temp": 36.8,
           "weight": 61.1,
-          "bp": "121/77"
+          "bp": "121/77",
+          "mood": "4"
         },
         {
           "date": "14. 6.",
@@ -1128,7 +1194,8 @@
           "spo2": 94,
           "temp": 37,
           "weight": 60.9,
-          "bp": "122/78"
+          "bp": "122/78",
+          "mood": "4"
         },
         {
           "date": "18. 6.",
@@ -1136,7 +1203,8 @@
           "spo2": 93,
           "temp": 37.1,
           "weight": 60.4,
-          "bp": "124/80"
+          "bp": "124/80",
+          "mood": "5"
         },
         {
           "date": "22. 6.",
@@ -1144,12 +1212,24 @@
           "spo2": 92,
           "temp": 37.4,
           "weight": 60.1,
-          "bp": "126/82"
+          "bp": "126/82",
+          "mood": "4"
         }
       ],
       "baseline": 2.13,
       "educationProgress": 91,
-      "medicationAdherence": 89
+      "medicationAdherence": 89,
+      "demographics": {
+        "heightCm": 167,
+        "weightKg": 61,
+        "frailtyScore": "3",
+        "gender": "žena",
+        "bloodType": "A",
+        "rh": "-"
+      },
+      "frail": false,
+      "referrerSiteId": "plzen",
+      "updatedAt": "22. 6. 2026 18:30"
     },
     {
       "id": "p6",
@@ -1157,7 +1237,7 @@
       "age": 62,
       "city": "Pardubice",
       "country": "CZ",
-      "diagnosis": "CHOPN s emfyzemem",
+      "diagnosis": "CHOPN s emfyzémem",
       "diagnosisShort": "CHOPN",
       "referrerId": "u-amb",
       "referrer": "MUDr. Pavel Urban, Pneumologie Hradec Králové",
@@ -1176,7 +1256,7 @@
         "status": "Výrok týmu: zařazen na WL",
         "reason": "Těžká CHOPN, opakované exacerbace, progredující restrikce.",
         "keyParams": "FEV1 28 % pred., DLCO 24 % pred., BODE index 7",
-        "coverLetter": "Vážení kolegové,\n\nzasílám pana Josefa Dvořáka, 62 let, s těžkou CHOPN a emfyzemem. Opakované hospitalizace kvůli exacerbaci, progredující restrikce a dušnost i při běžné domácí aktivitě.\n\nPacient absolvoval kompletní evaluaci v centru, tým doporučil zařazení na čekací listinu.\n\nMUDr. Pavel Urban",
+        "coverLetter": "Vážení kolegové,\n\nzasílám pana Josefa Dvořáka, 62 let, s těžkou CHOPN a emfyzémem. Opakované hospitalizace kvůli exacerbaci, progredující restrikce a dušnost i při běžné domácí aktivitě.\n\nPacient absolvoval kompletní evaluaci v centru, tým doporučil zařazení na čekací listinu.\n\nMUDr. Pavel Urban",
         "attachments": [
           {
             "id": "p6-d1-pruvodni",
@@ -1284,14 +1364,39 @@
       "exams": [
         {
           "title": "Kontrolní krevní odběry",
-          "place": "FN Motol",
+          "place": "FNMH",
           "date": "28. 6. 2026 08:00",
           "shareAmbulatory": false
         }
       ],
       "measurements": [],
       "educationProgress": 65,
-      "medicationAdherence": 92
+      "medicationAdherence": 92,
+      "demographics": {
+        "heightCm": 181,
+        "weightKg": 84,
+        "frailtyScore": "5",
+        "gender": "muž",
+        "bloodType": "B",
+        "rh": "+"
+      },
+      "frail": true,
+      "referrerSiteId": "hradec",
+      "psychPrep": {
+        "seminar1": {
+          "done": true,
+          "date": "12. 5. 2026",
+          "companion": "sám"
+        },
+        "seminar2": {
+          "done": false,
+          "date": null,
+          "companion": null
+        },
+        "engagement": "pasivní",
+        "note": "Na semináři mlčel, doprovod nedorazil. Doporučuji individuální sezení před druhým seminářem."
+      },
+      "updatedAt": "22. 6. 2026 11:20"
     },
     {
       "id": "p7",
@@ -1299,7 +1404,7 @@
       "age": 58,
       "city": "Liberec",
       "country": "CZ",
-      "diagnosis": "Idiopatická plicní fibroza",
+      "diagnosis": "Idiopatická plicní fibróza",
       "diagnosisShort": "IPF",
       "referrerId": "u-amb",
       "referrer": "MUDr. Pavel Urban, Pneumologie Hradec Králové",
@@ -1377,7 +1482,18 @@
       "exams": [],
       "measurements": [],
       "educationProgress": 0,
-      "medicationAdherence": 88
+      "medicationAdherence": 88,
+      "demographics": {
+        "heightCm": 164,
+        "weightKg": 55,
+        "frailtyScore": "6",
+        "gender": "žena",
+        "bloodType": "A",
+        "rh": "-"
+      },
+      "frail": true,
+      "referrerSiteId": "hradec",
+      "updatedAt": "5. 5. 2026 16:00"
     },
     {
       "id": "p8",
@@ -1385,7 +1501,7 @@
       "age": 48,
       "city": "Brno",
       "country": "CZ",
-      "diagnosis": "Idiopatická plicní fibroza",
+      "diagnosis": "Idiopatická plicní fibróza",
       "diagnosisShort": "IPF",
       "state": "PO_TX",
       "postTxPhase": "hospitalizace",
@@ -1412,7 +1528,65 @@
           "pao2fio2": 280,
           "map": 75
         },
-        "lastUpdate": "dnes 08:30"
+        "lastUpdate": "dnes 08:30",
+        "timeline": [
+          {
+            "at": "22. 6. 2026 15:00",
+            "spo2": 93,
+            "pao2fio2": 180,
+            "map": 70,
+            "ventilation": "PCV, FiO2 60%, PEEP 10",
+            "sedation": "RASS -4",
+            "event": "Příjem na KARIM po bilaterální transplantaci."
+          },
+          {
+            "at": "23. 6. 2026 08:00",
+            "spo2": 94,
+            "pao2fio2": 210,
+            "map": 72,
+            "ventilation": "PSV, FiO2 45%, PEEP 8",
+            "sedation": "RASS -2",
+            "event": "Zahájeno odtlumování, spontánní dechová aktivita."
+          },
+          {
+            "at": "24. 6. 2026 10:30",
+            "spo2": 95,
+            "pao2fio2": 235,
+            "map": 73,
+            "ventilation": "PSV, FiO2 40%, PEEP 6",
+            "sedation": "RASS -1",
+            "event": "Úspěšný weaningový test."
+          },
+          {
+            "at": "25. 6. 2026 09:20",
+            "spo2": 95,
+            "pao2fio2": 255,
+            "map": 74,
+            "ventilation": "HFNO 50 l/min, FiO2 45%",
+            "sedation": "RASS 0",
+            "event": "Extubace v 09:20, převod na HFNO."
+          },
+          {
+            "at": "26. 6. 2026 08:40",
+            "spo2": 96,
+            "pao2fio2": 270,
+            "map": 75,
+            "ventilation": "HFNO 45 l/min, FiO2 40%",
+            "sedation": "RASS 0",
+            "event": "Vertikalizace s fyzioterapeutem, bez desaturace."
+          },
+          {
+            "at": "27. 6. 2026 08:30",
+            "spo2": 96,
+            "pao2fio2": 280,
+            "map": 75,
+            "ventilation": "HFNO 40 l/min, FiO2 40%",
+            "sedation": "RASS 0",
+            "event": "Plán překladu na standardní lůžko při dalším zlepšení."
+          }
+        ],
+        "extubation": "provedena 25. 6. 2026 09:20",
+        "responsible": "MUDr. Gabriela Holubová"
       },
       "documents": [
         "Operační zpráva",
@@ -1421,14 +1595,50 @@
       "exams": [
         {
           "title": "Kontrola na JIP",
-          "place": "FN Motol, KARIM",
-          "date": "24. 6. 2026 09:00",
+          "place": "FNMH, KARIM",
+          "date": "29. 6. 2026 09:00",
           "shareAmbulatory": false
         }
       ],
       "measurements": [],
       "educationProgress": 72,
-      "medicationAdherence": 0
+      "medicationAdherence": 0,
+      "demographics": {
+        "heightCm": 183,
+        "weightKg": 79,
+        "frailtyScore": "4",
+        "gender": "muž",
+        "bloodType": "O",
+        "rh": "+"
+      },
+      "frail": false,
+      "referrer": "MUDr. Lenka Brabcová, FN Brno",
+      "referrerSiteId": "brno",
+      "referral": {
+        "sentDate": "14. 1. 2026",
+        "status": "Ukončené odeslání - transplantováno",
+        "reason": "IPF s progresí navzdory antifibrotické léčbě, indikace k transplantaci plic.",
+        "keyParams": "FVC 48 % pred., DLCO 28 % pred., 6MWT 310 m",
+        "coverLetter": "Vážení kolegové,\n\nzasílám pana Tomáše Procházku k posouzení indikace transplantace plic. Přes zavedenou antifibrotickou léčbu dochází k další progresi.\n\nMUDr. Lenka Brabcová",
+        "attachments": [
+          {
+            "id": "p8-d1-pruvodni",
+            "name": "Průvodní dopis",
+            "type": "PDF",
+            "size": "215 kB",
+            "date": "14. 1. 2026"
+          },
+          {
+            "id": "p8-d1-hrct",
+            "name": "HRCT popis",
+            "type": "PDF",
+            "size": "1,0 MB",
+            "date": "12. 1. 2026"
+          }
+        ],
+        "updatedAt": "14. 1. 2026 10:20"
+      },
+      "updatedAt": "22. 6. 2026 10:00"
     },
     {
       "id": "p9",
@@ -1436,7 +1646,7 @@
       "age": 54,
       "city": "Trutnov",
       "country": "CZ",
-      "diagnosis": "Cystická fibroza",
+      "diagnosis": "Cystická fibróza",
       "diagnosisShort": "CF",
       "referrerId": "u-amb",
       "referrer": "MUDr. Pavel Urban, Pneumologie Hradec Králové",
@@ -1444,7 +1654,7 @@
       "waitDays": 0,
       "bloodGroup": "0+",
       "priority": "standardní",
-      "summary": "Nové odeslání přijato centrem, plánuje se první vyšetření v FN Motol.",
+      "summary": "Nové odeslání přijato centrem, plánuje se první vyšetření v FNMH.",
       "documents": [
         "Odesílací zpráva",
         "Spirometrie",
@@ -1502,30 +1712,46 @@
       "exams": [
         {
           "title": "Příjmové vyšetření",
-          "place": "FN Motol, Plicní klinika",
+          "place": "FNMH, Plicní klinika",
           "date": "8. 7. 2026 08:30",
           "shareAmbulatory": false
         }
       ],
       "measurements": [],
       "educationProgress": 12,
-      "medicationAdherence": 0
+      "medicationAdherence": 0,
+      "demographics": {
+        "heightCm": 172,
+        "weightKg": 60,
+        "frailtyScore": "3",
+        "gender": "muž",
+        "bloodType": "0",
+        "rh": "+"
+      },
+      "frail": false,
+      "referrerSiteId": "hradec",
+      "updatedAt": "20. 6. 2026 10:00"
     },
     {
       "id": "p10",
       "name": "Pavel Novák",
       "age": 42,
-      "city": "Praha",
+      "city": "Hradec Králové",
       "country": "CZ",
-      "diagnosis": "Cystická fibroza",
+      "diagnosis": "Cystická fibróza",
       "diagnosisShort": "CF",
       "state": "PO_TX",
       "postTxPhase": "hospitalizace",
       "txDate": "26. 6. 2026",
-      "waitDays": 12,
+      "waitDays": 118,
       "bloodGroup": "B-",
       "demographics": {
-        "frailtyScore": "6"
+        "frailtyScore": "6",
+        "heightCm": 174,
+        "weightKg": 63,
+        "gender": "muž",
+        "bloodType": "B",
+        "rh": "-"
       },
       "priority": "kritický stav",
       "summary": "1 den po transplantaci, na V-V ECMO, oběhově nestabilní.",
@@ -1547,7 +1773,56 @@
           "pao2fio2": 145,
           "map": 68
         },
-        "lastUpdate": "dnes 09:15"
+        "lastUpdate": "dnes 09:15",
+        "timeline": [
+          {
+            "at": "26. 6. 2026 12:30",
+            "spo2": 88,
+            "pao2fio2": 98,
+            "map": 58,
+            "ventilation": "PCV, FiO2 100%, PEEP 14",
+            "sedation": "RASS -5",
+            "event": "Příjem na ARO bezprostředně po výkonu, napojení na V-V ECMO."
+          },
+          {
+            "at": "26. 6. 2026 18:00",
+            "spo2": 90,
+            "pao2fio2": 112,
+            "map": 62,
+            "ventilation": "PCV, FiO2 80%, PEEP 14",
+            "sedation": "RASS -5",
+            "event": "Noradrenalin navýšen na 0,22 µg/kg/min."
+          },
+          {
+            "at": "27. 6. 2026 00:00",
+            "spo2": 91,
+            "pao2fio2": 126,
+            "map": 64,
+            "ventilation": "PCV, FiO2 70%, PEEP 12",
+            "sedation": "RASS -4",
+            "event": "Bilance tekutin vyrovnaná, diuréza obnovena."
+          },
+          {
+            "at": "27. 6. 2026 06:00",
+            "spo2": 92,
+            "pao2fio2": 138,
+            "map": 66,
+            "ventilation": "PCV, FiO2 60%, PEEP 12",
+            "sedation": "RASS -4",
+            "event": "RTG hrudníku bez progrese edému."
+          },
+          {
+            "at": "27. 6. 2026 09:15",
+            "spo2": 92,
+            "pao2fio2": 145,
+            "map": 68,
+            "ventilation": "PCV, FiO2 60%, PEEP 12",
+            "sedation": "RASS -4",
+            "event": "Noradrenalin snížen na 0,15 µg/kg/min, ECMO beze změny."
+          }
+        ],
+        "extubation": "zatím neplánována (V-V ECMO)",
+        "responsible": "MUDr. Gabriela Holubová"
       },
       "documents": [
         "HRCT",
@@ -1555,7 +1830,7 @@
         "Laboratoř"
       ],
       "referral": {
-        "sentDate": "12. 6. 2026",
+        "sentDate": "8. 1. 2026",
         "status": "Ukončené odeslání - transplantováno",
         "reason": "CF s progredující respirační insuficienci, indikace k transplantaci plic.",
         "keyParams": "FEV1 18 % pred., DLCO 22 % pred., SpO2 88 %",
@@ -1566,17 +1841,17 @@
             "name": "Průvodní dopis",
             "type": "PDF",
             "size": "220 kB",
-            "date": "12. 6. 2026"
+            "date": "8. 1. 2026"
           },
           {
             "id": "p10-d1-hrct",
             "name": "HRCT popis",
             "type": "PDF",
             "size": "1,1 MB",
-            "date": "10. 6. 2026"
+            "date": "5. 1. 2026"
           }
         ],
-        "updatedAt": "12. 6. 2026 15:45"
+        "updatedAt": "8. 1. 2026 15:45"
       },
       "flowEvidence": {
         "rozhodnutí": [
@@ -1612,15 +1887,20 @@
       "carePlan": null,
       "exams": [
         {
-          "title": "Konzultace transplantční pneumologie",
-          "place": "FN Motol",
+          "title": "Konzultace transplantační pneumologie",
+          "place": "FNMH",
           "date": "3. 7. 2026 10:00",
           "shareAmbulatory": false
         }
       ],
       "measurements": [],
       "educationProgress": 20,
-      "medicationAdherence": 0
+      "medicationAdherence": 0,
+      "frail": true,
+      "referrer": "MUDr. Pavel Urban, Pneumologie Hradec Králové",
+      "referrerId": "u-amb",
+      "referrerSiteId": "hradec",
+      "updatedAt": "26. 6. 2026 10:00"
     },
     {
       "id": "p11",
@@ -1628,7 +1908,7 @@
       "age": 57,
       "city": "Jičín",
       "country": "CZ",
-      "diagnosis": "CHOPN s emfyzemem",
+      "diagnosis": "CHOPN s emfyzémem",
       "diagnosisShort": "CHOPN",
       "referrerId": "u-amb",
       "referrer": "MUDr. Pavel Urban, Pneumologie Hradec Králové",
@@ -1645,7 +1925,7 @@
       "referral": {
         "sentDate": "15. 1. 2026",
         "status": "Výrok týmu: zařazen na WL",
-        "reason": "Těžká CHOPN, progredující emfyzem, opakované exacerbace.",
+        "reason": "Těžká CHOPN, progredující emfyzém, opakované exacerbace.",
         "keyParams": "FEV1 26 % pred., DLCO 22 % pred., BODE 8",
         "coverLetter": "Vážení kolegové,\n\nzasílám pana Romana Krále k posouzení transplantace plic...\n\nMUDr. Pavel Urban",
         "attachments": [
@@ -1726,14 +2006,39 @@
       "exams": [
         {
           "title": "Kontrolní krevní odběry",
-          "place": "FN Motol",
+          "place": "FNMH",
           "date": "30. 6. 2026 08:00",
           "shareAmbulatory": false
         }
       ],
       "measurements": [],
       "educationProgress": 58,
-      "medicationAdherence": 90
+      "medicationAdherence": 90,
+      "demographics": {
+        "heightCm": 169,
+        "weightKg": 88,
+        "frailtyScore": "5",
+        "gender": "muž",
+        "bloodType": "B",
+        "rh": "+"
+      },
+      "frail": true,
+      "referrerSiteId": "hradec",
+      "psychPrep": {
+        "seminar1": {
+          "done": true,
+          "date": "3. 3. 2026",
+          "companion": "s doprovodem"
+        },
+        "seminar2": {
+          "done": true,
+          "date": "7. 4. 2026",
+          "companion": "sám"
+        },
+        "engagement": "aktivní",
+        "note": "Dobrá orientace v režimu po transplantaci, otázky mířily na návrat do práce."
+      },
+      "updatedAt": "18. 6. 2026 09:30"
     },
     {
       "id": "p12",
@@ -1741,7 +2046,7 @@
       "age": 61,
       "city": "Rychnov nad Kněžnou",
       "country": "CZ",
-      "diagnosis": "Idiopatická plicní fibroza",
+      "diagnosis": "Idiopatická plicní fibróza",
       "diagnosisShort": "IPF",
       "referrerId": "u-amb",
       "referrer": "MUDr. Pavel Urban, Pneumologie Hradec Králové",
@@ -1819,7 +2124,18 @@
       "exams": [],
       "measurements": [],
       "educationProgress": 0,
-      "medicationAdherence": 85
+      "medicationAdherence": 85,
+      "demographics": {
+        "heightCm": 160,
+        "weightKg": 52,
+        "frailtyScore": "6",
+        "gender": "žena",
+        "bloodType": "A",
+        "rh": "-"
+      },
+      "frail": true,
+      "referrerSiteId": "hradec",
+      "updatedAt": "15. 4. 2026 14:00"
     },
     {
       "id": "p13",
@@ -1827,7 +2143,7 @@
       "age": 55,
       "city": "Svitavy",
       "country": "CZ",
-      "diagnosis": "CHOPN s emfyzemem",
+      "diagnosis": "CHOPN s emfyzémem",
       "diagnosisShort": "CHOPN",
       "referrerId": "u-amb",
       "referrer": "MUDr. Pavel Urban, Pneumologie Hradec Králové",
@@ -1904,7 +2220,18 @@
       "exams": [],
       "measurements": [],
       "educationProgress": 0,
-      "medicationAdherence": 78
+      "medicationAdherence": 78,
+      "demographics": {
+        "heightCm": 177,
+        "weightKg": 71,
+        "frailtyScore": "4",
+        "gender": "muž",
+        "bloodType": "0",
+        "rh": "-"
+      },
+      "frail": false,
+      "referrerSiteId": "hradec",
+      "updatedAt": "10. 1. 2026 16:30"
     }
   ],
   "organOffers": [
@@ -1940,16 +2267,33 @@
         }
       },
       "logistics": {
-        "collectionTeam": "Tým FN Motol",
+        "collectionTeam": "Tým FNMH",
         "validUntil": "25. 6. 2026 23:18:38"
       },
       "candidates": [
         {
+          "patientId": "p2",
+          "name": "Milan Král",
+          "diagnosis": "Cystická fibróza",
+          "bloodGroup": "0-",
+          "heightCm": 178,
+          "weightKg": 62
+        },
+        {
           "patientId": "p6",
-          "name": "Kratochvílová Anna",
-          "diagnosis": "Cystická fibróza, plicní forma",
+          "name": "Josef Dvořák",
+          "diagnosis": "CHOPN s emfyzémem",
           "bloodGroup": "B+",
-          "heightCm": 162
+          "heightCm": 181,
+          "weightKg": 84
+        },
+        {
+          "patientId": "p11",
+          "name": "Roman Král",
+          "diagnosis": "CHOPN s emfyzémem",
+          "bloodGroup": "B+",
+          "heightCm": 169,
+          "weightKg": 88
         }
       ],
       "compatibility": {
@@ -1961,25 +2305,69 @@
           "EBV+"
         ],
         "overall": "Marginální - k posouzení"
+      },
+      "thread": [
+        {
+          "id": "msg-off1-1",
+          "authorId": "u-coord",
+          "author": "Bc. Petra Mertová",
+          "authorRole": "coordinator",
+          "body": "Přišla nabídka D-2026-014. Dárce žena 42 let, 168 cm / 65 kg, krevní skupina B+, PaO2/FiO2 412 mmHg, ventilace 3 dny, pack-years 0. Odběrová nemocnice FN Hradec Králové. @Prof. MUDr. Robert Lischke prosím o posouzení plic.",
+          "createdAt": "26. 6. 2026 19:21",
+          "taggedUserIds": [
+            "u-surg"
+          ],
+          "seed": true
         },
-        "thread": [
-          {
-            "id": "msg-off1-1",
-            "authorId": "u-coord",
-            "author": "Bc. Petra Mertová",
-            "authorRole": "coordinator",
-            "body": "Příjmové vyšetření potvrzeno. @MUDr. Jana Vavrová prosím o koordinaci s pneumologií před 1. 7.",
-            "createdAt": "26. 6. 2026 09:40"
-          },
-          {
-            "id": "msg-off1-2",
-            "authorId": "u-icu",
-            "author": "MUDr. Karel Veselý",
-            "authorRole": "intensivist",
-            "body": "Kapacita JIP je v pořádku, můžeme přijmout. @Bc. Petra Mertová prosím o potvrzení termínu s odesílatelem.",
-            "createdAt": "26. 6. 2026 10:10"
-          }
-        ]
+        {
+          "id": "msg-off1-2",
+          "authorId": "u-surg",
+          "author": "Prof. MUDr. Robert Lischke, Ph.D.",
+          "authorRole": "surgeon",
+          "body": "RTG hrudníku i bronchoskopie bez patologie, oxygenace výborná. Plíce za centrum akceptuji. Z čekací listiny navrhuji Josefa Dvořáka - ABO shoda B+ a velikostní poměr 93 %.",
+          "createdAt": "26. 6. 2026 19:24",
+          "taggedUserIds": [],
+          "seed": true
+        },
+        {
+          "id": "msg-off1-3",
+          "authorId": "u-tx",
+          "author": "MUDr. Jan Havlín, Ph.D.",
+          "authorRole": "txPulmo",
+          "body": "Imunologické posouzení: dárce CMV+ a EBV+, příjemce CMV+, riziko primoinfekce nízké. cPRA pod 10 %, bez zjištěné senzibilizace na HLA dárce. Z pohledu pneumologie bez námitek.",
+          "createdAt": "26. 6. 2026 19:27",
+          "taggedUserIds": [],
+          "seed": true
+        },
+        {
+          "id": "msg-off1-4",
+          "authorId": "u-coord",
+          "author": "Bc. Petra Mertová",
+          "authorRole": "coordinator",
+          "body": "Plán odběru i odjezd týmu potvrzen podle logistiky nabídky. Předpokládaná studená ischemie 320 min. Na odběr jede @Prof. MUDr. Robert Lischke s perfuziologem, transport sanitou. @MUDr. Gabriela Holubová dej prosím vědět o lůžku, příjemce volám nyní.",
+          "createdAt": "26. 6. 2026 19:30",
+          "taggedUserIds": [
+            "u-surg",
+            "u-icu"
+          ],
+          "seed": true
+        },
+        {
+          "id": "msg-off1-5",
+          "authorId": "u-icu",
+          "author": "MUDr. Gabriela Holubová",
+          "authorRole": "intensivist",
+          "body": "Lůžko na KARIM je připravené, ventilátor i ECMO v záloze. Po výkonu počítáme s příjmem na box 2.",
+          "createdAt": "26. 6. 2026 19:33",
+          "taggedUserIds": [],
+          "seed": true
+        }
+      ],
+      "immunology": {
+        "text": "cPRA pod 10 %, bez zjištěné senzibilizace na HLA dárce. Dárce CMV+ / EBV+, příjemce CMV+ - riziko primoinfekce nízké, profylaxe podle protokolu.",
+        "author": "MUDr. Jan Havlín, Ph.D.",
+        "at": "26. 6. 2026 19:27"
+      }
     }
   ],
   "faqs": [
@@ -2011,7 +2399,7 @@
   "referringNetwork": {
     "center": {
       "id": "motol",
-      "name": "FN Motol",
+      "name": "FNMH",
       "city": "Praha",
       "department": "Transplantace plic - LTx Pathway",
       "x": 275,
@@ -2021,13 +2409,13 @@
           "name": "Bc. Petra Mertová",
           "role": "Transplantační koordinátor",
           "phone": "+420 224 433 120",
-          "email": "petra.mertova@motol.cz"
+          "email": "petra.mertova@fnmotol.cz"
         },
         {
-          "name": "MUDr. Jana Vavrová",
+          "name": "MUDr. Jan Havlín, Ph.D.",
           "role": "Transplantační pneumologie",
           "phone": "+420 224 433 210",
-          "email": "jana.vavrova@motol.cz"
+          "email": "jana.vavrova@fnmotol.cz"
         }
       ]
     },
@@ -2374,38 +2762,181 @@
           }
         ]
       }
-    ]
+    ],
+    "illustrative": true
   },
   "systemUsers": [
-    { "id": "u-coord", "name": "Bc. Petra Mertová", "roleId": "coordinator", "workplace": "FNMH - Fakultní nemocnice Motol a Homolka, koordinace LTx", "email": "petra.mertova@motol.cz", "phone": "+420 224 433 120", "defaultPatientId": "p1", "active": true, "permissions": ["ADMIN"] },
-    { "id": "u-amb", "name": "MUDr. Pavel Urban", "roleId": "ambulatory", "workplace": "Pneumologie Hradec Králové", "email": "pavel.urban@fnhk.cz", "phone": "+420 495 832 410", "defaultPatientId": "p1", "active": true, "permissions": [] },
-    { "id": "u-tx", "name": "MUDr. Jan Havlín, Ph.D.", "roleId": "txPulmo", "workplace": "III. chirurgická klinika 1. LF UK a FNMH", "email": "jan.havlin@fnmotol.cz", "phone": "+420 224 438 029", "defaultPatientId": "p5", "active": true, "permissions": [] },
-    { "id": "u-surg", "name": "Prof. MUDr. Robert Lischke, Ph.D.", "roleId": "surgeon", "workplace": "III. chirurgická klinika 1. LF UK a FNMH", "email": "robert.lischke@fnmotol.cz", "phone": "+420 224 438 000", "defaultPatientId": "p8", "active": true, "permissions": [] },
-    { "id": "u-icu", "name": "MUDr. Gabriela Holubová", "roleId": "intensivist", "workplace": "KARIM 2. LF UK a FNMH", "email": "gabriela.holubova@fnmotol.cz", "phone": "+420 224 435 440", "defaultPatientId": "p8", "active": true, "permissions": [] },
-    { "id": "u-psych", "name": "Mgr. Adam Havel", "roleId": "psychologist", "workplace": "Psychologická péče LTx, FNMH - Fakultní nemocnice Motol a Homolka", "email": "adam.havel@motol.cz", "phone": "+420 224 433 445", "defaultPatientId": "p2", "active": true, "permissions": [] },
-    { "id": "u-rehab", "name": "Mgr. Lucie Marková", "roleId": "rehab", "workplace": "Rehabilitace, FNMH - Fakultní nemocnice Motol a Homolka", "email": "lucie.markova@motol.cz", "phone": "+420 224 433 512", "defaultPatientId": "p2", "active": true, "permissions": [] },
-    { "id": "u-patient-wl", "name": "Milan Král", "roleId": "patient", "workplace": "Pacient na čekací listině", "email": "milan.kral@email.cz", "phone": "+420 602 118 904", "patientId": "p2", "active": true, "permissions": [] },
-    { "id": "u-patient-eval", "name": "Eva Nováková", "roleId": "patient", "workplace": "Pacient v posuzování", "email": "eva.novakova@email.cz", "phone": "+420 601 234 567", "patientId": "p1", "active": false, "permissions": [] },
-    { "id": "u-patient-fu", "name": "Peter Hudák", "roleId": "patient", "workplace": "Pacient po transplantaci", "email": "peter.hudak@email.cz", "phone": "+420 603 987 210", "patientId": "p4", "active": true, "permissions": [] }
+    {
+      "id": "u-coord",
+      "name": "Bc. Petra Mertová",
+      "roleId": "coordinator",
+      "workplace": "FNMH - Fakultní nemocnice Motol a Homolka, koordinace LTx",
+      "email": "petra.mertova@fnmotol.cz",
+      "phone": "+420 224 433 120",
+      "defaultPatientId": "p1",
+      "active": true,
+      "permissions": [
+        "ADMIN"
+      ]
+    },
+    {
+      "id": "u-amb",
+      "name": "MUDr. Pavel Urban",
+      "roleId": "ambulatory",
+      "workplace": "Pneumologie Hradec Králové",
+      "email": "pavel.urban@fnhk.cz",
+      "phone": "+420 495 832 410",
+      "defaultPatientId": "p1",
+      "active": true,
+      "permissions": []
+    },
+    {
+      "id": "u-tx",
+      "name": "MUDr. Jan Havlín, Ph.D.",
+      "roleId": "txPulmo",
+      "workplace": "III. chirurgická klinika 1. LF UK a FNMH",
+      "email": "jan.havlin@fnmotol.cz",
+      "phone": "+420 224 438 029",
+      "defaultPatientId": "p5",
+      "active": true,
+      "permissions": []
+    },
+    {
+      "id": "u-surg",
+      "name": "Prof. MUDr. Robert Lischke, Ph.D.",
+      "roleId": "surgeon",
+      "workplace": "III. chirurgická klinika 1. LF UK a FNMH",
+      "email": "robert.lischke@fnmotol.cz",
+      "phone": "+420 224 438 000",
+      "defaultPatientId": "p8",
+      "active": true,
+      "permissions": []
+    },
+    {
+      "id": "u-icu",
+      "name": "MUDr. Gabriela Holubová",
+      "roleId": "intensivist",
+      "workplace": "KARIM 2. LF UK a FNMH",
+      "email": "gabriela.holubova@fnmotol.cz",
+      "phone": "+420 224 435 440",
+      "defaultPatientId": "p8",
+      "active": true,
+      "permissions": []
+    },
+    {
+      "id": "u-psych",
+      "name": "Mgr. Adam Havel",
+      "roleId": "psychologist",
+      "workplace": "Psychologická péče LTx, FNMH - Fakultní nemocnice Motol a Homolka",
+      "email": "adam.havel@fnmotol.cz",
+      "phone": "+420 224 433 445",
+      "defaultPatientId": "p2",
+      "active": true,
+      "permissions": []
+    },
+    {
+      "id": "u-rehab",
+      "name": "Mgr. Lucie Marková",
+      "roleId": "rehab",
+      "workplace": "Rehabilitace, FNMH - Fakultní nemocnice Motol a Homolka",
+      "email": "lucie.markova@fnmotol.cz",
+      "phone": "+420 224 433 512",
+      "defaultPatientId": "p2",
+      "active": true,
+      "permissions": []
+    },
+    {
+      "id": "u-patient-wl",
+      "name": "Milan Král",
+      "roleId": "patient",
+      "workplace": "Pacient na čekací listině",
+      "email": "milan.kral@email.cz",
+      "phone": "+420 602 118 904",
+      "patientId": "p2",
+      "active": true,
+      "permissions": []
+    },
+    {
+      "id": "u-patient-eval",
+      "name": "Eva Nováková",
+      "roleId": "patient",
+      "workplace": "Pacient v posuzování",
+      "email": "eva.novakova@email.cz",
+      "phone": "+420 601 234 567",
+      "patientId": "p1",
+      "active": false,
+      "permissions": []
+    },
+    {
+      "id": "u-patient-fu",
+      "name": "Peter Hudák",
+      "roleId": "patient",
+      "workplace": "Pacient po transplantaci",
+      "email": "peter.hudak@email.cz",
+      "phone": "+420 603 987 210",
+      "patientId": "p4",
+      "active": true,
+      "permissions": []
+    }
   ],
   "codeLists": {
     "phases": [
-      { "code": "POSUZOVANI", "label": "V posuzování" },
-      { "code": "WL", "label": "Na čekací listině" },
-      { "code": "PO_TX", "label": "Po transplantaci" },
-      { "code": "UKONCENO", "label": "Ukončeno" }
+      {
+        "code": "POSUZOVANI",
+        "label": "V posuzování"
+      },
+      {
+        "code": "WL",
+        "label": "Na čekací listině"
+      },
+      {
+        "code": "PO_TX",
+        "label": "Po transplantaci"
+      },
+      {
+        "code": "UKONCENO",
+        "label": "Ukončeno"
+      }
     ],
     "patientDailySymptoms": [
-      { "id": "dusnost", "label": "dušnost" },
-      { "id": "kasel_hlen", "label": "kašel s hlenem" },
-      { "id": "bolest_hrudi", "label": "bolest na hrudi" },
-      { "id": "hemoptyza", "label": "hemoptýza" },
-      { "id": "horecka", "label": "horečka" },
-      { "id": "unava", "label": "únava" },
-      { "id": "prujem", "label": "průjem" },
-      { "id": "nechutenstvi", "label": "nechutenství" }
+      {
+        "id": "dusnost",
+        "label": "dušnost"
+      },
+      {
+        "id": "kasel_hlen",
+        "label": "kašel s hlenem"
+      },
+      {
+        "id": "bolest_hrudi",
+        "label": "bolest na hrudi"
+      },
+      {
+        "id": "hemoptyza",
+        "label": "hemoptýza"
+      },
+      {
+        "id": "horecka",
+        "label": "horečka"
+      },
+      {
+        "id": "unava",
+        "label": "únava"
+      },
+      {
+        "id": "prujem",
+        "label": "průjem"
+      },
+      {
+        "id": "nechutenstvi",
+        "label": "nechutenství"
+      }
     ],
-    "alertLevels": ["kritická", "varování", "informativní"]
+    "alertLevels": [
+      "kritická",
+      "varování",
+      "informativní"
+    ]
   },
   "sharedMaterials": {
     "psych": [
@@ -2419,7 +2950,13 @@
         "audience": "WL",
         "active": true,
         "attachments": [
-          { "id": "mat-edu-psych-1", "name": "Průvodce pro rodinu.pdf", "type": "PDF", "size": "420 kB", "description": "Průvodce pro rodinu" }
+          {
+            "id": "mat-edu-psych-1",
+            "name": "Průvodce pro rodinu.pdf",
+            "type": "PDF",
+            "size": "420 kB",
+            "description": "Průvodce pro rodinu"
+          }
         ]
       }
     ],
@@ -2428,18 +2965,26 @@
         "id": "edu-rehab",
         "category": "Rehabilitace",
         "duration": "10 min",
-        "title": "Prerehabilitace - dechová cvičení",
+        "title": "Prérehabilitace - dechová cvičení",
         "author": "Rehabilitační / fyzioterapeut",
-        "description": "Sada cviků pro každodenní domácí prerehabilitaci a posílení dechových svalů.",
+        "description": "Sada cviků pro každodenní domácí prérehabilitaci a posílení dechových svalů.",
         "audience": "WL",
         "active": true,
         "attachments": [
-          { "id": "mat-edu-rehab-1", "name": "Domácí cvičební plán.pdf", "type": "PDF", "size": "680 kB", "description": "Domácí cvičební plán" }
+          {
+            "id": "mat-edu-rehab-1",
+            "name": "Domácí cvičební plán.pdf",
+            "type": "PDF",
+            "size": "680 kB",
+            "description": "Domácí cvičební plán"
+          }
         ]
       }
     ]
   },
   "handbooks": null,
   "handbookCatalogByRole": null,
-  "adminAudit": []
+  "adminAudit": [],
+  "demoAnchorDate": "27. 6. 2026",
+  "demoDisclaimer": "Demo, smyšlená data, žádní skuteční pacienti."
 }

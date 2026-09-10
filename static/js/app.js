@@ -3,6 +3,22 @@
     let stateSyncTimer = null;
     let isAuthenticated = false;
 
+    // Prohlížecí režim pro návštěvníky z QR kódu: ?readonly=1 (nebo ?prohlizeni=1).
+    // Změny zůstanou jen v jejich prohlížeči a neuloží se do sdílené paměti
+    // serveru - jinak by je během prezentace viděli všichni ostatní.
+    const demoReadOnly = (() => {
+      try {
+        const params = new URLSearchParams(window.location.search);
+        return ["readonly", "prohlizeni", "readOnly"].some((key) => {
+          const value = params.get(key);
+          return value !== null && value !== "0" && value !== "false";
+        });
+      } catch (error) {
+        return false;
+      }
+    })();
+
+
     const LTXLINK_LOGO = "/static/img/ltxlink-logo.png";
     const LTXLINK_SIDEBAR_LOGO = "/static/img/ltxlink-logo-sidebar.png";
 
@@ -508,6 +524,7 @@
 
     function scheduleStateSync() {
       if (!stateBootstrapped) return;
+      if (demoReadOnly) return;
       if (stateSyncTimer) window.clearTimeout(stateSyncTimer);
       stateSyncTimer = window.setTimeout(async () => {
         try {
@@ -1048,13 +1065,13 @@
     }
 
     let demoUsers = [
-      { id: "u-coord", name: "Bc. Petra Mertová", roleId: "coordinator", workplace: "FNMH - Fakultní nemocnice Motol a Homolka, koordinace LTx", email: "petra.mertova@motol.cz", phone: "+420 224 433 120", defaultPatientId: "p1", active: true, permissions: ["ADMIN"] },
+      { id: "u-coord", name: "Bc. Petra Mertová", roleId: "coordinator", workplace: "FNMH - Fakultní nemocnice Motol a Homolka, koordinace LTx", email: "petra.mertova@fnmotol.cz", phone: "+420 224 433 120", defaultPatientId: "p1", active: true, permissions: ["ADMIN"] },
       { id: "u-amb", name: "MUDr. Pavel Urban", roleId: "ambulatory", workplace: "Pneumologie Hradec Králové", email: "pavel.urban@fnhk.cz", phone: "+420 495 832 410", defaultPatientId: "p1", active: true, permissions: [] },
       { id: "u-tx", name: "MUDr. Jan Havlín, Ph.D.", roleId: "txPulmo", workplace: "III. chirurgická klinika 1. LF UK a FNMH", email: "jan.havlin@fnmotol.cz", phone: "+420 224 438 029", defaultPatientId: "p5", active: true, permissions: [] },
       { id: "u-surg", name: "Prof. MUDr. Robert Lischke, Ph.D.", roleId: "surgeon", workplace: "III. chirurgická klinika 1. LF UK a FNMH", email: "robert.lischke@fnmotol.cz", phone: "+420 224 438 000", defaultPatientId: "p8", active: true, permissions: [] },
       { id: "u-icu", name: "MUDr. Gabriela Holubová", roleId: "intensivist", workplace: "KARIM 2. LF UK a FNMH", email: "gabriela.holubova@fnmotol.cz", phone: "+420 224 435 440", defaultPatientId: "p8", active: true, permissions: [] },
-      { id: "u-psych", name: "Mgr. Adam Havel", roleId: "psychologist", workplace: "Psychologická péče LTx, FNMH - Fakultní nemocnice Motol a Homolka", email: "adam.havel@motol.cz", phone: "+420 224 433 445", defaultPatientId: "p2", active: true, permissions: [] },
-      { id: "u-rehab", name: "Mgr. Lucie Marková", roleId: "rehab", workplace: "Rehabilitace, FNMH - Fakultní nemocnice Motol a Homolka", email: "lucie.markova@motol.cz", phone: "+420 224 433 512", defaultPatientId: "p2", active: true, permissions: [] },
+      { id: "u-psych", name: "Mgr. Adam Havel", roleId: "psychologist", workplace: "Psychologická péče LTx, FNMH - Fakultní nemocnice Motol a Homolka", email: "adam.havel@fnmotol.cz", phone: "+420 224 433 445", defaultPatientId: "p2", active: true, permissions: [] },
+      { id: "u-rehab", name: "Mgr. Lucie Marková", roleId: "rehab", workplace: "Rehabilitace, FNMH - Fakultní nemocnice Motol a Homolka", email: "lucie.markova@fnmotol.cz", phone: "+420 224 433 512", defaultPatientId: "p2", active: true, permissions: [] },
       { id: "u-patient-wl", name: "Milan Král", roleId: "patient", workplace: "Pacient na čekací listině", email: "milan.kral@email.cz", phone: "+420 602 118 904", patientId: "p2", active: true, permissions: [] },
       { id: "u-patient-eval", name: "Eva Nováková", roleId: "patient", workplace: "Pacient v posuzování", email: "eva.novakova@email.cz", phone: "+420 601 234 567", patientId: "p1", active: false, permissions: [] },
       { id: "u-patient-fu", name: "Peter Hudák", roleId: "patient", workplace: "Pacient po transplantaci", email: "peter.hudak@email.cz", phone: "+420 603 987 210", patientId: "p4", active: true, permissions: [] }
@@ -1087,14 +1104,14 @@
         blocks: [
           { type: "title", text: "Žádost o posouzení indikace transplantace plic" },
           { type: "grid", rows: [
-            ["Adresat", "FN Motol, Plicní klinika, transplantční program LTx"],
+            ["Adresát", "FNMH, Plicní klinika, transplantační program LTx"],
             ["Odesílající", "MUDr. Pavel Urban, Pneumologie HK"],
             ["Číslo případu LTx", "LTX-2026-0142"]
           ]},
           { type: "section", title: "Text dopisu", paragraphs: [
-            "Vážení kolegové, zasílám paní Evu Novákovou, 56 let, s idiopatickou plicní fibrozou a progredující dušnosti za posledních 6 měsíců.",
-            "Pacientka má opakované infekce DCH, progredující restrikci a pokles tolerance zátěže. Současná terapie: pirfenidon, inhalční bronchodilatace.",
-            "Zadám kompletní posouzení indikace transplantace plic ve FN Motol. V příloze spirometrie, HRCT, laboratoř a propouštěcí zpráva."
+            "Vážení kolegové, zasílám paní Evu Novákovou, 56 let, s idiopatickou plicní fibrózou a progredující dušnosti za posledních 6 měsíců.",
+            "Pacientka má opakované infekce DCH, progredující restrikci a pokles tolerance zátěže. Současná terapie: pirfenidon, inhalační bronchodilatace.",
+            "Zadám kompletní posouzení indikace transplantace plic ve FNMH. V příloze spirometrie, HRCT, laboratoř a propouštěcí zpráva."
           ]},
           { type: "grid", title: "Klíčové parametry", rows: [
             ["FEV1", "1,12 l (42 % pred.)"],
@@ -1134,7 +1151,7 @@
             "Korelace s klinickou progresí IPF a restrikční ventilátorní poruchou."
           ]},
           { type: "section", title: "Závěr", paragraphs: [
-            "Obraz odpovídá progredující idiopatické plicní fibroze. Doporučeno posouzení transplantčního programu."
+            "Obraz odpovídá progredující idiopatické plicní fibróze. Doporučeno posouzení transplantačního programu."
           ]}
         ],
         signedBy: "MUDr. Simona Králová",
@@ -1192,7 +1209,7 @@
       "p1-d2-přijetí": {
         previewTitle: "Potvrzení přijetí žádosti",
         previewMeta: "PDF · 88 kB · Bc. Petra Mertová · 21. 6. 2026 08:11",
-        institution: "Fakultní nemocnice v Motole",
+        institution: "FNMH - Fakultní nemocnice Motol a Homolka",
         department: "Transplantační koordinace LTx",
         docId: "LTX-ADM-2026-0142",
         date: "21. 6. 2026",
@@ -1205,19 +1222,19 @@
             ["Datum přijetí", "21. 6. 2026 08:11"]
           ]},
           { type: "section", title: "Obsah", paragraphs: [
-            "Žádost o posouzení indikace transplantace plic byla přijata do systému transplantčního centra FN Motol.",
-            "Rozhodnutí transplantčního týmu zatím nebylo vydáno.",
+            "Žádost o posouzení indikace transplantace plic byla přijata do systému transplantačního centra FNMH.",
+            "Rozhodnutí transplantačního týmu zatím nebylo vydáno.",
             "Další krok: příjmové vyšetření dle plánu koordinace."
           ]}
         ],
         signedBy: "Bc. Petra Mertová",
-        signedRole: "Transplantační koordinátor, FN Motol",
+        signedRole: "Transplantační koordinátor, FNMH",
         stamp: "PŘIJATO DO SYSTÉMU"
       },
       "p1-d2-plán": {
         previewTitle: "Plán příjmového vyšetření",
-        previewMeta: "PDF · 124 kB · FN Motol · 21. 6. 2026",
-        institution: "Fakultní nemocnice v Motole",
+        previewMeta: "PDF · 124 kB · FNMH · 21. 6. 2026",
+        institution: "FNMH - Fakultní nemocnice Motol a Homolka",
         department: "Plicní klinika · Transplantační pneumologie",
         docId: "LTX-PLAN-2026-0142",
         date: "1. 7. 2026",
@@ -1226,16 +1243,16 @@
           { type: "title", text: "Plán příjmového vyšetření" },
           { type: "schedule", title: "Harmonogram dne", items: [
             { time: "09:00", title: "Spirometrie, krevní odběry", place: "Ambulantní trakt, 2. patro" },
-            { time: "10:30", title: "Kardiologické vyšetření", place: "Kardiologie FN Motol" },
-            { time: "13:00", title: "Konzultace transplantční pneumologie", place: "Plicní klinika, konzultační místnost 4" }
+            { time: "10:30", title: "Kardiologické vyšetření", place: "Kardiologie FNMH" },
+            { time: "13:00", title: "Konzultace transplantační pneumologie", place: "Plicní klinika, konzultační místnost 4" }
           ]},
           { type: "section", title: "Poznámka", paragraphs: [
-            "Po dokončení vyšetření bude podklad předložen transplantčnímu týmu k výroku.",
+            "Po dokončení vyšetření bude podklad předložen transplantačnímu týmu k výroku.",
             "Výsledek bude sdílen s odesílajícím ambulantním pneumologem přes LTx Pathway."
           ]}
         ],
-        signedBy: "MUDr. Jana Vavrová",
-        signedRole: "Transplantační pneumolog, FN Motol"
+        signedBy: "MUDr. Jan Havlín, Ph.D.",
+        signedRole: "Transplantační pneumolog, FNMH"
       },
       "p4-d1-pruvodni": {
         previewTitle: "Průvodní dopis 03/2024 - Peter Hudák",
@@ -1264,7 +1281,7 @@
       "p4-d1-echo": {
         previewTitle: "Echokardiografie",
         previewMeta: "PDF · 890 kB · Kardiologie · 10. 3. 2024",
-        institution: "Fakultní nemocnice v Motole",
+        institution: "FNMH - Fakultní nemocnice Motol a Homolka",
         department: "Kardiologické oddělení",
         docId: "KAR-ECHO-2024-8821",
         date: "10. 3. 2024",
@@ -1279,11 +1296,11 @@
           ]},
           { type: "section", title: "Závěr", paragraphs: [
             "Obraz odpovídá progredující plicní arteriální hypertenzi s postižení pravé komory.",
-            "Doporučeno posouzení transplantčního programu."
+            "Doporučeno posouzení transplantačního programu."
           ]}
         ],
         signedBy: "MUDr. Karel Novotný",
-        signedRole: "Kardiolog, FN Motol"
+        signedRole: "Kardiolog, FNMH"
       },
       "p4-d1-spiro": {
         previewTitle: "Spirometrie",
@@ -1308,28 +1325,28 @@
       "p4-d2-výrok": {
         previewTitle: "Záznam výroku týmu",
         previewMeta: "PDF · 178 kB · Transplantační tým · 28. 8. 2025",
-        institution: "Fakultní nemocnice v Motole",
+        institution: "FNMH - Fakultní nemocnice Motol a Homolka",
         department: "Transplantační tým LTx",
         docId: "LTX-VYR-2025-0882",
         date: "28. 8. 2025",
         patient: { name: "Peter Hudák", diag: "PAH" },
         blocks: [
-          { type: "title", text: "Záznam výroku transplantčního týmu" },
+          { type: "title", text: "Záznam výroku transplantačního týmu" },
           { type: "verdict", variant: "warn", title: "VYROK: ZAŘADIT NA ČEKACÍ LISTINU", text: "Pacient splňuje indikační kritéria pro transplantaci plic.", note: "Indikační kritéria splněna. Pacient připraven na zařazení po doplnění administrativních podkladů." },
           { type: "grid", rows: [
             ["Datum konzilia", "28. 8. 2025"],
-            ["Účastníci", "transplant. pneumolog, chirurg, koordinátor, anesteziolog"],
+            ["Účastníci", "transplantační pneumolog, chirurg, koordinátor, anesteziolog"],
             ["Stav cesty", "NA ČEKACÍ LISTINĚ"]
           ]}
         ],
-        signedBy: "MUDr. Jana Vavrová",
-        signedRole: "Za transplantní tým, FN Motol",
+        signedBy: "MUDr. Jan Havlín, Ph.D.",
+        signedRole: "Za transplantační tým, FNMH",
         stamp: "VYROK TÝMU"
       },
       "p4-d2-zařazení": {
         previewTitle: "Potvrzení zařazení na WL",
         previewMeta: "PDF · 96 kB · Bc. Petra Mertová · 1. 9. 2025",
-        institution: "Fakultní nemocnice v Motole",
+        institution: "FNMH - Fakultní nemocnice Motol a Homolka",
         department: "Transplantační koordinace LTx",
         docId: "LTX-WL-2025-0882",
         date: "1. 9. 2025",
@@ -1347,8 +1364,8 @@
       },
       "p4-d3-operační": {
         previewTitle: "Operační zpráva",
-        previewMeta: "PDF · 420 kB · doc. MUDr. Petr Sima · 18. 9. 2025",
-        institution: "Fakultní nemocnice v Motole",
+        previewMeta: "PDF · 420 kB · Prof. MUDr. Robert Lischke, Ph.D. · 18. 9. 2025",
+        institution: "FNMH - Fakultní nemocnice Motol a Homolka",
         department: "Oddělení hrudní chirurgie",
         docId: "CHIR-OP-2025-4412",
         date: "18. 9. 2025",
@@ -1358,7 +1375,7 @@
           { type: "grid", rows: [
             ["Vykon", "Bilaterální transplantace plic"],
             ["Datum operace", "18. 9. 2025"],
-            ["Operatér", "doc. MUDr. Petr Sima"],
+            ["Operatér", "Prof. MUDr. Robert Lischke, Ph.D."],
             ["Anestezie", "celková anestezie, jednokanálová ventilace"]
           ]},
           { type: "section", title: "Pooperační průběh", paragraphs: [
@@ -1367,13 +1384,13 @@
             "Primární funkce graftu uspokojivá."
           ]}
         ],
-        signedBy: "doc. MUDr. Petr Sima",
-        signedRole: "Transplantační chirurg, FN Motol"
+        signedBy: "Prof. MUDr. Robert Lischke, Ph.D.",
+        signedRole: "Transplantační chirurg, FNMH"
       },
       "p4-d3-výkon": {
         previewTitle: "Záznam o výkonu",
-        previewMeta: "PDF · 156 kB · FN Motol · 18. 9. 2025",
-        institution: "Fakultní nemocnice v Motole",
+        previewMeta: "PDF · 156 kB · FNMH · 18. 9. 2025",
+        institution: "FNMH - Fakultní nemocnice Motol a Homolka",
         department: "LTx Pathway · Klinická dokumentace",
         docId: "LTX-VYK-2025-4412",
         date: "18. 9. 2025",
@@ -1395,8 +1412,8 @@
       },
       "p4-d3-propuštění": {
         previewTitle: "Propouštěcí zpráva",
-        previewMeta: "PDF · 312 kB · FN Motol · 2. 10. 2025",
-        institution: "Fakultní nemocnice v Motole",
+        previewMeta: "PDF · 312 kB · FNMH · 2. 10. 2025",
+        institution: "FNMH - Fakultní nemocnice Motol a Homolka",
         department: "Plicní klinika",
         docId: "PROP-2025-4412",
         date: "2. 10. 2025",
@@ -1409,13 +1426,13 @@
           ]},
           { type: "list", title: "Doporučení po propuštění", items: [
             "Návrat do ambulantní péče v regionu (MUDr. Pavel Urban)",
-            "Kontroly FN Motol každé 3 měsíce",
+            "Kontroly FNMH každé 3 měsíce",
             "Sdílená spirometrie a domácí měření přes LTx Pathway",
             "Ambulantní pneumolog vede běžný režim mimo centrum"
           ]}
         ],
-        signedBy: "MUDr. Jana Vavrová",
-        signedRole: "Transplantační pneumolog, FN Motol"
+        signedBy: "MUDr. Jan Havlín, Ph.D.",
+        signedRole: "Transplantační pneumolog, FNMH"
       },
       "p6-d1-pruvodni": {
         previewTitle: "Průvodní dopis - Josef Dvořák",
@@ -1428,7 +1445,7 @@
         blocks: [
           { type: "title", text: "Žádost o posouzení transplantace plic" },
           { type: "section", title: "Klinický souhrn", paragraphs: [
-            "Pan Josef Dvořák, 62 let, těžkou CHOPN s emfyzemem. Opakované hospitalizace kvůli exacerbaci.",
+            "Pan Josef Dvořák, 62 let, těžkou CHOPN s emfyzémem. Opakované hospitalizace kvůli exacerbaci.",
             "Progredující restrikce, dušnost i při běžné domácí aktivitě, BODE index 7."
           ]},
           { type: "grid", title: "Parametry", rows: [
@@ -1483,13 +1500,13 @@
       "p6-d2-výrok": {
         previewTitle: "Záznam výroku týmu",
         previewMeta: "PDF · 165 kB · Transplantační tým · 10. 4. 2026",
-        institution: "Fakultní nemocnice v Motole",
+        institution: "FNMH - Fakultní nemocnice Motol a Homolka",
         department: "Transplantační tým LTx",
         docId: "LTX-VYR-2026-0312",
         date: "10. 4. 2026",
         patient: { name: "Josef Dvořák", diag: "CHOPN" },
         blocks: [
-          { type: "title", text: "Záznam výroku transplantčního týmu" },
+          { type: "title", text: "Záznam výroku transplantačního týmu" },
           { type: "verdict", variant: "warn", title: "VYROK: ZAŘADIT NA ČEKACÍ LISTINU", text: "Pacient splňuje indikační kritéria pro transplantaci plic.", note: "Administrativní podklady doplněny. Stav cesty: NA ČEKACÍ LISTINĚ." },
           { type: "grid", rows: [
             ["Datum konzilia", "10. 4. 2026"],
@@ -1497,14 +1514,14 @@
             ["Nutriční status", "suboptimální, plán intervence"]
           ]}
         ],
-        signedBy: "MUDr. Jana Vavrová",
-        signedRole: "Za transplantní tým",
+        signedBy: "MUDr. Jan Havlín, Ph.D.",
+        signedRole: "Za transplantační tým",
         stamp: "VYROK TÝMU"
       },
       "p6-d2-plán": {
         previewTitle: "Plán péče na WL",
-        previewMeta: "PDF · 98 kB · FN Motol · 10. 4. 2026",
-        institution: "Fakultní nemocnice v Motole",
+        previewMeta: "PDF · 98 kB · FNMH · 10. 4. 2026",
+        institution: "FNMH - Fakultní nemocnice Motol a Homolka",
         department: "Transplantační koordinace LTx",
         docId: "LTX-PLAN-WL-0312",
         date: "10. 4. 2026",
@@ -1512,12 +1529,12 @@
         blocks: [
           { type: "title", text: "Plán péče na čekací listině" },
           { type: "list", title: "Povinnosti pacienta a péče", items: [
-            "Kontrolní krevní odběry měsíčně v FN Motol",
+            "Kontrolní krevní odběry měsíčně v FNMH",
             "Rehabilitace a edukace dle programu WL",
             "Okamžitě hlášení zhoršení stavu (teplota, kašel, dušnost)",
             "Ambulantní pneumolog sleduje stav v regionu"
           ]},
-          { type: "section", title: "Kontakt", paragraphs: ["Koordinace LTx: +420 224 43 2100, plicní.tx@fnmotol.cz"] }
+          { type: "section", title: "Kontakt", paragraphs: ["Koordinace LTx: +420 224 43 2100, plicni.tx@fnmotol.cz"] }
         ],
         signedBy: "Bc. Petra Mertová",
         signedRole: "Transplantační koordinátor"
@@ -1525,7 +1542,7 @@
       "p6-d3-informace": {
         previewTitle: "Informace pro péči na WL",
         previewMeta: "PDF · 72 kB · Bc. Petra Mertová · 22. 3. 2026",
-        institution: "Fakultní nemocnice v Motole",
+        institution: "FNMH - Fakultní nemocnice Motol a Homolka",
         department: "Transplantační koordinace LTx",
         docId: "LTX-INFO-WL-0312",
         date: "22. 3. 2026",
@@ -1591,27 +1608,27 @@
       "p7-d2-výrok": {
         previewTitle: "Záznam výroku týmu",
         previewMeta: "PDF · 178 kB · Transplantační tým · 5. 5. 2026",
-        institution: "Fakultní nemocnice v Motole",
+        institution: "FNMH - Fakultní nemocnice Motol a Homolka",
         department: "Transplantační tým LTx",
         docId: "LTX-VYR-2026-0078",
         date: "5. 5. 2026",
         patient: { name: "Marie Horáková", diag: "IPF" },
         blocks: [
-          { type: "title", text: "Záznam výroku transplantčního týmu" },
+          { type: "title", text: "Záznam výroku transplantačního týmu" },
           { type: "verdict", variant: "critical", title: "VYROK: NEZAŘADIT NA ČEKACÍ LISTINU", text: "Transplantace plic v aktuálním stadiu onemocnění není indikována.", note: "Stav cesty: UKONCENO. Doporučená optimalizace symptomatické terapie v ambulantní péči." },
           { type: "section", title: "Důvod", paragraphs: [
             "Tým zhodnotil progresi onemocnění, ale indikační kritéria pro transplantaci v aktuálním stadiu nejsou splněny.",
             "Doporučeno pokračovat v dosavadní péči u odesílajícího pneumologu."
           ]}
         ],
-        signedBy: "MUDr. Jana Vavrová",
-        signedRole: "Za transplantní tým",
+        signedBy: "MUDr. Jan Havlín, Ph.D.",
+        signedRole: "Za transplantační tým",
         stamp: "VYROK TÝMU"
       },
       "p7-d2-doporučení": {
         previewTitle: "Doporučení pro ambulantní péči",
-        previewMeta: "PDF · 92 kB · FN Motol · 5. 5. 2026",
-        institution: "Fakultní nemocnice v Motole",
+        previewMeta: "PDF · 92 kB · FNMH · 5. 5. 2026",
+        institution: "FNMH - Fakultní nemocnice Motol a Homolka",
         department: "Plicní klinika",
         docId: "LTX-DOP-2026-0078",
         date: "5. 5. 2026",
@@ -1626,8 +1643,8 @@
           ]},
           { type: "section", title: "Sdílení", paragraphs: ["Dokument sdílený s ambulantním pneumologem přes LTx Pathway."] }
         ],
-        signedBy: "MUDr. Jana Vavrová",
-        signedRole: "Transplantační pneumolog, FN Motol"
+        signedBy: "MUDr. Jan Havlín, Ph.D.",
+        signedRole: "Transplantační pneumolog, FNMH"
       }
     };
 
@@ -1657,7 +1674,7 @@
       {
         id: "m2",
         patientId: "p6",
-        from: "MUDr. Jana Vavrová, transplantační pneumolog",
+        from: "MUDr. Jan Havlín, Ph.D., transplantační pneumolog",
         subject: "Stav na čekací listině - Josef Dvořák",
         date: "20. 6. 2026 15:30",
         preview: "Pacient je stabilní na WL. Prosíme o informaci, pokud by se zhoršil stav nebo byla potřeba hospitalizace v regionu.",
@@ -1666,7 +1683,7 @@
       {
         id: "m3",
         patientId: "p4",
-        from: "MUDr. Jana Vavrová, transplantační pneumolog",
+        from: "MUDr. Jan Havlín, Ph.D., transplantační pneumolog",
         subject: "Sdílený follow-up - Peter Hudák",
         date: "18. 6. 2026 10:05",
         preview: "Pacient je 9 měsíců po TX, stabilní. Sdílíme trend FEV1 a plán kontroly 8. 7. Ambulantní pneumolog vede běžný režim mimo centrum.",
@@ -1679,7 +1696,7 @@
       {
         id: "m4",
         patientId: "p7",
-        from: "MUDr. Jana Vavrová, transplantační pneumolog",
+        from: "MUDr. Jan Havlín, Ph.D., transplantační pneumolog",
         subject: "Výrok týmu - Marie Horáková",
         date: "5. 5. 2026 16:00",
         preview: "Tým doporučil pokračovat v dosavadní ambulantní péči, transplantace v aktuálním stadiu není indikována. Zasíláme záznam výroku týmu a doporučení pro další péči.",
@@ -1692,7 +1709,7 @@
       {
         id: "m5",
         patientId: "p4",
-        from: "doc. MUDr. Petr Sima, transplantační chirurg",
+        from: "Prof. MUDr. Robert Lischke, Ph.D., transplantační chirurg",
         subject: "Záznam o transplantaci - Peter Hudák",
         date: "18. 9. 2025 17:40",
         preview: "Bilaterální transplantace plic proběhla bez zásadních chirurgických komplikací. Zasíláme operační zpravu a základní pooperační plán.",
@@ -1753,9 +1770,9 @@
         id: "edu-rehab",
         category: "Rehabilitace",
         duration: "10 min",
-        title: "Prerehabilitace - dechová cvičení",
+        title: "Prérehabilitace - dechová cvičení",
         author: "Rehabilitační / fyzioterapeut",
-        description: "Sada cviků pro každodenní domácí prerehabilitaci a posílení dechových svalů."
+        description: "Sada cviků pro každodenní domácí prérehabilitaci a posílení dechových svalů."
       }
     ];
 
@@ -1841,7 +1858,7 @@
     const clinicalTeamRoles = ["txPulmo", "surgeon", "intensivist", "psychologist", "rehab"];
 
     const contacts = [
-      { name: "MUDr. Jana Vavrová", role: "Transplantační pneumolog", contact: "plicní.tx@fnmotol.cz" },
+      { name: "MUDr. Jan Havlín, Ph.D.", role: "Transplantační pneumolog", contact: "plicni.tx@fnmotol.cz" },
       { name: "Bc. Petra Mertová", role: "Transplantační koordinátor", contact: "+420 224 43 2100" },
       { name: "Mgr. Adam Havel", role: "Psycholog", contact: "psycholog.tx@fnmotol.cz" },
       { name: "Mgr. Lucie Marková", role: "Fyzioterapie", contact: "rehab.tx@fnmotol.cz" },
@@ -1896,9 +1913,26 @@
       return clinicalTeamRoles.includes(activeUser().roleId);
     }
 
+    // Agendu orgánů vidí i anesteziolog/intenzivista - potřebuje údaje o dárci
+    // i příjemci, ale jen pro čtení (dnes je dostává ve WhatsApp skupině).
     function canAccessOrganOffers() {
       const roleId = activeUser().roleId;
-      return roleId === "coordinator" || roleId === "txPulmo" || roleId === "surgeon";
+      return roleId === "coordinator" || roleId === "txPulmo" || roleId === "surgeon" || roleId === "intensivist";
+    }
+
+    // Příjemce z čekací listiny vybírá a nabídku přijímá transplantační chirurg.
+    function canDecideOrganOffer() {
+      return activeUser().roleId === "surgeon";
+    }
+
+    // Koordinátor řeší logistiku nabídky - zakládá a upravuje ji.
+    function canManageOrganOffers() {
+      return activeUser().roleId === "coordinator";
+    }
+
+    // Imunologickou kompatibilitu posuzuje transplantační pneumolog.
+    function canAssessOrganImmunology() {
+      return activeUser().roleId === "txPulmo";
     }
 
     function canAccessReferringNetwork() {
@@ -2130,7 +2164,7 @@
         const marker = new AdvancedMarkerElement({
           map,
           position,
-          title: isCenter ? "FN Motol" : site.city,
+          title: isCenter ? "FNMH" : site.city,
           content: createReferringMarkerContent({
             isCenter,
             isSelected: selectedSiteId === site.id
@@ -2267,7 +2301,7 @@
             </p>
           ` : `
             <p class="flow-closure-outbound-warn">
-              Chybí zpráva pro odesílatele. Transplantní pneumolog nebo koordinátor ji musí vložit během fáze jako typ „zpráva pro odesílatele“.
+              Chybí zpráva pro odesílatele. Transplantační pneumolog nebo koordinátor ji musí vložit během fáze jako typ „zpráva pro odesílatele“.
             </p>
           `}
         </div>
@@ -2462,7 +2496,8 @@
       if (!patient || patient.state === "UKONCENO") return false;
       const user = activeUser();
       if (user.roleId === "patient") return true;
-      return user.roleId === "coordinator" || isClinicalTeamViewer() || user.roleId === "ambulatory";
+      // Plán vyšetření v centru drží transplantační tým, ne odesílající pneumolog.
+      return user.roleId === "coordinator" || isClinicalTeamViewer();
     }
 
     function canManageExams(patient) {
@@ -2693,32 +2728,64 @@
       return String(value).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     }
 
+    // Akademické tituly nejsou jméno. Kdyby se braly jako alias, zvýraznilo by
+    // se u zmínky jen "@MUDr." a otagovali by se všichni lékaři najednou.
+    const NAME_TITLE_RE = /^(mudr|mddr|md|bc|mgr|prof|doc|ing|phdr|judr|rndr|paeddr|ph\.?d|csc|drsc)\.?$/i;
+    const MENTION_TITLE_PREFIX = "(?:(?:MUDr|MDDr|Bc|Mgr|Prof|Doc|Ing|PhDr|JUDr|RNDr|PaedDr|Ph\\.?D)\\.?\\s+)*";
+    const MENTION_SLOT_RE = /@@MENTION(\d+)@@/g;
+
+    function chatMentionAliases(user) {
+      const full = (user?.name || "").trim();
+      if (!full) return [];
+      const parts = full.split(/\s+/).filter(Boolean);
+      const meaningful = parts
+        .map((part) => part.replace(/[.,;:]+$/g, ""))
+        .filter((part) => part.length > 2 && !NAME_TITLE_RE.test(stripDiacritics(part)));
+
+      const aliases = new Set([full]);
+      if (meaningful.length) aliases.add(meaningful.join(" "));
+      meaningful.forEach((part) => aliases.add(part));
+      return [...aliases].filter(Boolean);
+    }
+
     function renderInternalChatBody(body) {
       let html = escapeHtml(body || "");
-      getInternalStaffUsers().forEach((user) => {
-        const names = [user.name, ...user.name.split(/\s+/)].filter((item) => item.length > 2);
-        names.forEach((name) => {
-          const pattern = new RegExp(`@${escapeRegExp(escapeHtml(name))}`, "gi");
-          html = html.replace(pattern, (match) => `<span class="internal-chat-mention">${match}</span>`);
+      const rendered = [];
+      const aliases = getInternalStaffUsers()
+        .flatMap((user) => chatMentionAliases(user))
+        // Delší alias musí mít přednost, jinak by "@MUDr. Jan Havlín" zvýraznil
+        // jen křestní jméno a zbytek zmínky nechal mimo.
+        .sort((a, b) => b.length - a.length);
+
+      aliases.forEach((alias) => {
+        const pattern = new RegExp(`@(${MENTION_TITLE_PREFIX}${escapeRegExp(escapeHtml(alias))})`, "gi");
+        html = html.replace(pattern, (match) => {
+          const index = rendered.push(`<span class="internal-chat-mention">${match}</span>`) - 1;
+          return `@@MENTION${index}@@`;
         });
       });
-      return html;
+
+      return html.replace(MENTION_SLOT_RE, (_, index) => rendered[Number(index)] ?? "");
     }
 
     function extractTaggedUserIdsFromMessage(message) {
       const normalized = stripDiacritics(message || "").toLowerCase();
       const tagged = new Set();
+      // Zmínka může nést titul ("@MUDr. Jan Havlín") - ten při hledání aliasu
+      // přeskočíme, samotný titul ale aliasem nikdy není.
+      const withoutTitles = normalized.replace(
+        /@(?:(?:mudr|mddr|bc|mgr|prof|doc|ing|phdr|judr|rndr|paeddr|ph\.?d)\.?\s+)+/g,
+        "@"
+      );
+
       getInternalStaffUsers()
         .filter((user) => user.id !== demoState.userId)
         .forEach((user) => {
-          const aliases = [
-            user.name,
-            ...user.name.split(/\s+/).filter((part) => part.length > 2)
-          ]
+          const aliases = chatMentionAliases(user)
             .map((alias) => stripDiacritics(alias).toLowerCase())
             .filter(Boolean);
 
-          if (aliases.some((alias) => normalized.includes(`@${alias}`))) {
+          if (aliases.some((alias) => normalized.includes(`@${alias}`) || withoutTitles.includes(`@${alias}`))) {
             tagged.add(user.id);
           }
         });
@@ -2730,9 +2797,9 @@
         coordinator: "Koordinátor",
         txPulmo: "Transplantační pneumolog",
         surgeon: "Transplantační chirurg",
-        intensivist: "Intenzivist",
+        intensivist: "Anesteziolog a intenzivista",
         psychologist: "Psycholog",
-        rehab: "Rehabilitace",
+        rehab: "Fyzioterapeut",
         automation: "Automatické upozornění",
         patient: "Pacient"
       };
@@ -3106,7 +3173,7 @@
         patient.exams.push({
           id: `${patient.id}-exam-${Date.now()}`,
           title: values.title,
-          place: values.place || "FN Motol",
+          place: values.place || "FNMH",
           date: values.date,
           note: values.note,
           status: "planned",
@@ -3116,7 +3183,7 @@
         });
         pushPatientNotification(
           patient.id,
-          `Nový termín: ${values.title}, ${values.date}, ${values.place || "FN Motol"}.`,
+          `Nový termín: ${values.title}, ${values.date}, ${values.place || "FNMH"}.`,
           "exam_planned"
         );
         demoState.audit.unshift(
@@ -3130,7 +3197,7 @@
           return;
         }
         rawExam.title = values.title;
-        rawExam.place = values.place || "FN Motol";
+        rawExam.place = values.place || "FNMH";
         rawExam.date = values.date;
         rawExam.note = values.note;
         demoState.audit.unshift(
@@ -3427,7 +3494,7 @@
         <section class="card patient-portal-section patient-daily-record">
           <h2 class="patient-portal-page-title">Dnešní záznam - ${formatDemoDateLong()}</h2>
           <p class="patient-portal-page-sub">${isPostTx
-            ? "Domácí spirometrie, vitální funkce a medikace po transplantaci. Data uvidí tým centra i odesílající pneumolog."
+            ? "Domácí spirometrie, vitální funkce a medikace po transplantaci. Data uvidí transplantační tým."
             : "Domácí spirometrie a vitální funkce na čekací listině. Tým sleduje trend a reaguje na zhoršení."}</p>
 
           <form class="daily-record-form" id="patientDailyRecordForm" data-patient-id="${patient.id}">
@@ -3712,8 +3779,13 @@
       `;
     }
 
+    // Panel záměrně NEUVÁDÍ skóre rizika ani doporučené kroky týmu.
+    // Jde o upozornění na odchylku od výchozích (baseline) hodnot, které si
+    // klinik vyhodnotí sám - ne o klinické doporučení. Klesající trend proto
+    // nikdy nesmí skončit se štítkem "stabilní".
     function buildDailyRecordsAiAnalysis(patient) {
-      const records = getPatientMeasurements(patient).slice().reverse();
+      // Chronologicky: nejstarší měření první, poslední na konci.
+      const records = getPatientMeasurements(patient).slice();
       if (!records.length) {
         return {
           empty: true,
@@ -3721,22 +3793,19 @@
         };
       }
 
+      const latest = records[records.length - 1];
       const fev1Series = records
         .filter((row) => row.fev1 != null)
-        .slice()
-        .reverse()
-        .map((row) => Number(row.fev1));
-      const latest = records[0];
-      const baseline = patient.baseline != null ? Number(patient.baseline) : fev1Series[0] || null;
-      const latestFev1 = latest.fev1 != null ? Number(latest.fev1) : fev1Series[fev1Series.length - 1] || null;
+        .map((row) => Number(row.fev1))
+        .filter((value) => Number.isFinite(value));
+      const fev1Baseline = patient.baseline != null && Number(patient.baseline) > 0
+        ? Number(patient.baseline)
+        : (fev1Series.length ? fev1Series[0] : null);
+      const fev1Latest = fev1Series.length ? fev1Series[fev1Series.length - 1] : null;
 
       let fev1DeltaPct = null;
-      if (latestFev1 != null && baseline != null && baseline > 0) {
-        fev1DeltaPct = ((latestFev1 - baseline) / baseline) * 100;
-      } else if (fev1Series.length >= 2) {
-        const first = fev1Series[0];
-        const last = fev1Series[fev1Series.length - 1];
-        if (first > 0) fev1DeltaPct = ((last - first) / first) * 100;
+      if (fev1Latest != null && fev1Baseline != null && fev1Baseline > 0) {
+        fev1DeltaPct = ((fev1Latest - fev1Baseline) / fev1Baseline) * 100;
       }
 
       const symptomEvents = records.filter((row) => row.symptoms?.length).length;
@@ -3745,127 +3814,105 @@
       ).length;
       const missedMeds = records.filter((row) => row.medicationTaken === false).length;
       const latestSpo2 = latest.spo2 != null ? Number(latest.spo2) : null;
-      const moodSeries = records.filter((row) => row.mood != null).slice().reverse().map((row) => Number(row.mood));
-
-      let riskScore = 18;
-      if (fev1DeltaPct != null && fev1DeltaPct <= -15) riskScore += 38;
-      else if (fev1DeltaPct != null && fev1DeltaPct <= -8) riskScore += 22;
-      else if (fev1DeltaPct != null && fev1DeltaPct < 0) riskScore += 10;
-      if (latestSpo2 != null && latestSpo2 < 92) riskScore += 28;
-      else if (latestSpo2 != null && latestSpo2 < 95) riskScore += 12;
-      if (criticalSymptoms) riskScore += 24;
-      else if (symptomEvents >= 2) riskScore += 14;
-      else if (symptomEvents === 1) riskScore += 8;
-      if (missedMeds) riskScore += 16;
-      if (latest.mood === "1" || latest.mood === "2") riskScore += 12;
-      riskScore = Math.min(96, Math.max(8, Math.round(riskScore)));
-
-      let riskLevel = "stable";
-      let riskLabel = "Stabilní profil";
-      if (riskScore >= 62) {
-        riskLevel = "elevated";
-        riskLabel = "Zvýšené riziko";
-      } else if (riskScore >= 38) {
-        riskLevel = "watch";
-        riskLabel = "Sledovat pozorněji";
-      }
+      const spo2Stats = trendSeriesStats(records, "spo2");
 
       const insights = [];
+      const push = (tone, title, text) => insights.push({ tone, title, text });
+
       if (fev1DeltaPct != null) {
-        const dir = fev1DeltaPct >= 0 ? "nárůst" : "pokles";
-        insights.push({
-          tone: fev1DeltaPct <= -10 ? "warn" : fev1DeltaPct < 0 ? "info" : "ok",
-          title: "Trend FEV1",
-          text: `Oproti referenci ${dir} ${Math.abs(fev1DeltaPct).toFixed(1)} % (aktuálně ${latestFev1?.toFixed(2) || "-"} l).`
-        });
+        const magnitude = Math.abs(fev1DeltaPct);
+        const dropped = fev1DeltaPct < -0.05;
+        const baselineText = `${formatCzNumber(fev1Baseline, 2)} l → ${formatCzNumber(fev1Latest, 2)} l`;
+        if (dropped) {
+          push(
+            magnitude >= 5 ? "warn" : "info",
+            "FEV1 proti výchozí hodnotě",
+            `FEV1 kleslo o ${formatCzNumber(magnitude, 1)} % proti výchozí hodnotě (${baselineText}).${magnitude >= 5 ? " Zvažte kontrolu." : ""}`
+          );
+        } else if (fev1DeltaPct > 0.05) {
+          push("ok", "FEV1 proti výchozí hodnotě", `FEV1 je o ${formatCzNumber(magnitude, 1)} % nad výchozí hodnotou (${baselineText}).`);
+        } else {
+          push("ok", "FEV1 proti výchozí hodnotě", `FEV1 odpovídá výchozí hodnotě (${baselineText}).`);
+        }
+      } else if (fev1Latest != null) {
+        push("info", "FEV1", `Zatím jen ${fev1Series.length === 1 ? "jedno měření" : "málo měření"} FEV1 (${formatCzNumber(fev1Latest, 2)} l) - bez porovnání s výchozí hodnotou.`);
       }
+
       if (latestSpo2 != null) {
-        insights.push({
-          tone: latestSpo2 < 92 ? "warn" : latestSpo2 < 95 ? "info" : "ok",
-          title: "Saturace SpO2",
-          text: latestSpo2 < 92
-            ? `Poslední hodnota ${latestSpo2} % - pod prahem pro klidovou ventilaci, zvažte telefonický kontakt do 24 h.`
+        const falling = spo2Stats && spo2Stats.count > 1 && spo2Stats.last < spo2Stats.first;
+        push(
+          latestSpo2 < 92 ? "warn" : latestSpo2 < 95 ? "info" : "ok",
+          "Saturace SpO2",
+          latestSpo2 < 92
+            ? `Poslední hodnota ${formatCzNumber(latestSpo2, 0)} % - pod obvyklým rozmezím domácího monitoringu.`
             : latestSpo2 < 95
-              ? `Poslední hodnota ${latestSpo2} % - mírně snížená, sledujte trend v dalších záznamech.`
-              : `Poslední hodnota ${latestSpo2} % - v obvyklém rozmezí pro domácí monitoring.`
-        });
+              ? `Poslední hodnota ${formatCzNumber(latestSpo2, 0)} % - mírně snížená${falling ? ", v řadě měření klesá" : ""}.`
+              : `Poslední hodnota ${formatCzNumber(latestSpo2, 0)} % - v obvyklém rozmezí${falling ? ", v řadě měření ale klesá" : ""}.`
+        );
       }
+
       if (symptomEvents) {
-        insights.push({
-          tone: criticalSymptoms ? "warn" : "info",
-          title: "Subjektivní příznaky",
-          text: criticalSymptoms
-            ? "V datech jsou závažné příznaky (hemoptýza, horečka nebo bolest na hrudi) - doporučena prioritní klinická evaluace."
-            : `Pacient hlásil příznaky u ${symptomEvents} z ${records.length} záznamů; koreluujte se spirometrií a kontaktem.`
-        });
+        push(
+          criticalSymptoms ? "warn" : "info",
+          "Subjektivní příznaky",
+          criticalSymptoms
+            ? "V záznamech jsou závažné příznaky (hemoptýza, horečka nebo bolest na hrudi)."
+            : `Pacient hlásil příznaky u ${symptomEvents} z ${records.length} záznamů.`
+        );
       } else {
-        insights.push({
-          tone: "ok",
-          title: "Subjektivní příznaky",
-          text: "V analyzovaném okně bez hlášených příznaků - dobrý prognostický signál při stabilní objektivní křivce."
-        });
+        push("ok", "Subjektivní příznaky", "V zobrazeném okně pacient nehlásil žádné příznaky.");
       }
+
       if (patient.state === "PO_TX" && missedMeds) {
-        insights.push({
-          tone: "warn",
-          title: "Adherence imunosuprese",
-          text: `${missedMeds}× neevidované užití medikace - zvýrazněte riziko akutního odmítnutí u koordinátora.`
-        });
+        push("warn", "Adherence imunosuprese", `${missedMeds}× pacient uvedl, že neužil medikaci podle plánu.`);
       }
 
       if (latest.mood) {
         const moodMap = {
-          "1": { label: "pod psa", tone: "warn" },
-          "2": { label: "nic moc", tone: "warn" },
+          "1": { label: "pod psa", tone: "info" },
+          "2": { label: "nic moc", tone: "info" },
           "3": { label: "jde to", tone: "info" },
           "4": { label: "dobře", tone: "ok" },
           "5": { label: "super", tone: "ok" }
         };
-        const m = moodMap[latest.mood];
-        if (m) {
-          insights.push({
-            tone: m.tone,
-            title: "Subjektivní nálada",
-            text: `Pacient hodnotí náladu jako "${m.label}". ${latest.mood <= "2" ? "Výrazně zhoršená nálada může korelovat s fyzickým diskomfortem." : "Dobrá nálada podporuje stabilitu a adherenci."}`
-          });
+        const mood = moodMap[String(latest.mood)];
+        if (mood) {
+          push(mood.tone, "Subjektivní nálada", `Pacient hodnotí náladu jako „${mood.label}“.`);
         }
       }
 
-      const actions = [];
-      if (riskLevel === "elevated") {
-        actions.push("Navrhnout neplánované kontrolní vyšetření do 72 hodin.");
-        actions.push("Ověřit domácí techniku spirometrie a správnost měření (3 validní pokusy).");
-        actions.push("Informovat transplantní pneumologa - připravit interní chat s odkazem na trend.");
-      } else if (riskLevel === "watch") {
-        actions.push("Požádat pacienta o denní záznam po dobu 5 dnů místo obvyklého intervalu.");
-        actions.push("Porovnat s poslední ambulantní spirometrií v centru.");
-      } else {
-        actions.push("Pokračovat v standardním režimu domácího monitoringu.");
-        actions.push("Při příštím kontaktu potvrdit, že pacient rozumí prahům pro urgentní hlášení.");
-      }
+      const hasWarn = insights.some((item) => item.tone === "warn");
+      const hasInfo = insights.some((item) => item.tone === "info");
+      const statusLevel = hasWarn ? "deviation" : hasInfo ? "watch" : "stable";
+      const statusLabel = hasWarn
+        ? "Odchylka od výchozích hodnot"
+        : hasInfo
+          ? "Mírná odchylka"
+          : "Bez odchylky od výchozích hodnot";
 
-      const summary = riskLevel === "elevated"
-        ? `Model detekuje signály vyžadující týmovou pozornost u ${patient.name}. Kombinace trendů spirometrie, saturace a příznaků překračuje běžnou variabilitu domácího monitoringu.`
-        : riskLevel === "watch"
-          ? `Profil ${patient.name} je celkově zvládnutelný, ale některé parametry vykazují mírnou odchylku - vhodná fáze pro preventivní kontakt týmu.`
-          : `Domácí data ${patient.name} vypadají stabilně. AI nenašla urgentní vzorec; doporučuje pokračovat v rutinním sledování.`;
+      const primary = insights.find((item) => item.tone === "warn")
+        || insights.find((item) => item.tone === "info");
+      const headline = primary
+        ? primary.text
+        : `V zobrazeném okně (${records.length} ${records.length === 1 ? "záznam" : records.length < 5 ? "záznamy" : "záznamů"}) se hodnoty drží u výchozích.`;
 
       return {
         empty: false,
         recordCount: records.length,
         windowLabel: records.length === 1 ? "1 záznam" : `${records.length} záznamů`,
-        riskScore,
-        riskLevel,
-        riskLabel,
-        summary,
+        statusLevel,
+        statusLabel,
+        headline,
         insights,
-        actions,
         fev1Series,
+        fev1Baseline,
+        fev1Latest,
         fev1DeltaPct,
         latestLabel: latest.recordedAt || latest.date || "-",
         generatedAt: formatDemoTimestamp()
       };
     }
+
 
     function renderAiSparkline(values) {
       if (!values?.length) return "";
@@ -3902,44 +3949,132 @@
       `;
     }
 
-    function renderTrendChart({ title, values, labels, color = "#4f8cff", unit = "" }) {
-      if (!values?.length) return "";
+    function formatCzNumber(value, decimals = 1) {
+      if (!Number.isFinite(Number(value))) return "-";
+      return Number(value).toFixed(decimals).replace(".", ",");
+    }
+
+    function formatCzDelta(deltaPct, decimals = 1) {
+      if (!Number.isFinite(Number(deltaPct))) return "";
+      const value = Number(deltaPct);
+      const sign = value > 0 ? "+" : value < 0 ? "−" : "";
+      return `${sign}${formatCzNumber(Math.abs(value), decimals)} %`;
+    }
+
+    // Grafy trendů vykreslují data chronologicky - nejstarší měření vlevo,
+    // poslední vpravo. V hlavičce karty je vždy POSLEDNÍ hodnota a změna
+    // proti výchozímu (prvnímu) měření v okně.
+    function renderTrendChart({ title, values, labels, color = "#4f8cff", unit = "", decimals = 1, baseline = null, baselineLabel = "výchozí hodnotě" }) {
+      const series = (values || [])
+        .map((value, index) => ({ value, label: (labels && labels[index]) || "" }))
+        .filter((item) => item.value != null && item.value !== "" && Number.isFinite(Number(item.value)))
+        .map((item) => ({ value: Number(item.value), label: item.label }));
+      if (!series.length) return "";
+
       const width = 340;
       const height = 120;
       const padding = 25;
-      const min = Math.min(...values);
-      const max = Math.max(...values);
+      const nums = series.map((item) => item.value);
+      const min = Math.min(...nums);
+      const max = Math.max(...nums);
       const range = max - min || 1;
-      const points = values.map((v, i) => {
-        const x = padding + (i / Math.max(values.length - 1, 1)) * (width - 2 * padding);
-        const y = height - padding - ((v - min) / range) * (height - 2 * padding);
+      const pointAt = (index) => ({
+        x: padding + (index / Math.max(series.length - 1, 1)) * (width - 2 * padding),
+        y: height - padding - ((series[index].value - min) / range) * (height - 2 * padding)
+      });
+      const points = series.map((_, index) => {
+        const { x, y } = pointAt(index);
         return `${x.toFixed(1)},${y.toFixed(1)}`;
       }).join(" ");
+
+      // Když je u pacienta vedená baseline (referenční hodnota), počítá se změna
+      // proti ní - jinak proti prvnímu měření v okně. Musí to sedět s panelem
+      // odchylek, jinak by každý ukazoval jiné procento.
+      const reference = Number.isFinite(Number(baseline)) && Number(baseline) > 0
+        ? Number(baseline)
+        : series[0].value;
+      const first = reference;
+      const last = series[series.length - 1].value;
+      const deltaPct = (series.length > 1 || baseline != null) && first ? ((last - first) / first) * 100 : null;
+      const deltaDir = deltaPct == null || Math.abs(deltaPct) < 0.05
+        ? "flat"
+        : deltaPct < 0 ? "down" : "up";
 
       return `
         <div class="trend-chart-box">
           <div class="trend-chart-header">
             <strong>${escapeHtml(title)}</strong>
-            <span>${values[values.length - 1]}${unit}</span>
+            <span class="trend-chart-value">
+              ${formatCzNumber(last, decimals)}${unit}
+              ${deltaPct != null ? `<em class="trend-chart-delta trend-chart-delta--${deltaDir}" title="Změna proti ${baselineLabel} ${formatCzNumber(first, decimals)}${unit}">${formatCzDelta(deltaPct)}</em>` : ""}
+            </span>
           </div>
-          <svg viewBox="0 0 ${width} ${height}" class="trend-chart-svg">
-            <polyline points="${points}" fill="none" stroke="${color}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
-            ${values.map((v, i) => {
-              const x = padding + (i / Math.max(values.length - 1, 1)) * (width - 2 * padding);
-              const y = height - padding - ((v - min) / range) * (height - 2 * padding);
-              return `<circle cx="${x}" cy="${y}" r="3.5" fill="${color}" />`;
+          <svg viewBox="0 0 ${width} ${height}" class="trend-chart-svg" role="img" aria-label="${escapeHtml(title)}: vývoj od ${escapeHtml(series[0].label)} do ${escapeHtml(series[series.length - 1].label)}">
+            ${series.length > 1 ? `<polyline points="${points}" fill="none" stroke="${color}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />` : ""}
+            ${series.map((item, index) => {
+              const { x, y } = pointAt(index);
+              const isLast = index === series.length - 1;
+              return `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${isLast ? "4.5" : "3.5"}" fill="${color}"${isLast ? ' stroke="#ffffff" stroke-width="1.6"' : ""}><title>${escapeHtml(item.label)}: ${formatCzNumber(item.value, decimals)}${unit}</title></circle>`;
             }).join("")}
           </svg>
           <div class="trend-chart-labels">
-            <span>${labels[0]}</span>
-            <span>${labels[labels.length - 1]}</span>
+            <span>${escapeHtml(series[0].label)}</span>
+            <span class="trend-chart-axis-hint" aria-hidden="true">→</span>
+            <span>${escapeHtml(series[series.length - 1].label)}</span>
           </div>
         </div>
       `;
     }
 
+    function trendSeriesStats(records, key) {
+      const series = (records || [])
+        .map((row) => (row[key] == null || row[key] === "" ? null : Number(row[key])))
+        .filter((value) => Number.isFinite(value));
+      if (!series.length) return null;
+      const first = series[0];
+      const last = series[series.length - 1];
+      return {
+        count: series.length,
+        first,
+        last,
+        deltaPct: series.length > 1 && first ? ((last - first) / first) * 100 : null
+      };
+    }
+
+    function buildTrendsSummaryText(records, baseline = null) {
+      const parts = [];
+      const fev1 = trendSeriesStats(records, "fev1");
+      const spo2 = trendSeriesStats(records, "spo2");
+      const weight = trendSeriesStats(records, "weight");
+
+      if (fev1 && Number.isFinite(Number(baseline)) && Number(baseline) > 0) {
+        const reference = Number(baseline);
+        const deltaPct = ((fev1.last - reference) / reference) * 100;
+        const dir = deltaPct < -0.05 ? "kleslo" : deltaPct > 0.05 ? "vzrostlo" : "je beze změny";
+        parts.push(`FEV1 ${dir} z výchozích ${formatCzNumber(reference, 2)} l na ${formatCzNumber(fev1.last, 2)} l (${formatCzDelta(deltaPct)}).`);
+      } else if (fev1 && fev1.deltaPct != null) {
+        const dir = fev1.deltaPct < -0.05 ? "kleslo" : fev1.deltaPct > 0.05 ? "vzrostlo" : "je beze změny";
+        parts.push(`FEV1 ${dir} z výchozích ${formatCzNumber(fev1.first, 2)} l na ${formatCzNumber(fev1.last, 2)} l (${formatCzDelta(fev1.deltaPct)}).`);
+      } else if (fev1) {
+        parts.push(`FEV1 při posledním měření ${formatCzNumber(fev1.last, 2)} l.`);
+      }
+      if (spo2) {
+        const falling = spo2.count > 1 && spo2.last < spo2.first;
+        parts.push(`Poslední saturace ${formatCzNumber(spo2.last, 0)} %${falling ? " (klesající trend)" : ""}.`);
+      }
+      if (weight && weight.count > 1) {
+        const diff = weight.last - weight.first;
+        if (Math.abs(diff) >= 0.5) {
+          parts.push(`Hmotnost ${diff < 0 ? "klesla" : "vzrostla"} o ${formatCzNumber(Math.abs(diff), 1)} kg.`);
+        }
+      }
+      if (!parts.length) return "Zatím není k dispozici dost měření pro vyhodnocení trendu.";
+      return parts.join(" ");
+    }
+
     function renderPatientTrendsSidebar(patient) {
-      const records = getPatientMeasurements(patient).slice().reverse();
+      // Chronologicky: nejstarší měření první (vlevo v grafu).
+      const records = getPatientMeasurements(patient).slice();
       if (!records.length) {
         return `
           <div class="sidebar-panel-header">
@@ -3952,11 +4087,14 @@
         `;
       }
 
-      const labels = records.map(r => r.date || r.recordedAt?.split(" ")[0] || "");
-      const fev1Data = records.map(r => Number(r.fev1) || 0);
-      const weightData = records.map(r => Number(r.weight) || 0);
-      const spo2Data = records.map(r => Number(r.spo2) || 0);
-      const moodData = records.map(r => Number(r.mood) || 0);
+      const trendLabel = (row) => row.date || (row.recordedAt || "").split(/\s+/).slice(0, 2).join(" ") || "";
+      const pick = (row, key) => (row[key] == null || row[key] === "" ? null : Number(row[key]));
+
+      const labels = records.map(trendLabel);
+      const fev1Data = records.map((r) => pick(r, "fev1"));
+      const weightData = records.map((r) => pick(r, "weight"));
+      const spo2Data = records.map((r) => pick(r, "spo2"));
+      const moodData = records.map((r) => pick(r, "mood"));
 
       return `
         <div class="sidebar-panel-header">
@@ -3967,14 +4105,15 @@
           <button class="sidebar-panel-close" data-close-trends>×</button>
         </div>
         <div class="sidebar-panel-content">
-          ${renderTrendChart({ title: "FEV1 (Lung Function)", values: fev1Data, labels, color: "#475569", unit: " l" })}
-          ${renderTrendChart({ title: "Saturace SpO2", values: spo2Data, labels, color: "#64748b", unit: " %" })}
-          ${renderTrendChart({ title: "Hmotnost", values: weightData, labels, color: "#94a3b8", unit: " kg" })}
-          ${renderTrendChart({ title: "Nálada (Mood Score)", values: moodData, labels, color: "#1e293b" })}
-          
+          <p class="trend-axis-note">Časová osa zleva doprava, nejstarší měření vlevo. Hodnota v hlavičce je poslední měření a změna proti výchozí hodnotě.</p>
+          ${renderTrendChart({ title: "FEV1 (plicní funkce)", values: fev1Data, labels, color: "#475569", unit: " l", decimals: 2, baseline: patient.baseline })}
+          ${renderTrendChart({ title: "Saturace SpO₂", values: spo2Data, labels, color: "#64748b", unit: " %", decimals: 0 })}
+          ${renderTrendChart({ title: "Hmotnost", values: weightData, labels, color: "#94a3b8", unit: " kg", decimals: 1 })}
+          ${renderTrendChart({ title: "Nálada (subjektivní hodnocení)", values: moodData, labels, color: "#1e293b", decimals: 0 })}
+
           <div class="trend-info-box">
-            <h4>Analytický souhrn</h4>
-            <p>Data odrážejí posledních ${records.length} hlášení. Variabilita FEV1 je v normě, nálada pacienta v posledních dnech vykazuje mírný pokles, což může souviset s hlášenou dušností.</p>
+            <h4>Souhrn měření</h4>
+            <p>${escapeHtml(`Zobrazeno ${records.length} ${records.length === 1 ? "záznam" : records.length < 5 ? "záznamy" : "záznamů"} od ${labels[0]} do ${labels[labels.length - 1]}. ${buildTrendsSummaryText(records, patient.baseline)}`)}</p>
           </div>
         </div>
       `;
@@ -4009,26 +4148,24 @@
               <div class="ai-insights-hero-top">
                 <div class="ai-insights-badge">
                   ${renderMonoIcon("sparkle", "mono-icon ai-insights-badge-icon")}
-                  <span>LTxLink AI Insights</span>
+                  <span>LTxLink · rozbor domácích záznamů</span>
                 </div>
                 <button type="button" class="ai-insights-close" data-close-daily-ai aria-label="Zavřít">×</button>
               </div>
-              <h3 id="dailyRecordsAiTitle">Inteligentní analýza domácích záznamů</h3>
+              <h3 id="dailyRecordsAiTitle">Přehled odchylek v domácích záznamech</h3>
             </header>
             <div class="patient-edit-body ai-insights-body">
               <div class="ai-insights-empty">
                 <div class="ai-insights-empty-icon">${renderMonoIcon("sparkle", "mono-icon")}</div>
-                <h3>Zatím bez dat pro analýzu</h3>
-                <p>Až pacient odešle první domácí záznam, AI zde zobrazí trend FEV1, riziko a doporučené kroky týmu.</p>
+                <h3>Zatím bez dat k porovnání</h3>
+                <p>Až pacient odešle první domácí záznam, zobrazí se zde trend FEV1 a odchylky od výchozích hodnot.</p>
               </div>
             </div>
           </div>
         `;
       }
 
-      const deltaLabel = analysis.fev1DeltaPct != null
-        ? `${analysis.fev1DeltaPct >= 0 ? "+" : ""}${analysis.fev1DeltaPct.toFixed(1)} %`
-        : "-";
+      const deltaLabel = formatCzDelta(analysis.fev1DeltaPct) || "-";
 
       return `
         <div class="ai-insights-drawer">
@@ -4037,11 +4174,11 @@
             <div class="ai-insights-hero-top">
               <div class="ai-insights-badge">
                 ${renderMonoIcon("sparkle", "mono-icon ai-insights-badge-icon")}
-                <span>LTxLink AI Insights</span>
+                <span>LTxLink · rozbor domácích záznamů</span>
               </div>
               <button type="button" class="ai-insights-close" data-close-daily-ai aria-label="Zavřít">×</button>
             </div>
-            <h3 id="dailyRecordsAiTitle">Inteligentní analýza domácích záznamů</h3>
+            <h3 id="dailyRecordsAiTitle">Přehled odchylek v domácích záznamech</h3>
             <p class="ai-insights-sub" style="color: #ffffff; text-shadow: 0 1px 3px rgba(0,0,0,0.5); font-weight: 700;">
               ${escapeHtml(patient.name)} · ${escapeHtml(analysis.windowLabel)} · poslední záznam ${escapeHtml(analysis.latestLabel)}
             </p>
@@ -4049,29 +4186,27 @@
 
           <div class="patient-edit-body ai-insights-body">
             <div class="ai-insights-grid">
-              <section class="ai-insights-score ai-reveal ai-insights-score--${analysis.riskLevel}" style="--ai-delay:80ms">
-                <div class="ai-insights-score-ring" style="--ai-score:${analysis.riskScore}">
-                  <strong>${analysis.riskScore}</strong>
-                  <span>skóre rizika</span>
-                </div>
+              <section class="ai-insights-status ai-reveal ai-insights-status--${analysis.statusLevel}" style="--ai-delay:80ms">
+                <span class="ai-insights-status-dot" aria-hidden="true"></span>
                 <div>
-                  <p class="ai-insights-score-label">${escapeHtml(analysis.riskLabel)}</p>
-                  <p class="ai-insights-score-copy">${escapeHtml(analysis.summary)}</p>
+                  <p class="ai-insights-status-label">${escapeHtml(analysis.statusLabel)}</p>
+                  <p class="ai-insights-status-copy">${escapeHtml(analysis.headline)}</p>
                 </div>
               </section>
 
               ${analysis.fev1Series.length >= 2 ? `
                 <section class="ai-insights-chart ai-reveal" style="--ai-delay:160ms">
                   <div class="ai-insights-chart-head">
-                    <strong>Trend FEV1</strong>
+                    <strong>FEV1 proti výchozí hodnotě${analysis.fev1Baseline != null ? ` (${formatCzNumber(analysis.fev1Baseline, 2)} l)` : ""}</strong>
                     <span class="ai-insights-delta ai-insights-delta--${analysis.fev1DeltaPct != null && analysis.fev1DeltaPct < 0 ? "down" : "up"}">${deltaLabel}</span>
                   </div>
                   ${renderAiSparkline(analysis.fev1Series)}
+                  <p class="ai-insights-chart-note">Nejstarší měření vlevo, poslední vpravo.</p>
                 </section>
               ` : ""}
 
               <section class="ai-insights-list ai-reveal" style="--ai-delay:240ms">
-                <h4>Klíčové signály</h4>
+                <h4>Co je v datech</h4>
                 <div class="ai-insight-cards">
                   ${analysis.insights.map((item, index) => `
                     <article class="ai-insight-card ai-insight-card--${item.tone}" style="--ai-delay:${320 + index * 70}ms">
@@ -4081,19 +4216,12 @@
                   `).join("")}
                 </div>
               </section>
-
-              <section class="ai-insights-actions ai-reveal" style="--ai-delay:520ms">
-                <h4>Doporučené kroky týmu</h4>
-                <ol class="ai-action-list">
-                  ${analysis.actions.map((action) => `<li>${escapeHtml(action)}</li>`).join("")}
-                </ol>
-              </section>
             </div>
           </div>
 
           <footer class="patient-edit-footer ai-insights-footer ai-reveal" style="--ai-delay:600ms">
             <span class="ai-insights-pulse" aria-hidden="true"></span>
-            Analýza vygenerována ${escapeHtml(analysis.generatedAt)} · podpůrný klinický nástroj, nenahrazuje rozhodnutí lékaře
+            Sestaveno ${escapeHtml(analysis.generatedAt)} · podpůrný nástroj, nenahrazuje rozhodnutí lékaře
           </footer>
         </div>
       `;
@@ -4937,7 +5065,10 @@
         showReferrer = false,
         showReferralEdit = false,
         showCoordinatorFlowTools = false,
-        hideSummaryCard = false
+        hideSummaryCard = false,
+        // Ambulantní pneumolog follow-up nedělá - vidí stav své žádosti
+        // a komunikaci s centrem, ne domácí data ani medikaci pacienta.
+        ambulatoryScope = false
       } = options;
 
       const internalChatSection = canViewInternalChat(patient) ? renderInternalChatWorkspace(patient) : "";
@@ -4979,13 +5110,15 @@
               showFlowStateAction: showCoordinatorFlowTools && patient.state !== "UKONCENO" && patient.state !== "PO_TX"
             })}
           </div>
-          ${renderExamPlanSection(patient)}
-          ${canPatientSubmitDailyRecord(patient) ? renderTeamDailyRecordsCard(patient) : ""}
-          ${shouldShowPatientMedicationsCard(patient, { staffDetail: true })
-            ? renderPatientMedicationsCard(patient, { editable: canEditPatientMedications(patient), staffDetail: true })
-            : ""}
-          ${renderInternalNotesSection(patient)}
-          ${internalChatSection}
+          ${ambulatoryScope ? renderAmbulatoryScopeNote(patient) : `
+            ${renderExamPlanSection(patient)}
+            ${canPatientSubmitDailyRecord(patient) ? renderTeamDailyRecordsCard(patient) : ""}
+            ${shouldShowPatientMedicationsCard(patient, { staffDetail: true })
+              ? renderPatientMedicationsCard(patient, { editable: canEditPatientMedications(patient), staffDetail: true })
+              : ""}
+            ${renderInternalNotesSection(patient)}
+            ${internalChatSection}
+          `}
         </div>
       `;
     }
@@ -5152,7 +5285,7 @@
         : "supporting";
 
       if (docRole === "outbound_message" && !canCreateOutboundPhaseMessage()) {
-        showToast("Zprávu pro odesílatele může vložit transplantní tým nebo koordinátor.");
+        showToast("Zprávu pro odesílatele může vložit transplantační tým nebo koordinátor.");
         return;
       }
 
@@ -5371,6 +5504,7 @@
           <td>
             <div class="patient-row-name">
               <strong>${item.name}</strong>
+              ${activeUser().roleId === "rehab" ? renderFrailtyBadge(item) : ""}
               ${canEditDemographics ? `
                 <button
                   type="button"
@@ -5463,8 +5597,8 @@
         date: sentDate || null,
         detail: wasSent
           ? sentDate
-            ? `Žádost odeslána do FN Motol dne ${sentDate}.`
-            : "Žádost odeslána do FN Motol."
+            ? `Žádost odeslána do FNMH dne ${sentDate}.`
+            : "Žádost odeslána do FNMH."
           : "Žádost zatím nebyla odeslána.",
         note: null,
         submissions: wasSent ? buildReferralStepSubmissions(patient) : []
@@ -5484,7 +5618,7 @@
 
       if (patient.state === "POSUZOVANI") {
         stepPosuzovani.status = "active";
-        stepPosuzovani.detail = "Pacient je v posuzování v transplantním centru.";
+        stepPosuzovani.detail = "Pacient je v posuzování v transplantačním centru.";
         stepPosuzovani.submissions = isInternalViewer()
           ? getPhaseEvidenceSubmissions(patient, "rozhodnutí")
           : filterSubmissionsForViewer(getPhaseEvidenceSubmissions(patient, "rozhodnutí"));
@@ -6016,9 +6150,24 @@
       `;
     }
 
+    function renderAmbulatoryScopeNote(patient) {
+      const isPostTx = patient.state === "PO_TX";
+      return `
+        <div class="card soft ambulatory-scope-note">
+          <h3>Rozsah sdílení</h3>
+          <p>
+            ${isPostTx
+              ? "Pacient je po transplantaci. Následnou péči vede transplantační centrum, proto zde vidíte pouze stav pacienta a dokumenty, které vám centrum sdílelo."
+              : "Vidíte stav své žádosti, dokumenty sdílené centrem a chat s koordinací. Domácí měření, medikaci a interní podklady centra vede transplantační tým."}
+          </p>
+        </div>
+      `;
+    }
+
     function renderAmbulatoryPatientPanel(patient) {
       return renderStaffPatientDetailPage(patient, {
-        showReferralEdit: true
+        showReferralEdit: true,
+        ambulatoryScope: true
       });
     }
 
@@ -6060,9 +6209,9 @@
     }
 
     const LTX_DIAGNOSIS_OPTIONS = [
-      { code: "J84.1", label: "Idiopatická plicní fibroza (IPF)", short: "IPF" },
-      { code: "J44.9", label: "CHOPN s emfyzemem", short: "CHOPN" },
-      { code: "E84", label: "Cystická fibroza (CF)", short: "CF" },
+      { code: "J84.1", label: "Idiopatická plicní fibróza (IPF)", short: "IPF" },
+      { code: "J44.9", label: "CHOPN s emfyzémem", short: "CHOPN" },
+      { code: "E84", label: "Cystická fibróza (CF)", short: "CF" },
       { code: "I27.0", label: "Plicní arteriální hypertenze (PAH)", short: "PAH" },
       { code: "J84.9", label: "Intersticiální plicní onemocnění", short: "ILD" },
       { code: "other", label: "Jiná diagnóza", short: "-" }
@@ -6101,8 +6250,8 @@
       const text = patient.diagnosis || "";
       const found = LTX_DIAGNOSIS_OPTIONS.find((item) => item.short === short);
       if (found) return found.code;
-      if (/fibroza|IPF/i.test(text)) return "J84.1";
-      if (/CHOPN|emfyzem/i.test(text)) return "J44.9";
+      if (/fibróza|IPF/i.test(text)) return "J84.1";
+      if (/CHOPN|emfyzém/i.test(text)) return "J44.9";
       if (/cystická|CF/i.test(text)) return "E84";
       if (/arteriální hypertenze|PAH/i.test(text)) return "I27.0";
       return "J84.1";
@@ -6503,7 +6652,7 @@
             <div class="card-header">
               <div>
                 <h3>${isNew ? "Nové odeslání pacienta" : "Doplnit žádost"}</h3>
-                <p class="amb-referral-sub">FN Motol · identifikace, diagnóza, přílohy s popisem a průvodní dopis</p>
+                <p class="amb-referral-sub">FNMH · identifikace, diagnóza, přílohy s popisem a průvodní dopis</p>
               </div>
             </div>
 
@@ -6806,6 +6955,193 @@
       });
     }
 
+    // Frailty skóre (klinická křehkost 1-9). Od 5 výš je pacient "křehký" -
+    // fyzioterapeut se mu musí věnovat víc.
+    function patientFrailtyScore(patient) {
+      const value = Number(patient?.demographics?.frailtyScore);
+      return Number.isFinite(value) && value > 0 ? value : null;
+    }
+
+    function isFrailPatient(patient) {
+      if (typeof patient?.frail === "boolean") return patient.frail;
+      const score = patientFrailtyScore(patient);
+      return score != null && score >= 5;
+    }
+
+    function renderFrailtyBadge(patient) {
+      if (!isFrailPatient(patient)) return "";
+      const score = patientFrailtyScore(patient);
+      return `<span class="frailty-badge" title="Frailty skóre ${score ?? "neuvedeno"}">křehký${score ? ` · ${score}` : ""}</span>`;
+    }
+
+    function renderSeminarCell(seminar) {
+      if (!seminar?.done) return '<span class="pill warn">ne</span>';
+      return `<span class="pill ok">ano</span>${seminar.date ? `<br><small>${escapeHtml(seminar.date)}</small>` : ""}`;
+    }
+
+    function moodTrendForPatient(patient) {
+      const values = getPatientMeasurements(patient)
+        .map((row) => Number(row.mood))
+        .filter((value) => Number.isFinite(value) && value > 0);
+      if (values.length < 3) return null;
+
+      const half = Math.max(2, Math.floor(values.length / 2));
+      const early = values.slice(0, half);
+      const late = values.slice(-half);
+      const avg = (list) => list.reduce((sum, value) => sum + value, 0) / list.length;
+      const earlyAvg = avg(early);
+      const lateAvg = avg(late);
+
+      return {
+        count: values.length,
+        latest: values[values.length - 1],
+        earlyAvg,
+        lateAvg,
+        // Dlouhodobě zhoršující se nálada je to, na co má psycholog upozornit.
+        worsening: lateAvg <= earlyAvg - 0.5 || values[values.length - 1] <= 2
+      };
+    }
+
+    function renderPsychPrepWorkspace() {
+      const waitlist = patients.filter((item) => item.state === "WL");
+      const postTx = patients.filter((item) => item.state === "PO_TX");
+
+      return `
+        <div class="grid role-workspace">
+          <div class="card patient-list-page">
+            <div class="card-header">
+              <div>
+                <h3>Přípravné semináře - pacienti na čekací listině</h3>
+                <p>Účast na obou seminářích, doprovod a zapojení pacienta.</p>
+              </div>
+            </div>
+            ${waitlist.length ? `
+              <table class="summary-table patient-list-table">
+                <thead>
+                  <tr>
+                    <th>Pacient</th>
+                    <th>Seminář 1</th>
+                    <th>Seminář 2</th>
+                    <th>Doprovod</th>
+                    <th>Zapojení</th>
+                    <th>Poznámka psychologa</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${waitlist.map((item) => {
+                    const prep = item.psychPrep || {};
+                    const companion = prep.seminar2?.companion || prep.seminar1?.companion || "-";
+                    return `
+                      <tr>
+                        <td><strong>${escapeHtml(item.name)}</strong><br><span class="muted-small">${escapeHtml(item.diagnosisShort || "-")}</span></td>
+                        <td>${renderSeminarCell(prep.seminar1)}</td>
+                        <td>${renderSeminarCell(prep.seminar2)}</td>
+                        <td>${escapeHtml(companion)}</td>
+                        <td>${prep.engagement ? `<span class="pill ${prep.engagement === "aktivní" ? "ok" : "warn"}">${escapeHtml(prep.engagement)}</span>` : "-"}</td>
+                        <td>${escapeHtml(prep.note || "-")}</td>
+                      </tr>
+                    `;
+                  }).join("")}
+                </tbody>
+              </table>
+            ` : '<div class="empty">Na čekací listině nikdo není.</div>'}
+          </div>
+
+          <div class="card patient-list-page">
+            <div class="card-header">
+              <div>
+                <h3>Sebehodnocení nálady po transplantaci</h3>
+                <p>Upozornění se objeví u dlouhodobě zhoršujícího se trendu.</p>
+              </div>
+            </div>
+            ${postTx.length ? `
+              <div class="list">
+                ${postTx.map((item) => {
+                  const trend = moodTrendForPatient(item);
+                  return `
+                    <div class="item">
+                      <div>
+                        <h4>${escapeHtml(item.name)} ${trend?.worsening ? '<span class="pill critical">zhoršující se trend</span>' : ""}</h4>
+                        <p>${trend
+                          ? `Poslední hodnocení ${formatCzNumber(trend.latest, 0)} z 5 · průměr na začátku ${formatCzNumber(trend.earlyAvg, 1)} → nyní ${formatCzNumber(trend.lateAvg, 1)} (${trend.count} záznamů).`
+                          : "Zatím není dost záznamů nálady pro vyhodnocení trendu."}</p>
+                      </div>
+                      <button class="btn ghost" type="button" data-select-patient="${item.id}">Otevřít</button>
+                    </div>
+                  `;
+                }).join("")}
+              </div>
+            ` : '<div class="empty">Žádní pacienti po transplantaci.</div>'}
+          </div>
+        </div>
+      `;
+    }
+
+    function renderPrerehabWorkspace() {
+      const waitlist = [...patients.filter((item) => item.state === "WL")]
+        .sort((a, b) => (patientFrailtyScore(b) || 0) - (patientFrailtyScore(a) || 0));
+      const postTx = patients.filter((item) => item.state === "PO_TX");
+      const frailCount = waitlist.filter(isFrailPatient).length;
+
+      return `
+        <div class="grid role-workspace">
+          <div class="card patient-list-page">
+            <div class="card-header">
+              <div>
+                <h3>Prérehabilitace - čekací listina</h3>
+                <p>${frailCount ? `${frailCount} z ${waitlist.length} pacientů je v kategorii křehký (Frailty 5 a výš) - potřebují intenzivnější péči.` : "Žádný pacient na čekací listině není v kategorii křehký."}</p>
+              </div>
+            </div>
+            ${waitlist.length ? `
+              <table class="summary-table patient-list-table">
+                <thead>
+                  <tr>
+                    <th>Pacient</th>
+                    <th>Diagnóza</th>
+                    <th>Frailty</th>
+                    <th>Dní na listině</th>
+                    <th>Edukace</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${waitlist.map((item) => `
+                    <tr class="${isFrailPatient(item) ? "patient-row--frail" : ""}">
+                      <td><strong>${escapeHtml(item.name)}</strong> ${renderFrailtyBadge(item)}<br><span class="muted-small">${escapeHtml(item.city)}, ${item.age} let</span></td>
+                      <td>${escapeHtml(item.diagnosisShort || "-")}</td>
+                      <td>${patientFrailtyScore(item) ?? "neuvedeno"}</td>
+                      <td>${item.waitDays ?? "-"}</td>
+                      <td>${item.educationProgress ?? 0} %</td>
+                      <td><button class="btn ghost" type="button" data-select-patient="${item.id}">Otevřít</button></td>
+                    </tr>
+                  `).join("")}
+                </tbody>
+              </table>
+            ` : '<div class="empty">Na čekací listině nikdo není.</div>'}
+          </div>
+
+          <div class="card patient-list-page">
+            <div class="card-header">
+              <div>
+                <h3>Rehabilitace po transplantaci</h3>
+              </div>
+            </div>
+            <div class="list">
+              ${postTx.map((item) => `
+                <div class="item">
+                  <div>
+                    <h4>${escapeHtml(item.name)} ${renderFrailtyBadge(item)}</h4>
+                    <p>${escapeHtml(patientJourneyLabel(item))} · edukace ${item.educationProgress ?? 0} %</p>
+                  </div>
+                  <button class="btn ghost" type="button" data-select-patient="${item.id}">Otevřít</button>
+                </div>
+              `).join("") || '<div class="empty">Žádní pacienti po transplantaci.</div>'}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
     function renderClinicalPatientsDashboard(patient, options = {}) {
       const { canEditState = false } = options;
       const listPatients = preparePatientList(patients);
@@ -6876,23 +7212,44 @@
       return d === p;
     }
 
+    // Výška pacienta může být v demografii i přímo na pacientovi; vrací null,
+    // když není zadaná - nikdy nesmí propadnout "undefined" do UI.
+    function patientHeightCm(patient) {
+      const raw = patient?.demographics?.heightCm ?? patient?.heightCm;
+      const value = parseInt(raw, 10);
+      return Number.isFinite(value) && value > 0 ? value : null;
+    }
+
+    function patientWeightKg(patient) {
+      const raw = patient?.demographics?.weightKg ?? patient?.weightKg;
+      const value = Number(raw);
+      return Number.isFinite(value) && value > 0 ? value : null;
+    }
+
+    function patientBloodGroupLabel(patient) {
+      if (patient?.bloodGroup) return patient.bloodGroup;
+      const type = patient?.demographics?.bloodType;
+      const rh = patient?.demographics?.rh;
+      return type ? `${type}${rh || ""}` : "";
+    }
+
     function calculateOrganCompatibility(donor, patient) {
       if (!donor || !patient) return null;
-      
-      const pBG = patient.bloodGroup || (patient.demographics?.bloodType + patient.demographics?.rh) || "";
+
+      const pBG = patientBloodGroupLabel(patient);
       const donorBG = donor.bloodGroup || "";
       const aboCompatible = checkBloodGroupCompatibility(donorBG, pBG);
-      
-      const donorHeight = parseInt(donor.heightCm) || 0;
-      const patientHeight = parseInt(patient.demographics?.heightCm || patient.heightCm) || 0;
-      let sizeMatch = "N/A";
+
+      const donorHeight = parseInt(donor.heightCm, 10) || 0;
+      const patientHeight = patientHeightCm(patient) || 0;
+      let sizeMatch = donorHeight ? "výška příjemce neuvedena" : "výška dárce neuvedena";
       let sizeOk = false;
       if (donorHeight && patientHeight) {
         const ratio = Math.round((donorHeight / patientHeight) * 100);
-        sizeMatch = `${ratio} % (výška)`;
+        sizeMatch = `${ratio} % (${donorHeight} cm dárce / ${patientHeight} cm příjemce)`;
         sizeOk = ratio >= 80 && ratio <= 120;
       }
-      
+
       const ageDiff = Math.abs((donor.age || 0) - (patient.age || 0));
       const ageOk = ageDiff <= 35;
       
@@ -6902,7 +7259,7 @@
       if (serology.ebv === "pos") warnings.push("Dárce EBV+");
 
       return {
-        abo: { label: `ABO (${donorBG} → ${pBG})`, ok: aboCompatible },
+        abo: { label: `ABO (${donorBG || "neuvedeno"} → ${pBG || "neuvedeno"})`, ok: aboCompatible },
         size: { label: `Velikostní shoda: ${sizeMatch}`, ok: sizeOk },
         age: { label: `Věk dárce (${donor.age} let) vs příjemce (${patient.age} let)`, ok: ageOk },
         warnings: warnings,
@@ -6921,7 +7278,7 @@
       const donor = offer.donor || {};
       const donorSummary = [
         `${donor.age || "?"} let, ${donor.sex || "?"}`,
-        `${donor.heightCm || "?"} cm / ${donor.weightKg || "?"} kg`,
+        donor.heightCm && donor.weightKg ? `${donor.heightCm} cm / ${donor.weightKg} kg` : "výška/hmotnost neuvedena",
         donor.bloodGroup || "?",
         donor.collectionHospital || ""
       ].filter(Boolean).join(" · ");
@@ -6962,10 +7319,12 @@
               <h2>Nabídky orgánů</h2>
               <p>Příchozí nabídky od KST / dárcovských center. Akceptace zahájí logistiku a založí plánovaný výkon.</p>
             </div>
-            <button class="btn btn-primary" type="button" data-new-organ-offer>
-              ${renderMonoIcon("plus", "mono-icon")}
-              Nová nabídka
-            </button>
+            ${canManageOrganOffers() ? `
+              <button class="btn btn-primary" type="button" data-new-organ-offer>
+                ${renderMonoIcon("plus", "mono-icon")}
+                Nová nabídka
+              </button>
+            ` : ""}
           </header>
 
           <section class="organ-offers-section">
@@ -7143,6 +7502,12 @@
       const selectedCandidate = wlPatients.find(p => p.id === selectedCandidateId);
       
       const comp = calculateOrganCompatibility(donor, selectedCandidate);
+      const canDecide = canDecideOrganOffer();
+      const candidateRoleNote = canManageOrganOffers()
+        ? "Příjemce vybírá transplantační chirurg. Koordinátor vidí stav nabídky, časový plán a navrženého příjemce."
+        : canAssessOrganImmunology()
+          ? "Příjemce vybírá transplantační chirurg. Transplantační pneumolog doplňuje imunologické posouzení."
+          : "Pohled pro čtení. Příjemce vybírá a nabídku přijímá transplantační chirurg.";
 
       return `
         <div class="organ-offer-detail">
@@ -7157,10 +7522,12 @@
               </div>
             </div>
             <div class="organ-offer-header-actions">
-              <button type="button" class="btn secondary btn-with-icon" data-edit-organ-offer="${offer.id}">
-                ${renderMonoIcon("edit", "mono-icon")}
-                Upravit
-              </button>
+              ${canManageOrganOffers() ? `
+                <button type="button" class="btn secondary btn-with-icon" data-edit-organ-offer="${offer.id}">
+                  ${renderMonoIcon("edit", "mono-icon")}
+                  Upravit
+                </button>
+              ` : ""}
               <button type="button" class="btn btn-primary organ-offer-chat-btn-highlight" data-toggle-organ-offer-chat="${offer.id}">
                 ${renderMonoIcon("communication", "mono-icon")}
                 Chat k nabídce
@@ -7178,7 +7545,7 @@
                 <table class="summary-table organ-offer-kv">
                   <tbody>
                     <tr><th>Věk / pohlaví</th><td>${donor.age} let / ${donor.sex}</td></tr>
-                    <tr><th>Výška / hmotnost</th><td>${donor.heightCm} cm / ${donor.weightKg} kg</td></tr>
+                    <tr><th>Výška / hmotnost</th><td>${donor.heightCm ? `${donor.heightCm} cm` : "výška neuvedena"} / ${donor.weightKg ? `${donor.weightKg} kg` : "hmotnost neuvedena"}</td></tr>
                     <tr><th>Krevní skupina</th><td>${donor.bloodGroup}</td></tr>
                     <tr><th>Příčina úmrtí</th><td>${donor.causeOfDeath || "-"}</td></tr>
                     <tr><th>Doba ventilace</th><td>${donor.ventilationDays ?? "-"} dní</td></tr>
@@ -7219,23 +7586,29 @@
 
             <div class="organ-offer-detail-col">
               <div class="card">
-                <div class="card-header"><h3>2. Výběr kandidáta z čekací listiny</h3></div>
+                <div class="card-header">
+                  <h3>2. ${canDecide ? "Výběr kandidáta z čekací listiny" : "Kandidáti z čekací listiny"}</h3>
+                </div>
+                ${!canDecide ? `<p class="organ-role-note">${escapeHtml(candidateRoleNote)}</p>` : ""}
                 <div class="organ-candidates-selection">
                   ${wlPatients.length ? wlPatients.map((candidate) => {
-                    const pBG = candidate.bloodGroup || (candidate.demographics?.bloodType + candidate.demographics?.rh) || "";
+                    const pBG = patientBloodGroupLabel(candidate);
                     const isBGCompatible = checkBloodGroupCompatibility(donor.bloodGroup, pBG);
-                    const pHeight = candidate.demographics?.heightCm || candidate.heightCm;
-                    const candidateMeta = [pBG, pHeight ? `${pHeight} cm` : "", candidate.age ? `${candidate.age} let` : ""].filter(Boolean).join(" · ");
-                    return `
-                      <button type="button" class="organ-candidate-card ${selectedCandidateId === candidate.id ? "is-selected" : ""}" data-organ-candidate-id="${candidate.id}">
+                    const pHeight = patientHeightCm(candidate);
+                    const candidateMeta = [pBG, pHeight ? `${pHeight} cm` : "výška neuvedena", candidate.age ? `${candidate.age} let` : ""].filter(Boolean).join(" · ");
+                    const isSelected = selectedCandidateId === candidate.id;
+                    const inner = `
                         <div style="display:flex; justify-content: space-between; align-items: flex-start;">
                           <strong>${candidate.name}</strong>
                           ${isBGCompatible ? '<span style="color:#1f7a45; font-size:11px; font-weight:bold;">✓ ABO kompatibilní</span>' : ''}
                         </div>
                         <p>${candidate.diagnosisShort || candidate.diagnosis}</p>
                         <p class="organ-candidate-meta">${candidateMeta}</p>
-                      </button>
+                        ${isSelected && !canDecide ? '<p class="organ-candidate-proposed">Navržený příjemce</p>' : ""}
                     `;
+                    return canDecide
+                      ? `<button type="button" class="organ-candidate-card ${isSelected ? "is-selected" : ""}" data-organ-candidate-id="${candidate.id}">${inner}</button>`
+                      : `<div class="organ-candidate-card organ-candidate-card--readonly ${isSelected ? "is-selected" : ""}">${inner}</div>`;
                   }).join("") : '<p class="organ-offers-empty">Žádní kandidáti na WL.</p>'}
                 </div>
               </div>
@@ -7260,23 +7633,13 @@
                   </div>
                 ` : `
                   <div class="organ-compat-placeholder">
-                    <p>Vyberte kandidáta ze seznamu výše pro zobrazení kompatibility.</p>
+                    <p>${canDecide ? "Vyberte kandidáta ze seznamu výše pro zobrazení kompatibility." : "Kompatibilita se zobrazí, jakmile chirurg navrhne příjemce."}</p>
                   </div>
                 `}
+                ${renderOrganOfferImmunologyBlock(offer)}
               </div>
 
-              <div class="card">
-                <div class="card-header"><h3>4. Rozhodnutí</h3></div>
-                <div class="organ-offer-actions">
-                  <button type="button" class="btn organ-offer-accept" ${!selectedCandidate ? "disabled" : ""} id="organOfferAcceptBtn">
-                    ${selectedCandidate ? `Přijmout pro ${selectedCandidate.name}` : "Vyberte kandidáta"}
-                  </button>
-                  <div class="organ-offer-reject">
-                    <input type="text" class="organ-offer-reject-input" id="organOfferRejectReason" placeholder="Důvod odmítnutí…">
-                    <button type="button" class="btn danger-text" id="organOfferRejectBtn">Odmítnout nabídku</button>
-                  </div>
-                </div>
-              </div>
+              ${renderOrganOfferDecisionCard(offer, selectedCandidate)}
             </div>
           </div>
 
@@ -7287,7 +7650,90 @@
       `;
     }
 
+    function renderOrganOfferImmunologyBlock(offer) {
+      const assessment = offer.immunology || null;
+      const canAssess = canAssessOrganImmunology();
+
+      return `
+        <div class="organ-immunology">
+          <strong>Imunologické posouzení</strong>
+          ${assessment?.text ? `
+            <p class="organ-immunology-text">${escapeHtml(assessment.text)}</p>
+            <p class="organ-immunology-meta">${escapeHtml(assessment.author || "-")}${assessment.at ? ` · ${escapeHtml(assessment.at)}` : ""}</p>
+          ` : '<p class="organ-immunology-empty">Zatím bez posouzení transplantačního pneumologa.</p>'}
+          ${canAssess ? `
+            <textarea id="organImmunologyInput" class="organ-immunology-input" rows="3" placeholder="Imunologické posouzení (cPRA, DSA, CMV/EBV status…)">${escapeHtml(assessment?.text || "")}</textarea>
+            <button type="button" class="btn secondary" data-save-organ-immunology="${offer.id}">Uložit posouzení</button>
+          ` : ""}
+        </div>
+      `;
+    }
+
+    function renderOrganOfferDecisionCard(offer, selectedCandidate) {
+      if (canDecideOrganOffer()) {
+        return `
+          <div class="card">
+            <div class="card-header"><h3>4. Rozhodnutí</h3></div>
+            <div class="organ-offer-actions">
+              <button type="button" class="btn organ-offer-accept" ${!selectedCandidate ? "disabled" : ""} id="organOfferAcceptBtn">
+                ${selectedCandidate ? `Přijmout pro ${selectedCandidate.name}` : "Vyberte kandidáta"}
+              </button>
+              <div class="organ-offer-reject">
+                <input type="text" class="organ-offer-reject-input" id="organOfferRejectReason" placeholder="Důvod odmítnutí…">
+                <button type="button" class="btn danger-text" id="organOfferRejectBtn">Odmítnout nabídku</button>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      const statusLabel = organOfferStatusLabel(offer.status);
+      const roleLine = canManageOrganOffers()
+        ? "Koordinátor zajišťuje logistiku, komunikaci s pracovišti a cestu pro orgán."
+        : canAssessOrganImmunology()
+          ? "Transplantační pneumolog posuzuje imunologickou kompatibilitu."
+          : "Anesteziolog a intenzivista má nabídku pro čtení - kvůli přípravě lůžka a výkonu.";
+
+      return `
+        <div class="card">
+          <div class="card-header"><h3>4. Stav rozhodnutí</h3></div>
+          <table class="summary-table organ-offer-kv">
+            <tbody>
+              <tr><th>Stav nabídky</th><td><span class="pill ${organOfferStatusClass(offer.status)}">${escapeHtml(statusLabel)}</span></td></tr>
+              <tr><th>Navržený příjemce</th><td>${selectedCandidate ? escapeHtml(selectedCandidate.name) : "zatím nevybrán"}</td></tr>
+              <tr><th>Plán odběru</th><td>${escapeHtml(offer.donor?.collectionPlan || "-")}</td></tr>
+              <tr><th>Platnost nabídky do</th><td>${escapeHtml(offer.logistics?.validUntil || "-")}</td></tr>
+            </tbody>
+          </table>
+          <p class="organ-role-note">Výběr příjemce a přijetí nabídky provádí transplantační chirurg. ${escapeHtml(roleLine)}</p>
+        </div>
+      `;
+    }
+
+    function saveOrganOfferImmunology(offerId) {
+      const offer = organOffers.find((item) => item.id === offerId);
+      const input = document.getElementById("organImmunologyInput");
+      if (!offer || !input) return;
+
+      const text = input.value.trim();
+      if (!text) {
+        showToast("Doplňte text imunologického posouzení.");
+        return;
+      }
+
+      const now = formatDemoTimestamp();
+      offer.immunology = { text, author: activeUser().name, at: now };
+      demoState.audit.unshift(`${now} - Imunologické posouzení k nabídce ${offer.code} uložil ${activeUser().name}.`);
+      scheduleStateSync();
+      render();
+      showToast("Imunologické posouzení bylo uloženo.");
+    }
+
     function handleOrganOfferAccept() {
+      if (!canDecideOrganOffer()) {
+        showToast("Příjemce z čekací listiny vybírá transplantační chirurg.");
+        return;
+      }
       const offer = selectedOrganOffer();
       const candidateId = demoState.organOfferSelectedCandidateId;
       const candidate = patients.find((p) => p.id === candidateId);
@@ -7308,6 +7754,10 @@
     }
 
     function handleOrganOfferReject() {
+      if (!canDecideOrganOffer()) {
+        showToast("Nabídku přijímá nebo odmítá transplantační chirurg.");
+        return;
+      }
       const offer = selectedOrganOffer();
       if (!offer) return;
 
@@ -7435,7 +7885,7 @@
               </div>
               <div class="field">
                 <label for="logisticsTeam">Tým odběru</label>
-                <input id="logisticsTeam" type="text" value="${logistics.collectionTeam || "Tým FN Motol"}">
+                <input id="logisticsTeam" type="text" value="${logistics.collectionTeam || "Tým FNMH"}">
               </div>
             </div>
           </div>
@@ -7525,6 +7975,7 @@
         const newOfferBtn = event.target.closest("[data-new-organ-offer]");
         if (newOfferBtn) {
           event.preventDefault();
+          if (!canManageOrganOffers()) return;
           openOrganOfferForm();
           return;
         }
@@ -7532,7 +7983,15 @@
         const editOfferBtn = event.target.closest("[data-edit-organ-offer]");
         if (editOfferBtn) {
           event.preventDefault();
+          if (!canManageOrganOffers()) return;
           openOrganOfferForm(editOfferBtn.dataset.editOrganOffer);
+          return;
+        }
+
+        const immunologyBtn = event.target.closest("[data-save-organ-immunology]");
+        if (immunologyBtn) {
+          event.preventDefault();
+          saveOrganOfferImmunology(immunologyBtn.dataset.saveOrganImmunology);
           return;
         }
 
@@ -7584,6 +8043,8 @@
         const candidateBtn = event.target.closest("[data-organ-candidate-id]");
         if (candidateBtn) {
           event.preventDefault();
+          // Příjemce z čekací listiny vybírá jen transplantační chirurg.
+          if (!canDecideOrganOffer()) return;
           demoState.organOfferSelectedCandidateId = candidateBtn.dataset.organCandidateId;
           render();
           return;
@@ -7591,8 +8052,21 @@
       });
     }
 
+    function monitoringPatientList() {
+      return patients.filter((p) => p.state === "PO_TX" && p.postTxPhase === "hospitalizace" && p.criticalCare);
+    }
+
+    function selectedMonitoringPatient() {
+      const id = demoState.monitoringPatientId;
+      if (!id) return null;
+      return monitoringPatientList().find((patient) => patient.id === id) || null;
+    }
+
     function renderMonitoringWorkspace() {
-      const monitoringPatients = patients.filter((p) => p.state === "PO_TX" && p.postTxPhase === "hospitalizace" && p.criticalCare);
+      const detailPatient = selectedMonitoringPatient();
+      if (detailPatient) return renderMonitoringDetail(detailPatient);
+
+      const monitoringPatients = monitoringPatientList();
 
       return `
         <div class="monitoring-workspace">
@@ -7602,13 +8076,106 @@
               <p>Reálný přehled pacientů na ARO a JIP po transplantaci plic.</p>
             </div>
           </div>
-          
+
           <div class="monitoring-grid">
             ${monitoringPatients.length ? monitoringPatients.map((patient) => renderMonitoringCard(patient)).join("") : `
               <div class="empty-state card soft">
                 <p>Aktuálně žádní pacienti v pooperační kritické péči.</p>
               </div>
             `}
+          </div>
+        </div>
+      `;
+    }
+
+    // Zkrátí "26. 6. 2026 12:30" na "26. 6. 12:30" - v rámci jedné hospitalizace
+    // rok nic nepřidá a popisky os by se jinak nevešly.
+    function monitoringTimeLabel(value) {
+      return String(value || "").replace(/\s*\d{4}\s*/, " ").trim();
+    }
+
+    function renderMonitoringDetail(patient) {
+      const cc = patient.criticalCare || {};
+      const vitals = cc.vitals || {};
+      const timeline = [...(cc.timeline || [])];
+      const labels = timeline.map((row) => monitoringTimeLabel(row.at));
+      const latest = timeline.length ? timeline[timeline.length - 1] : null;
+      const d = getPatientDemographics(patient);
+
+      return `
+        <div class="monitoring-workspace monitoring-detail">
+          <header class="monitoring-detail-header">
+            <div class="monitoring-detail-header-left">
+              <button type="button" class="organ-offer-back" data-monitoring-back>← Zpět na monitoring</button>
+              <div>
+                <h2>${escapeHtml(patient.name)}</h2>
+                <p class="monitoring-detail-sub">
+                  ${escapeHtml(cc.location || "-")} · ${escapeHtml(patient.diagnosisShort || patient.diagnosis || "-")}
+                  · transplantace ${escapeHtml(patient.txDate || "-")}
+                  · poslední data ${escapeHtml(cc.lastUpdate || "-")}
+                </p>
+              </div>
+            </div>
+            <button type="button" class="btn secondary" data-select-patient="${patient.id}">Otevřít kartu pacienta</button>
+          </header>
+
+          <div class="monitoring-detail-grid">
+            <div class="card soft">
+              <div class="card-header"><h3>Aktuální stav</h3></div>
+              <table class="summary-table">
+                <tbody>
+                  <tr><th>Stav vědomí</th><td>${escapeHtml(cc.status || "-")}</td></tr>
+                  <tr><th>Ventilace</th><td>${escapeHtml(cc.ventilation?.type || "-")} · ${escapeHtml(cc.ventilation?.support || "-")}</td></tr>
+                  <tr><th>Sedace</th><td>${escapeHtml(cc.sedation || "-")}</td></tr>
+                  <tr><th>ECMO</th><td>${escapeHtml(cc.support?.ecmo || "-")}</td></tr>
+                  <tr><th>Oběhová podpora</th><td>${escapeHtml(cc.support?.circulatory || "-")}</td></tr>
+                  <tr><th>Extubace</th><td>${escapeHtml(cc.extubation || "-")}</td></tr>
+                  <tr><th>Frailty skóre</th><td>${d.frailtyScore ? `${escapeHtml(d.frailtyScore)}${patient.frail ? " · křehký pacient" : ""}` : "neuvedeno"}</td></tr>
+                  <tr><th>Odpovědný lékař</th><td>${escapeHtml(cc.responsible || "-")}</td></tr>
+                </tbody>
+              </table>
+              <div class="monitoring-detail-vitals">
+                <div class="vital-item"><span class="vital-label">SpO₂</span><span class="vital-value ${vitals.spo2 < 94 ? "alert" : ""}">${vitals.spo2 ?? "-"} %</span></div>
+                <div class="vital-item"><span class="vital-label">PaO₂/FiO₂</span><span class="vital-value ${vitals.pao2fio2 < 200 ? "alert" : ""}">${vitals.pao2fio2 ?? "-"}</span></div>
+                <div class="vital-item"><span class="vital-label">MAP</span><span class="vital-value">${vitals.map ?? "-"} mmHg</span></div>
+              </div>
+            </div>
+
+            <div class="card soft">
+              <div class="card-header"><h3>Vývoj parametrů</h3></div>
+              ${timeline.length >= 2 ? `
+                <p class="trend-axis-note">Časová osa zleva doprava, nejstarší měření vlevo.</p>
+                ${renderTrendChart({ title: "PaO₂/FiO₂ (Horowitz)", values: timeline.map((row) => row.pao2fio2), labels, color: "#475569", decimals: 0 })}
+                ${renderTrendChart({ title: "Saturace SpO₂", values: timeline.map((row) => row.spo2), labels, color: "#64748b", unit: " %", decimals: 0 })}
+                ${renderTrendChart({ title: "MAP", values: timeline.map((row) => row.map), labels, color: "#94a3b8", unit: " mmHg", decimals: 0 })}
+              ` : '<div class="empty">Zatím není dost měření pro zobrazení trendu.</div>'}
+            </div>
+          </div>
+
+          <div class="card soft">
+            <div class="card-header"><h3>Průběh na ${escapeHtml(cc.location || "JIP")}</h3></div>
+            ${timeline.length ? `
+              <div class="monitoring-timeline-scroll">
+                <table class="summary-table monitoring-timeline-table">
+                  <thead>
+                    <tr><th>Čas</th><th>SpO₂</th><th>PaO₂/FiO₂</th><th>MAP</th><th>Ventilace</th><th>Sedace</th><th>Událost</th></tr>
+                  </thead>
+                  <tbody>
+                    ${timeline.slice().reverse().map((row) => `
+                      <tr class="${latest && row.at === latest.at ? "monitoring-timeline-latest" : ""}">
+                        <td>${escapeHtml(monitoringTimeLabel(row.at))}</td>
+                        <td>${row.spo2 ?? "-"} %</td>
+                        <td>${row.pao2fio2 ?? "-"}</td>
+                        <td>${row.map ?? "-"}</td>
+                        <td>${escapeHtml(row.ventilation || "-")}</td>
+                        <td>${escapeHtml(row.sedation || "-")}</td>
+                        <td>${escapeHtml(row.event || "-")}</td>
+                      </tr>
+                    `).join("")}
+                  </tbody>
+                </table>
+              </div>
+            ` : '<div class="empty">Zatím bez záznamů z kritické péče.</div>'}
           </div>
         </div>
       `;
@@ -7679,7 +8246,7 @@
             
             <div class="monitoring-card-footer">
               <span class="monitoring-update">Poslední data: ${escapeHtml(cc.lastUpdate)}</span>
-              <button type="button" class="btn btn-text" data-select-patient="${patient.id}">
+              <button type="button" class="btn btn-text" data-open-monitoring="${patient.id}">
                 Zobrazit detail
               </button>
             </div>
@@ -7726,7 +8293,7 @@
         { value: sites.length, label: "Odesílajících pracovišť" },
         { value: totalReferrals, label: "Odeslání celkem (12 m.)" },
         { value: countryLabel, label: "Země" },
-        { value: referringNetwork.center?.name || "FN Motol", label: "Centrum" }
+        { value: referringNetwork.center?.name || "FNMH", label: "Centrum" }
       ];
 
       const topSites = [...sites].sort((a, b) => (b.referrals12m || 0) - (a.referrals12m || 0)).slice(0, 5);
@@ -7737,6 +8304,9 @@
           <header class="referring-network-header">
             <h2>Síť odesílajících pracovišť</h2>
             <p>Google mapa pokrytí programu transplantace plic v ČR a na Slovensku. Tloušťka spojnice odpovídá objemu odeslání za posledních 12 měsíců.</p>
+            ${referringNetwork.illustrative === false ? "" : `
+              <p class="referring-network-illustrative">Ilustrativní data - počty odeslání neodpovídají skutečné statistice programu.</p>
+            `}
           </header>
 
           <div class="referring-network-metrics">
@@ -7751,7 +8321,12 @@
           <div class="referring-network-body">
             ${renderReferringNetworkMap()}
             <div class="card referring-network-ranking">
-              <div class="card-header"><h3>Největší odesílatelé</h3></div>
+              <div class="card-header">
+                <div>
+                  <h3>Největší odesílatelé</h3>
+                  ${referringNetwork.illustrative === false ? "" : '<p class="referring-network-illustrative-note">ilustrativní data</p>'}
+                </div>
+              </div>
               <ul class="referring-ranking-list">
                 ${topSites.map((site) => `
                   <li>
@@ -7797,13 +8372,16 @@
         intensivist: [
           { id: "overview", label: "Pacienti" },
           { id: "monitoring", label: "Monitoring" },
+          { id: "organOffers", label: "Agenda orgánů" },
           { id: "referringNetwork", label: "Síť pracovišť" }
         ],
         psychologist: [
-          { id: "overview", label: "Pacienti" }
+          { id: "overview", label: "Pacienti" },
+          { id: "psychPrep", label: "Přípravné semináře" }
         ],
         rehab: [
-          { id: "overview", label: "Pacienti" }
+          { id: "overview", label: "Pacienti" },
+          { id: "prerehab", label: "Prérehabilitace" }
         ],
         patient: [
           { id: "overview", label: "Můj program" }
@@ -7930,6 +8508,16 @@
 
     function getUserAvatarUrl(user) {
       return `/static/img/avatars/${user.id}.jpg`;
+    }
+
+    function renderDemoReadOnlyBanner() {
+      const banner = document.getElementById("demoReadOnlyBanner");
+      if (!banner) return;
+      banner.hidden = !demoReadOnly;
+      banner.className = demoReadOnly ? "demo-readonly-banner" : "";
+      banner.innerHTML = demoReadOnly
+        ? "Prohlížecí režim. Můžete si demo proklikat, ale vaše změny se ostatním nezobrazí - zůstanou jen ve vašem prohlížeči."
+        : "";
     }
 
     function openDemoRoleModal(clientX, clientY) {
@@ -8479,13 +9067,13 @@
             <div class="card-header">
               <div>
                 <h3>Role v aktuální fázi</h3>
-                <p>Krátký přehled toho, kdo ma v teto fázi agendu a co systém drží pohromadě.</p>
+                <p>Krátký přehled toho, kdo má v této fázi agendu a co systém drží pohromadě.</p>
               </div>
             </div>
             <div class="list">
               ${[
-                ["Ambulantní pneumolog", "Vidí své odeslané pacienty a navazné sledování po transplantaci."],
-                ["Koordinátor", "Přepíná stav, plánuje kroky a hlida frontu podnětu."],
+                ["Ambulantní pneumolog", "Vidí své odeslané pacienty a návazné sledování po transplantaci."],
+                ["Koordinátor", "Přepíná stav, plánuje kroky a hlídá frontu podnětů."],
                 ["Transplantační pneumolog", "Posuzuje podklady, sleduje trendy a reaguje na podněty."],
                 ["Pacient", "V relevantních fázích vidí plán, edukaci a zadává hlášení nebo měření."]
               ].map(([title, text]) => `
@@ -8569,7 +9157,7 @@
       return `
         <section class="card patient-portal-section">
           <h2 class="patient-portal-page-title">Profil pacienta</h2>
-          <p class="patient-portal-page-sub">Základní údaje vedené transplantním centrem.</p>
+          <p class="patient-portal-page-sub">Základní údaje vedené transplantačním centrem.</p>
           <table class="summary-table">
             <tbody>
               <tr><th>Jméno</th><td>${escapeHtml(patient.name)}</td></tr>
@@ -8599,7 +9187,7 @@
       const isEvaluating = patient.state === "POSUZOVANI";
       const isPostTx = patient.state === "PO_TX";
       const eduSub = isEvaluating
-        ? "Obecné informace o transplantním programu."
+        ? "Obecné informace o transplantačním programu."
         : isPostTx
           ? "Materiály pro režim po transplantaci."
           : "Materiály a videa od týmu pro období na čekací listině.";
@@ -8681,7 +9269,7 @@
       return `
         <section class="card patient-portal-section">
           <h2 class="patient-portal-page-title">Kontakt na centrum</h2>
-          <p class="patient-portal-page-sub">Linky pro konzultaci s transplantním centrem FN Motol.</p>
+          <p class="patient-portal-page-sub">Linky pro konzultaci s transplantačním centrem FNMH.</p>
           ${renderPatientContactsBody(emergency, contacts)}
         </section>
       `;
@@ -8768,7 +9356,7 @@
             <div>
               <h2 class="patient-portal-page-title">Kontakt na centrum</h2>
               <p class="patient-portal-page-sub">
-                Linky pro konzultaci s transplantním centrem FN Motol. Při akutních obtížích volejte pohotovost.
+                Linky pro konzultaci s transplantačním centrem FNMH. Při akutních obtížích volejte pohotovost.
               </p>
             </div>
           </div>
@@ -8778,7 +9366,37 @@
     }
 
     function renderPatientSettingsSection() {
-      return renderUserSettingsSection(activeUser());
+      return renderUserSettingsSection(activeUser(), renderDemoResetRow());
+    }
+
+    function renderDemoResetRow() {
+      return `
+        <div class="settings-row settings-row--demo">
+          <span class="settings-row-text">
+            <strong>Obnovit demo data</strong>
+            <span class="settings-row-hint">
+              ${demoReadOnly
+                ? "V prohlížecím režimu se data serveru nemění. Obnovení načte původní stav jen pro vás."
+                : "Vrátí všechna data do výchozího stavu. Použijte před prezentací nebo po zkušebním proklikání."}
+            </span>
+          </span>
+          <button type="button" class="btn warn btn-compact" data-demo-reset>Obnovit</button>
+        </div>
+      `;
+    }
+
+    async function resetDemoData() {
+      try {
+        if (!demoReadOnly) {
+          const response = await fetch("/api/reset", { method: "POST" });
+          if (!response.ok) throw new Error("Reset API selhalo.");
+        }
+        showToast("Demo data se obnovují…");
+        window.setTimeout(() => window.location.reload(), 400);
+      } catch (error) {
+        console.error("Nepodařilo se obnovit demo data.", error);
+        showToast("Demo data se nepodařilo obnovit.");
+      }
     }
 
     function renderStaffSettingsSection() {
@@ -8794,7 +9412,7 @@
           </div>
         `
         : "";
-      return renderUserSettingsSection(user, adminBlock);
+      return renderUserSettingsSection(user, adminBlock + renderDemoResetRow());
     }
 
     function renderPatientPortalSectionContent(patient, sectionId) {
@@ -8990,7 +9608,7 @@
               <div class="card-header">
                 <div>
                   <h3>Trend FEV1 oproti baseline</h3>
-                  <p>Baseline je v demu brána jako prumer dvou nejvyšších pooperačních hodnot.</p>
+                  <p>Baseline je v demu brána jako průměr dvou nejvyšších pooperačních hodnot.</p>
                 </div>
                 <span class="pill">${hasFevTrend ? `${patient.baseline.toFixed(2)} l baseline` : "bez měření"}</span>
               </div>
@@ -9167,7 +9785,7 @@
             <div class="card-header">
               <div>
                 <h3>Pacienti k posouzení a follow-up</h3>
-                <p>Pohled transplantčního pneumologa spojuje podklady, trendy a podněty.</p>
+                <p>Pohled transplantačního pneumologa spojuje podklady, trendy a podněty.</p>
               </div>
             </div>
             ${renderPatientDetail(selectedPatient())}
@@ -9247,10 +9865,10 @@
 
     function renderPsyRehab(roleType) {
       const isPsychologist = roleType === "psychologist";
-      const title = isPsychologist ? "Psychologická agenda" : "Rehabilitace a prérehabilitaci";
+      const title = isPsychologist ? "Psychologická agenda" : "Rehabilitace a prérehabilitace";
       const description = isPsychologist
         ? "Psycholog vidí edukaci, přípravu pacienta a pacienty, u kterých má tým držet kontakt."
-        : "Rehabilitační pracovník / Fyzioterapeut vidí cvičení, prérehabilitaci a navaznou rehabilitaci po transplantaci.";
+        : "Rehabilitační pracovník / Fyzioterapeut vidí cvičení, prérehabilitaci a návaznou rehabilitaci po transplantaci.";
       const content = isPsychologist
         ? education.filter((item) => item.title.includes("Zkušenosti") || item.title.includes("Jak probíhá"))
         : education.filter((item) => item.title.includes("cvičení") || item.title.includes("Dechová") || item.title.includes("návratu"));
@@ -9302,7 +9920,7 @@
               <div class="field"><label>Pacient</label><input value="${patient.name}"></div>
               <div class="field"><label>Typ výkonu</label><input value="Bilaterální transplantace plic"></div>
               <div class="field"><label>Datum výkonu</label><input value="${patient.txDate || ""}"></div>
-              <div class="field"><label>${isIntensivist ? "Odpovědný lékař JIP" : "Operatér"}</label><input value="${isIntensivist ? "MUDr. Karel Veselý" : "doc. MUDr. Petr Sima"}"></div>
+              <div class="field"><label>${isIntensivist ? "Odpovědný lékař JIP" : "Operatér"}</label><input value="${isIntensivist ? "MUDr. Gabriela Holubová" : "Prof. MUDr. Robert Lischke, Ph.D."}"></div>
             </div>
             <div class="field" style="margin-top: 12px;">
               <label>${isIntensivist ? "Stav po stabilizaci" : "Časný pooperační průběh"}</label>
@@ -9418,7 +10036,7 @@
               <div class="field"><label>Typ výkonu</label><input value="Bilaterální transplantace plic"></div>
               <div class="field"><label>Datum výkonu</label><input value="${patient.txDate || ""}"></div>
               <div class="field"><label>Podfáze</label><input value="${postTxPhaseLabel(patient.postTxPhase || "hospitalizace")}" readonly></div>
-              <div class="field"><label>${isIntensivist ? "Odpovědný lékař JIP" : "Operatér"}</label><input value="${isIntensivist ? "MUDr. Karel Veselý" : "doc. MUDr. Petr Sima"}"></div>
+              <div class="field"><label>${isIntensivist ? "Odpovědný lékař JIP" : "Operatér"}</label><input value="${isIntensivist ? "MUDr. Gabriela Holubová" : "Prof. MUDr. Robert Lischke, Ph.D."}"></div>
             </div>
             <div class="field" style="margin-top: 12px;">
               <label>${isIntensivist ? "Stav po stabilizaci" : "Časný pooperační průběh"}</label>
@@ -9488,7 +10106,7 @@
         return `
           <div class="grid cols-2">
             <div class="card">
-              <h3>Rehabilitace a prérehabilitaci</h3>
+              <h3>Rehabilitace a prérehabilitace</h3>
               <p style="color: var(--muted);">Cvičení a rehabilitační plán pro vybraného pacienta.</p>
               <div class="list" style="margin-top: 14px;">
                 <div class="item"><div><h4>Aktualizovat cvičení</h4><p>Dechová cvičení a bezpečná aktivita podle fáze ${phaseLabel(patient.state)}.</p></div><button class="btn ghost" type="button" data-demo-action="rehab">Aktualizovat</button></div>
@@ -9660,6 +10278,12 @@
       ) {
         return window.ProtocolHandbooks.renderHandbooksWorkspace(demoState.role, demoState.handbookId);
       }
+      if (demoState.mainTab === "psychPrep" && demoState.role === "psychologist") {
+        return renderPsychPrepWorkspace();
+      }
+      if (demoState.mainTab === "prerehab" && demoState.role === "rehab") {
+        return renderPrerehabWorkspace();
+      }
       if (demoState.role === "ambulatory") return renderAmbulatoryWorkspace(patient);
       if (demoState.mainTab === "organOffers" && canAccessOrganOffers()) {
         return renderOrganOffersWorkspace();
@@ -9705,7 +10329,7 @@
       const title = document.getElementById("ambReferralSentTitle");
       const summary = document.getElementById("ambReferralSentSummary");
       if (title) title.textContent = "Odeslání bylo vytvořeno";
-      if (summary) summary.textContent = `Pacient ${patientName} byl odeslán do transplantního centra FN Motol.`;
+      if (summary) summary.textContent = `Pacient ${patientName} byl odeslán do transplantačního centra FNMH.`;
       document.getElementById("ambReferralSentModal")?.classList.add("open");
     }
 
@@ -9983,6 +10607,7 @@
         demoState.patientDetailOpen = false;
         demoState.organOfferId = null;
         demoState.referringSiteId = null;
+        demoState.monitoringPatientId = null;
         demoState.medicationEditingKey = null;
         demoState.examEditingKey = null;
       }
@@ -9997,6 +10622,7 @@
       demoState.patientDetailOpen = false;
       demoState.organOfferId = null;
       demoState.referringSiteId = null;
+      demoState.monitoringPatientId = null;
       demoState.medicationEditingKey = null;
       demoState.examEditingKey = null;
       render();
@@ -10035,6 +10661,24 @@
         if (navBtn) {
           event.preventDefault();
           handleSidebarNavSelection(navBtn.dataset.sidebarNav, navBtn.dataset.sidebarNavType);
+          return;
+        }
+
+        const monitoringBtn = event.target.closest("[data-open-monitoring]");
+        if (monitoringBtn) {
+          event.preventDefault();
+          demoState.monitoringPatientId = monitoringBtn.dataset.openMonitoring;
+          demoState.patientDetailOpen = false;
+          demoState.pendingScrollToTop = true;
+          render();
+          return;
+        }
+
+        const monitoringBackBtn = event.target.closest("[data-monitoring-back]");
+        if (monitoringBackBtn) {
+          event.preventDefault();
+          demoState.monitoringPatientId = null;
+          render();
           return;
         }
 
@@ -10560,7 +11204,7 @@
           const alert = demoState.alerts.find((item) => item.id === button.dataset.alertStatus);
           if (alert) {
             alert.status = button.dataset.nextStatus;
-            demoState.audit.unshift(`${new Date().toLocaleString("cs-CZ")} - Podnět "${alert.type}" pro pacienta ${patientName(alert.patientId)} zmenen na stav ${alert.status}.`);
+            demoState.audit.unshift(`${new Date().toLocaleString("cs-CZ")} - Podnět "${alert.type}" pro pacienta ${patientName(alert.patientId)} změněn na stav ${alert.status}.`);
             render();
             showToast("Stav podnětu byl aktualizován. Reakci stále potvrzuje člověk z týmu.");
           }
@@ -10615,7 +11259,7 @@
 
     document.getElementById("confirmOverride").addEventListener("click", () => {
       const reason = escapeHtml(document.getElementById("overrideReason").value.trim() || "Override bez detailu.");
-      demoState.audit.unshift(`${new Date().toLocaleString("cs-CZ")} - Koordinátor provedl override mekke brany. Důvod: ${reason}`);
+      demoState.audit.unshift(`${new Date().toLocaleString("cs-CZ")} - Koordinátor provedl override měkké brány. Důvod: ${reason}`);
       closeModal();
       render();
       showToast("Override byl zapsán do auditu.");
@@ -10639,12 +11283,31 @@
       }
     });
 
-    document.getElementById("viewUserPhoto")?.addEventListener("dblclick", (event) => {
-      event.preventDefault();
-      event.currentTarget.blur();
-      openDemoRoleModal(event.clientX, event.clientY);
+    // Přepnutí role musí jít i jedním klepnutím - dvojklik na mobilu stránku
+    // často jen přiblíží a nikdo ho sám od sebe neobjeví.
+    function toggleDemoRoleModalFrom(element, event) {
+      event?.preventDefault?.();
+      element?.blur?.();
+      if (demoState.userMenuOpen) {
+        closeDemoRoleModal();
+        renderShell();
+        return;
+      }
+      const rect = element?.getBoundingClientRect?.();
+      openDemoRoleModal(
+        rect ? rect.left : event?.clientX,
+        rect ? rect.bottom : event?.clientY
+      );
       renderShell();
       requestAnimationFrame(() => positionDemoRoleModal());
+    }
+
+    document.getElementById("viewUserPhoto")?.addEventListener("click", (event) => {
+      toggleDemoRoleModalFrom(event.currentTarget, event);
+    });
+
+    document.getElementById("demoRoleSwitchBtn")?.addEventListener("click", (event) => {
+      toggleDemoRoleModalFrom(event.currentTarget, event);
     });
 
     document.getElementById("userMenuList")?.addEventListener("click", (event) => {
@@ -10658,6 +11321,13 @@
 
     document.getElementById("demoRoleModal")?.addEventListener("click", (event) => {
       if (event.target.id === "demoRoleModal") closeDemoRoleModal();
+    });
+
+    document.addEventListener("click", (event) => {
+      const resetBtn = event.target.closest("[data-demo-reset]");
+      if (!resetBtn) return;
+      event.preventDefault();
+      resetDemoData();
     });
 
     document.getElementById("openPersonalNotesBtn")?.addEventListener("click", openPersonalNotesModal);
@@ -10698,6 +11368,7 @@
       }
       renderAppSidebar();
       renderShell();
+      renderDemoReadOnlyBanner();
       renderMetrics();
       try {
         renderContent();
@@ -10748,6 +11419,19 @@
     }
 
     wireLoginOnce();
+
+    // Render uspí bezplatnou instanci po ~15 minutách nečinnosti a další
+    // načtení pak trvá skoro minutu. Dokud je demo otevřené v prohlížeči,
+    // udržujeme server vzhůru lehkým pingem.
+    function startKeepAlive() {
+      const PING_INTERVAL_MS = 8 * 60 * 1000;
+      window.setInterval(() => {
+        if (document.hidden) return;
+        fetch("/api/health").catch(() => {});
+      }, PING_INTERVAL_MS);
+    }
+
+    startKeepAlive();
 
     window.LtxApp = {
       activeUser,

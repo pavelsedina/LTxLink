@@ -8,13 +8,16 @@ from pathlib import Path
 
 from flask import Flask, jsonify, render_template, request
 
+from demo_dates import apply_demo_dates, refresh_organ_offers
+
 ROOT = Path(__file__).resolve().parent
 INITIAL_STATE_PATH = ROOT / "initial_state.json"
 
 
 def load_initial_state() -> dict:
+    """Nacte seed data a posune vsechna data relativne k dnesnimu dni."""
     with INITIAL_STATE_PATH.open(encoding="utf-8") as handle:
-        return json.load(handle)
+        return apply_demo_dates(json.load(handle))
 
 
 app = Flask(__name__)
@@ -29,12 +32,18 @@ def index():
 def app_config() -> dict:
     return {
         "googleMapsApiKey": os.environ.get("GOOGLE_MAPS_API_KEY", "").strip() or "DEMO_API_KEY",
-        "googleMapsMapId": os.environ.get("GOOGLE_MAPS_MAP_ID", "").strip() or "DEMO_MAP_ID"
+        "googleMapsMapId": os.environ.get("GOOGLE_MAPS_MAP_ID", "").strip() or "DEMO_MAP_ID",
+        "demoDisclaimer": _memory_store.get("demoDisclaimer")
+        or "Demo, smyšlená data, žádní skuteční pacienti.",
+        "demoAnchorDate": _memory_store.get("demoAnchorDate", ""),
     }
 
 
 @app.route("/api/bootstrap")
 def bootstrap():
+    # Aktivní nabídka orgánu musí být "živá" i po několika hodinách běhu serveru,
+    # jinak by při prezentaci vypršela dřív, než ji někdo otevře.
+    refresh_organ_offers(_memory_store)
     return jsonify({**_memory_store, "config": app_config()})
 
 
@@ -85,6 +94,12 @@ def reset_state():
     """Znovu načte initial_state.json do paměti (demo reset)."""
     global _memory_store
     _memory_store = copy.deepcopy(load_initial_state())
+    return jsonify({"ok": True})
+
+
+@app.route("/api/health")
+def health():
+    """Lehký endpoint pro pravidelný ping (Render server jinak usne)."""
     return jsonify({"ok": True})
 
 

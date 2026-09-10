@@ -18,6 +18,7 @@
         height="auto"
       >
       <p class="login-tagline">Propojení cesty k transplantaci plic</p>
+      <p class="login-demo-note">Demo režim, ilustrativní data</p>
       <div class="login-field">
         <label for="loginEmail">E-mail</label>
         <input type="email" id="loginEmail" name="email" placeholder="vas@email.cz" autocomplete="username">
@@ -27,6 +28,7 @@
         <input type="password" id="loginPassword" name="password" placeholder="••••••••" autocomplete="current-password">
       </div>
       <button class="login-submit" type="submit">Přihlásit se</button>
+      <p class="login-disclaimer">Demo, smyšlená data, žádní skuteční pacienti.</p>
     </form>
   </div>
 
@@ -45,7 +47,7 @@
                 id="viewUserPhoto"
                 src="{{ url_for('static', filename='img/avatars/u-coord.jpg') }}"
                 alt=""
-                title="Dvojklik pro demo výběr role"
+                title="Demo výběr role"
                 tabindex="-1"
               >
               <button
@@ -90,10 +92,25 @@
           </div>
           </div>
         </div>
+        <div class="topbar-right">
+          <button
+            type="button"
+            class="btn secondary btn-compact demo-role-switch"
+            id="demoRoleSwitchBtn"
+            aria-haspopup="dialog"
+          >
+            <svg class="demo-role-switch-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M4 8h13l-3-3M20 16H7l3 3"></path>
+            </svg>
+            <span>Přepnout roli (demo)</span>
+          </button>
+        </div>
       </div>
 
+      <div id="demoReadOnlyBanner" hidden></div>
       <div class="metric-row" id="metrics"></div>
       <section id="content"></section>
+      <footer class="demo-footer">Demo, smyšlená data, žádní skuteční pacienti.</footer>
     </main>
     </div>
   </div>
@@ -117,7 +134,7 @@
   <div class="modal-backdrop" id="ambReferralSentModal" aria-hidden="true">
     <div class="modal" role="dialog" aria-modal="true" aria-labelledby="ambReferralSentTitle">
       <h3 id="ambReferralSentTitle">Odeslání bylo vytvořeno</h3>
-      <p id="ambReferralSentSummary">Pacient byl odeslán do transplantního centra FN Motol.</p>
+      <p id="ambReferralSentSummary">Pacient byl odeslán do transplantačního centra FNMH.</p>
       <p style="margin-top: 12px; color: var(--muted); font-size: 13px;">Co se bude dít dál:</p>
       <ol class="referral-sent-steps">
         <li>
@@ -126,7 +143,7 @@
         </li>
         <li>
           <strong>Fronta centra</strong>
-          <span>Koordinátor přijme odeslání a naplánuje vyšetření v FN Motol.</span>
+          <span>Koordinátor přijme odeslání a naplánuje vyšetření v FNMH.</span>
         </li>
         <li>
           <strong>Sledování stavu</strong>

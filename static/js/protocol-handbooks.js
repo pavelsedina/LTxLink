@@ -290,6 +290,189 @@
       ]
     },
 
+    "protocol-anesthesia": {
+      title: "Protokol vedení anestezie u LTx",
+      subtitle: "Postup KARIM pro vedení anestezie u transplantace plic - od přípravy po předání na JIP.",
+      badges: [
+        { label: "ANESTEZIOLOGIE", tone: "neutral" },
+        { label: "OSNOVA", tone: "info" },
+        { label: "PŘIPRAVUJE SE", tone: "warn" }
+      ],
+      intro: "Zatím jde o osnovu. Finální znění připravuje KARIM, do platformy se doplní po schválení.",
+      mode: "guide",
+      blocks: [
+        {
+          title: "Osnova protokolu",
+          sections: [
+            {
+              title: "Příprava a monitoring",
+              items: [
+                "Předoperační zhodnocení a příprava pacienta z čekací listiny.",
+                "Rozsah invazivního monitoringu (arteriální linka, centrální žilní vstup, PA katetr).",
+                "Připravenost k mimotělní podpoře."
+              ]
+            },
+            {
+              title: "Zajištění dýchacích cest a ventilace",
+              items: [
+                "Volba a zavedení dvoucestné rourky, kontrola polohy.",
+                "Vedení ventilace jedné plíce a protektivní parametry.",
+                "Postup při hypoxemii během jednoplicní ventilace."
+              ]
+            },
+            {
+              title: "Oběh a reperfuze",
+              items: [
+                "Vedení oběhové podpory při implantaci a po reperfuzi.",
+                "Indikace a nastavení intraoperačního ECMO.",
+                "Tekutinová strategie."
+              ]
+            },
+            {
+              title: "Předání na JIP",
+              items: [
+                "Strukturované předání anesteziolog → intenzivista.",
+                "Co musí být zaznamenané v dokumentaci před předáním."
+              ]
+            }
+          ]
+        }
+      ]
+    },
+
+    "protocol-coagulation": {
+      title: "Management koagulace",
+      subtitle: "Antikoagulace, hemoterapie a postup při krvácení u transplantace plic.",
+      badges: [
+        { label: "ANESTEZIOLOGIE", tone: "neutral" },
+        { label: "OSNOVA", tone: "info" },
+        { label: "PŘIPRAVUJE SE", tone: "warn" }
+      ],
+      intro: "Zatím jde o osnovu. Finální znění připravuje KARIM, do platformy se doplní po schválení.",
+      mode: "guide",
+      blocks: [
+        {
+          title: "Osnova protokolu",
+          sections: [
+            {
+              title: "Antikoagulace",
+              items: [
+                "Heparinizace při implantaci a při mimotělní podpoře.",
+                "Cílové hodnoty a jejich monitorace.",
+                "Postup při heparinem indukované trombocytopenii."
+              ]
+            },
+            {
+              title: "Hemoterapie a bedside diagnostika",
+              items: [
+                "Viskoelastometrie (ROTEM / TEG) a rozhodovací algoritmus.",
+                "Indikace krevních derivátů a koagulačních faktorů.",
+                "Antifibrinolytika."
+              ]
+            },
+            {
+              title: "Masivní krvácení",
+              items: [
+                "Aktivace protokolu masivního krvácení.",
+                "Role jednotlivých členů týmu.",
+                "Kritéria pro revizi."
+              ]
+            }
+          ]
+        }
+      ]
+    },
+
+    "protocol-echo": {
+      title: "Echo protokol",
+      subtitle: "Perioperační echokardiografie u transplantace plic - co a kdy hodnotit.",
+      badges: [
+        { label: "ANESTEZIOLOGIE", tone: "neutral" },
+        { label: "OSNOVA", tone: "info" },
+        { label: "PŘIPRAVUJE SE", tone: "warn" }
+      ],
+      intro: "Zatím jde o osnovu. Finální znění připravuje KARIM, do platformy se doplní po schválení.",
+      mode: "guide",
+      blocks: [
+        {
+          title: "Osnova protokolu",
+          sections: [
+            {
+              title: "Před výkonem",
+              items: [
+                "Vstupní TEE - funkce pravé komory, chlopně, plnění.",
+                "Vyloučení intrakardiálního zkratu."
+              ]
+            },
+            {
+              title: "V průběhu výkonu",
+              items: [
+                "Hodnocení pravé komory při zasvorkování plicnice.",
+                "Kontrola anastomóz a průtoku plicními žílami po reperfuzi.",
+                "Vyloučení obstrukce žilního návratu."
+              ]
+            },
+            {
+              title: "Po výkonu",
+              items: [
+                "Kontrolní echo na JIP a jeho frekvence.",
+                "Nálezy, které vedou k urgentní konzultaci s chirurgem."
+              ]
+            }
+          ]
+        }
+      ]
+    },
+
+    "protocol-postop": {
+      title: "Protokol pooperační péče",
+      subtitle: "Vedení pacienta na ARO/JIP po transplantaci plic až po překlad na standardní lůžko.",
+      badges: [
+        { label: "ANESTEZIOLOGIE", tone: "neutral" },
+        { label: "OSNOVA", tone: "info" },
+        { label: "PŘIPRAVUJE SE", tone: "warn" }
+      ],
+      intro: "Zatím jde o osnovu. Finální znění připravuje KARIM, do platformy se doplní po schválení.",
+      mode: "guide",
+      blocks: [
+        {
+          title: "Osnova protokolu",
+          sections: [
+            {
+              title: "Příjem na JIP",
+              items: [
+                "Předání z operačního sálu a vstupní vyšetření.",
+                "Vstupní RTG, laboratoř a nastavení monitoringu."
+              ]
+            },
+            {
+              title: "Ventilace a weaning",
+              items: [
+                "Protektivní ventilační strategie u nového štěpu.",
+                "Kritéria pro zahájení weaningu a extubaci.",
+                "Postup při primární dysfunkci štěpu."
+              ]
+            },
+            {
+              title: "Sedace, analgezie a bilance",
+              items: [
+                "Cílová hloubka sedace a hodnocení (RASS).",
+                "Analgetický režim včetně epidurální analgezie.",
+                "Tekutinová bilance a podpora oběhu."
+              ]
+            },
+            {
+              title: "Kritéria překladu",
+              items: [
+                "Podmínky pro překlad na standardní lůžko.",
+                "Co předat pneumologovi a fyzioterapeutovi."
+              ]
+            }
+          ]
+        }
+      ]
+    },
+
     "protocol-psych": {
       title: "Příručka pro psychologa",
       subtitle: "Role psychologa v předtransplantačním hodnocení, přípravě na čekací listině a podpoře po výkonu.",
@@ -370,7 +553,7 @@
 
     "protocol-rehab": {
       title: "Příručka pro fyzioterapii",
-      subtitle: "Prerehabilitace na čekací listině, křehkost pacienta a rehabilitace po transplantaci.",
+      subtitle: "Prérehabilitace na čekací listině, křehkost pacienta a rehabilitace po transplantaci.",
       badges: [
         { label: "REHABILITACE", tone: "neutral" },
         { label: "V1.0", tone: "info" },
@@ -389,11 +572,11 @@
           ]
         },
         {
-          title: "Prerehabilitace na čekací listině",
+          title: "Prérehabilitace na čekací listině",
           sections: [
             {
               paragraphs: [
-                "U pacientů zařazených na čekací listinu probíhá příprava formou prerehabilitace. Pacientovi jsou k dispozici edukační materiály a cvičení, mimo jiné dechová cvičení, ke kterým se může opakovaně vracet."
+                "U pacientů zařazených na čekací listinu probíhá příprava formou prérehabilitace. Pacientovi jsou k dispozici edukační materiály a cvičení, mimo jiné dechová cvičení, ke kterým se může opakovaně vracet."
               ]
             }
           ]
@@ -452,6 +635,10 @@
       { id: "protocol-monitoring", label: "Monitorovací protokol", icon: "documents" }
     ],
     intensivist: [
+      { id: "protocol-anesthesia", label: "Vedení anestezie", icon: "documents" },
+      { id: "protocol-coagulation", label: "Management koagulace", icon: "documents" },
+      { id: "protocol-echo", label: "Echo protokol", icon: "documents" },
+      { id: "protocol-postop", label: "Pooperační péče", icon: "documents" },
       { id: "protocol-evaluation", label: "Evaluační protokol", icon: "documents" },
       { id: "protocol-followup", label: "Follow-up protokol po BLTx", icon: "documents" },
       { id: "protocol-monitoring", label: "Monitorovací protokol", icon: "documents" }
